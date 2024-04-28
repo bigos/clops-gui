@@ -1,12 +1,28 @@
 ;;; ============================ package gui-window ============================
 (in-package #:gui-window)
 
+(defparameter *lisp-app* nil)
+
+(defclass/std lisp-app ()
+  ((gtk4-app :type gir::object-instance )
+   (windows :std (make-hash-table)) ; see hasher, the hash keys is a symbol or integer
+   (current-window :std nil :type (or null cffi:foreign-pointer keyword))))
+
+(defclass/std lisp-window ()
+  ((gir-window :type (or gir::object-instance keyword)
+               :documentation "Either gir window or symbol used in test drawing")
+   (children :documentation "Window can be divided into multiple sections with different content")
+   (current-child :type (or null box))
+   (hovered)
+   (mouse-coordinates)
+   (dimensions)))
+
 ;; =========================== dialogs =========================================
 (defun present-about-dialog ()
-    (let ((dialog (about-dialog)))
-      (setf (gtk4:window-modal-p dialog) t
-            (gtk4:window-transient-for dialog) (gtk4:application-active-window (clops:gtk4-app clops:*lisp-app*)))
-      (gtk4:window-present dialog)))
+  (let ((dialog (about-dialog)))
+    (setf (gtk4:window-modal-p dialog) t
+          (gtk4:window-transient-for dialog) (gtk4:application-active-window (gtk4-app *lisp-app*)))
+    (gtk4:window-present dialog)))
 
 (defun about-dialog ()
   (let ((dialog (gtk4:make-about-dialog)))
@@ -21,15 +37,15 @@
 
 ;; =========================== closing everything ==============================
 (defun close-all-windows-and-quit ()
-  (loop for aw = (gtk4:application-active-window (clops:gtk4-app clops:*lisp-app*))
+  (loop for aw = (gtk4:application-active-window (gtk4-app *lisp-app*))
         until (null aw)
         do (gtk4:window-close aw)))
 
 ;; ============================== app windows ==================================
 
 (defun app-windows ()
-  (when (clops:gtk4-app clops:*lisp-app*)
-    (let ((app-windows (gtk4:application-windows (clops:gtk4-app clops:*lisp-app*))))
+  (when (gtk4-app *lisp-app*)
+    (let ((app-windows (gtk4:application-windows (gtk4-app *lisp-app*))))
       (loop for pos from 0 below (glib:glist-length app-windows)
             collect (glib:glist-nth app-windows pos)))))
 
@@ -93,7 +109,7 @@
 
   (gtk4:connect window "close-request" (lambda (widget &rest args)
                                          (declare (ignore widget args))
-                                         (clops:window-remove clops:*lisp-app* window)
+                                         (clops:window-remove *lisp-app* window)
                                          (gtk4:window-close window))))
 
 (defun canvas-events (canvas)
@@ -190,17 +206,15 @@
 (defun window-activation (app)
   (gtk4:connect app "activate"
                 (lambda (app)
-                  (clops:window-add clops:*lisp-app* (new-window-for-app app)))))
+                  (clops:window-add *lisp-app* (new-window-for-app app)))))
 
 (defun window ()
   (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
                                    :flags gio:+application-flags-flags-none+)))
-    (setf clops:*lisp-app* (make-instance 'clops:lisp-app :gtk4-app app))
+    (setf *lisp-app* (make-instance ':lisp-app :gtk4-app app))
     (window-activation app)
 
     (let ((status (gtk:application-run app nil)))
-      (setf
-            clops:*lisp-app*  nil)
-
       (gobj:object-unref app)
+      (setf*lisp-app*  nil)
       status)))
