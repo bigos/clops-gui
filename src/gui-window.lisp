@@ -76,23 +76,29 @@
 (defmethod hasher ((window symbol))
   window)
 
+(defun window-assert (window)
+  (assert (or (typep window 'gir::object-instance)
+              (typep window 'sb-sys:system-area-pointer)
+              (typep window 'symbol))))
+
 (defmethod window-add :before ((app lisp-app) (window gir::object-instance))
   (assert (equal "ApplicationWindow"
                  (gir:info-get-name (gir::info-of (gir:gir-class-of window))))))
 
 (defmethod window-add ((app lisp-app) (window T))
-  (assert (or (typep window 'gir::object-instance)
-              (typep window 'sb-sys:system-area-pointer)
-              (typep window 'symbol)))
+  (window-assert window)
   (setf (gethash (hasher window)
                  (windows app))
         (make-instance 'lisp-window
                        :gir-window window)))
 
+(defmethod window-get ((app lisp-app) (window T))
+  (window-assert window)
+  (gethash (hasher window)
+           (windows app)))
+
 (defmethod window-remove ((app lisp-app) (window T))
-  (assert (or (typep window 'gir::object-instance)
-              (typep window 'sb-sys:system-area-pointer)
-              (typep window 'symbol)))
+  (window-assert window)
   (if (remhash (hasher window) (windows app))
       (warn "success, window removed ~S" window)
       (warn "strange, window not removed ~S" window)))
@@ -291,10 +297,10 @@
 (defun window ()
   (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
                                    :flags gio:+application-flags-flags-none+)))
-    (setf *lisp-app* (make-instance ':lisp-app :gtk4-app app))
+    (setf *lisp-app* (make-instance 'lisp-app :gtk4-app app))
     (window-activation app)
 
     (let ((status (gtk:application-run app nil)))
       (gobj:object-unref app)
-      (setf*lisp-app*  nil)
+      (setf *lisp-app*  nil)
       status)))

@@ -1,6 +1,8 @@
 ;;;
 (in-package #:gui-events)
 
+(defparameter *process-event-fn* nil)
+
 ;;; ================================= All defined GUI Events ===========================
 
 (defun de-menu-simple  (action-name)           (process-event :menu-simple action-name))
@@ -22,4 +24,6 @@
 ;;; ======================= update and view ====================================
 
 (defun process-event (event &rest args)
-  (warn "implement process-event"))
+  (if (null *process-event-fn*)
+      (error "implement process-event")
+      (funcall *process-event-fn* event args)))
