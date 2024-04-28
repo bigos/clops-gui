@@ -1,0 +1,10 @@
+* Clops-Gui
+
+** Usage
+#+begin_example
+(push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
+(ql:quickload :clops-gui
+(clops::main)
+#+end_example
+
+** Installation
