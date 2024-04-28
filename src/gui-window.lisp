@@ -51,9 +51,7 @@
                                         (get-internal-run-time)
                                         (gir-window window)))))
 
-
 ;;; ========================== windows =========================================
-
 
 (defclass/std lisp-app ()
   ((gtk4-app :type gir::object-instance)
