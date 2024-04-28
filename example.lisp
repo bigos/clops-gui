@@ -7,7 +7,7 @@
 
 ;;; ============================ view ==========================================
 (defun draw-objects (window)            ; view
-    (assert (typep window 'gui-window::lisp-window))
+    (assert (typep window 'gui-window:lisp-window))
   (warn "would draw on window"))
 
 ;;; ===================== menu declaration =====================================
@@ -64,12 +64,11 @@
     (warn "prcessing event ~S ~S" event args)))
 
 (defun init ()
-  (warn "starting init")
+  ;; define external functions
   (setf
-   gui-window::*draw-objects-fn* 'cl::draw-objects
-   gui-window::*menu-bar-menu-fn* 'cl::menu-bar-menu
-   gui-events::*process-event-fn* 'cl::process-event
-   ))
+   gui-window:*draw-objects-fn* 'cl::draw-objects
+   gui-window:*menu-bar-menu-fn* 'cl::menu-bar-menu
+   gui-events:*process-event-fn* 'cl::process-event))
 
 (defun main ()
   (init)

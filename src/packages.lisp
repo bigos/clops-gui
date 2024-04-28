@@ -9,30 +9,34 @@
   (:use #:cl)
   (:import-from :defclass-std :defclass/std)
   (:export
+   :*draw-objects-fn*
+   :*menu-bar-menu-fn*
+   :lisp-window
    :present-about-dialog :new-window-for-app :close-all-windows-and-quit
    :window))
 
-(defpackage #:clops
-  (:use #:cl)
-  (:import-from :serapeum :~>)
-  (:import-from :defclass-std :defclass/std)
-  (:export
-   :draw-objects
-   :nebu-bar-menu
-   :*lisp-app*
-   :box-div
-   :build-box-class
-   :gtk4-app
-   :lisp-app
-   :menu-bar-menu
-   :window-add
-   :window-remove))
+;; (defpackage #:clops
+;;   (:use #:cl)
+;;   (:import-from :serapeum :~>)
+;;   (:import-from :defclass-std :defclass/std)
+;;   (:export
+;;    :draw-objects
+;;    :nebu-bar-menu
+;;    :*lisp-app*
+;;    :box-div
+;;    :build-box-class
+;;    :gtk4-app
+;;    :lisp-app
+;;    :menu-bar-menu
+;;    :window-add
+;;    :window-remove))
 
 (defpackage #:gui-events
   (:use #:cl)
   (:import-from :serapeum :~>)
   (:import-from :defclass-std :defclass/std)
   (:export
+   :*process-event-fn*
    :de-focus-enter
    :de-focus-leave
    :de-key-pressed
@@ -48,6 +52,3 @@
    :de-resize
    :de-scroll
    :de-timeout))
-
-(defpackage clops-gui
-  (:use :cl))

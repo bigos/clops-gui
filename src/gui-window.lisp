@@ -1,8 +1,8 @@
 ;;; ============================ package gui-window ============================
 (in-package #:gui-window)
 
-(defparameter *menu-bar-menu-fn* 'clops:menu-bar-menu)
-(defparameter *draw-objects-fn* 'clops:draw-objects)
+(defparameter *menu-bar-menu-fn* nil)
+(defparameter *draw-objects-fn* nil)
 (defparameter *initial-window-width* 400)
 (defparameter *initial-window-height* 200)
 (defparameter *lisp-app* nil)
