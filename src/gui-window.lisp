@@ -3,6 +3,8 @@
 
 (defparameter *menu-bar-menu-fn* 'clops:menu-bar-menu)
 (defparameter *draw-objects-fn* 'clops:draw-objects)
+(defparameter *initial-window-width* 400)
+(defparameter *initial-window-height* 200)
 (defparameter *lisp-app* nil)
 
 ;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -267,7 +269,8 @@
 
       (setf
        (gtk4:window-title window) "CLOS Toy"
-       (gtk4:window-default-size window) (list 680 140))
+       (gtk4:window-default-size window) (list *initial-window-width*
+                                               *initial-window-height*))
 
       (let ((box (gtk4:make-box :orientation gtk4:+orientation-vertical+
                                 :spacing 0)))

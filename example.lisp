@@ -60,7 +60,8 @@
 
 ;;; ====================== event processing ====================================
 (defun process-event (event args)
-  (warn "prcessing event ~S ~S" event args))
+  (unless (member event '(:timeout :motion))
+    (warn "prcessing event ~S ~S" event args)))
 
 (defun init ()
   (warn "starting init")
