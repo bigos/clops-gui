@@ -68,27 +68,27 @@
     (gtk4:connect key-controller "key-pressed"
                   (lambda (e &rest args)
                     (declare (ignore e))
-                    (apply #'clops:de-key-pressed (funcall #'translate-key-args args))))
+                    (apply #'gui-events:de-key-pressed (funcall #'translate-key-args args))))
 
     (gtk4:connect key-controller "key-released"
                   (lambda (e &rest args)
                     (declare (ignore e))
-                    (apply #'clops:de-key-released (funcall #'translate-key-args args))))
+                    (apply #'gui-events:de-key-released (funcall #'translate-key-args args))))
 
     (gtk4:connect focus-controller "enter"
                   (lambda (e &rest args)
                     (declare (ignore e args))
-                    (apply #'clops:de-focus-enter (list window))))
+                    (apply #'gui-events:de-focus-enter (list window))))
 
     (gtk4:connect focus-controller "leave"
                   (lambda (e &rest args)
                     (declare (ignore e args))
-                    (apply #'clops:de-focus-leave (list window)))))
+                    (apply #'gui-events:de-focus-leave (list window)))))
 
   (glib:timeout-add 1000
                     (lambda (&rest args)
                       (declare (ignore args))
-                      (funcall #'clops:de-timeout)
+                      (funcall #'gui-events:de-timeout)
                       glib:+source-continue+))
 
   (gtk4:connect window "close-request" (lambda (widget &rest args)
@@ -104,19 +104,19 @@
       (gtk4:widget-add-controller canvas motion-controller)
 
       (gtk4:connect motion-controller "motion"
-                    (lambda (e &rest args) (declare (ignore e)) (apply #'clops:de-motion
+                    (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion
                                                                        (append args
                                                                                (list
                                                                                (canvas-window
                                                                                 canvas))))))
       (gtk4:connect motion-controller "enter"
-                    (lambda (e &rest args) (declare (ignore e)) (apply #'clops:de-motion-enter
+                    (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion-enter
                                                                        (append args
                                                                                (list
                                                                                 (canvas-window
                                                                                  canvas))))))
       (gtk4:connect motion-controller "leave"
-                    (lambda (e &rest args) (declare (ignore e)) (apply #'clops:de-motion-leave
+                    (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion-leave
                                                                        (append args
                                                                                (list
                                                                                 (canvas-window
@@ -125,7 +125,7 @@
     (let ((scroll-controller (gtk4:make-event-controller-scroll :flags gtk4:+event-controller-scroll-flags-vertical+)))
       (gtk4:widget-add-controller canvas scroll-controller)
       (gtk4:connect scroll-controller "scroll"
-                    (lambda (e &rest args) (declare (ignore e)) (apply #'clops:de-scroll
+                    (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-scroll
                                                                        args))))
 
     (let ((gesture-click-controller (gtk4:make-gesture-click))
@@ -139,9 +139,9 @@
       (gtk4:widget-add-controller canvas gesture-click-controller)
 
       (gtk4:connect gesture-click-controller "pressed"
-                    (lambda (event &rest args) (apply click-fn (list event args #'clops:de-pressed))))
+                    (lambda (event &rest args) (apply click-fn (list event args #'gui-events:de-pressed))))
       (gtk4:connect gesture-click-controller "released"
-                    (lambda (event &rest args) (apply click-fn (list event args #'clops:de-released)))))
+                    (lambda (event &rest args) (apply click-fn (list event args #'gui-events:de-released)))))
 
 
     ;; for some reason resize signal does not work without  notify
@@ -150,7 +150,7 @@
 
     (gtk4:connect canvas "resize" (lambda (widget &rest args)
                                     (declare (ignore widget))
-                                    (clops:de-resize (first args) (second args) (canvas-window
+                                    (gui-events:de-resize (first args) (second args) (canvas-window
                                                                            canvas))))))
 
 ;; =============================================================================
@@ -170,9 +170,8 @@
       (let ((box (gtk4:make-box :orientation gtk4:+orientation-vertical+
                                 :spacing 0)))
         (let ((canvas (gtk4:make-drawing-area)))
-          ;; TODO relying on the global variable lead to a bug when adding multiple windows
-          (setf clops:*canvas* canvas
-                (gtk4:widget-vexpand-p canvas) T
+
+          (setf (gtk4:widget-vexpand-p canvas) T
                 (gtk4:drawing-area-draw-func canvas) (list (cffi:callback clops:%draw-func)
                                                            (cffi:null-pointer)
                                                            (cffi:null-pointer)))
@@ -200,7 +199,7 @@
     (window-activation app)
 
     (let ((status (gtk:application-run app nil)))
-      (setf clops:*canvas* nil
+      (setf
             clops:*lisp-app*  nil)
 
       (gobj:object-unref app)

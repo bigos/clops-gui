@@ -9,6 +9,7 @@
   :components ((:module "src"
                 :components
                 ((:file "packages")
+                 (:file "gui-events")
                  (:file "gui-menu")
                  (:file "gui-window")
                  (:file "main"))))

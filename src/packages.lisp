@@ -17,10 +17,21 @@
   (:import-from :defclass-std :defclass/std)
   (:export
    :%draw-func
-   :*canvas*
    :*lisp-app*
    :box-div
    :build-box-class
+   :gtk4-app
+   :lisp-app
+   :menu-bar-menu
+   :window-add
+   :window-remove))
+
+
+(defpackage #:gui-events
+  (:use #:cl)
+  (:import-from :serapeum :~>)
+  (:import-from :defclass-std :defclass/std)
+  (:export
    :de-focus-enter
    :de-focus-leave
    :de-key-pressed
@@ -35,12 +46,7 @@
    :de-released
    :de-resize
    :de-scroll
-   :de-timeout
-   :gtk4-app
-   :lisp-app
-   :menu-bar-menu
-   :window-add
-   :window-remove))
+   :de-timeout))
 
 (defpackage clops-gui
   (:use :cl))

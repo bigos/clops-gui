@@ -16,7 +16,7 @@
                         (declare (ignore event))
                         (gio:action-change-state action parameter)
 
-                        (apply 'clops:de-menu-radio (list action-name
+                        (apply 'gui-events:de-menu-radio (list action-name
                                                     (glib:variant-string
                                                      (gio:action-state action))))))
         (gobj:object-unref action)))
@@ -49,7 +49,7 @@
                                                     :value (if (zerop (glib:variant-hash (gio:action-state action)))
                                                                T
                                                                nil)))
-                   (apply 'clops:de-menu-bool
+                   (apply 'gui-events:de-menu-bool
                           (list action-name
                                 (glib:variant-hash (gio:action-state action))))))
     (gobj:object-unref action))
@@ -68,7 +68,7 @@
                   (lambda (event parameter)
                     (declare (ignore event parameter))
 
-                    (apply 'clops:de-menu-simple (list action-name))))
+                    (apply 'gui-events:de-menu-simple (list action-name))))
     (gobj:object-unref action))
 
   (gio:make-menu-item :model menu
