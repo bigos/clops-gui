@@ -7,9 +7,25 @@
 
 (defpackage #:gui-window
   (:use #:cl)
+  (:import-from :defclass-std :defclass/std)
   (:export
    :present-about-dialog :new-window-for-app :close-all-windows-and-quit
    :window))
+
+(defpackage #:gui-draw
+  (:use #:cl)
+  (:import-from :serapeum :~>)
+  (:import-from :defclass-std :defclass/std)
+  (:export
+   :%draw-func
+   :*lisp-app*
+   :box-div
+   :build-box-class
+   :gtk4-app
+   :lisp-app
+   :menu-bar-menu
+   :window-add
+   :window-remove))
 
 (defpackage #:clops
   (:use #:cl)

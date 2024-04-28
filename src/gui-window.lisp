@@ -1,21 +1,103 @@
 ;;; ============================ package gui-window ============================
 (in-package #:gui-window)
 
+(defparameter *menu-bar-menu-fn* 'clops:menu-bar-menu)
+(defparameter *draw-objects-fn* 'clops:draw-objects)
 (defparameter *lisp-app* nil)
 
+;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+;;; both %draw-func and simulate-draw-func create context on each call
+;;; we need to investigate whether it is necessary only on the dimensions change
+
+;;; drawing callback ===========================================================
+(cffi:defcallback %draw-func :void ((area :pointer)
+                                    (cr :pointer)
+                                    (width :int)
+                                    (height :int)
+                                    (data :pointer))
+  (declare (ignore data))
+
+  ;; ###########################################################################
+  (setf cairo:*context* (make-instance 'cairo:context
+                                       :pointer cr
+                                       :width width
+                                       :height height
+                                       :pixel-based-p nil))
+  ;; call actual drawing
+  (funcall *draw-objects-fn* (window-get *lisp-app* (gtk4:widget-parent
+                                                     (gtk4:widget-parent
+                                                      (gir:build-object-ptr (gir:nget gtk4:*ns* "DrawingArea") area)))))
+  ;; ############################################################################
+
+  ;; gtk will put the drawn surface on canvas
+  )
+
+(defun simulate-draw-func (window)
+  (let* ((surface (cairo:create-image-surface :argb32
+                                              (car (dimensions window))
+                                              (cdr (dimensions window)))))
+
+    ;; #########################################################################
+    (setf  cairo:*context* (cairo:create-context surface))
+    ;; call actual drawing
+    (funcall *draw-objects-fn* window)
+    ;; #########################################################################
+
+    ;; put drawn surface to a file
+    (cairo:surface-write-to-png surface
+                                (format nil "~Acairo-simulate-drawing~A-~A.png"
+                                        (uiop:temporary-directory)
+                                        (get-internal-run-time)
+                                        (gir-window window)))))
+
+
+;;; ========================== windows =========================================
+
+
 (defclass/std lisp-app ()
-  ((gtk4-app :type gir::object-instance )
+  ((gtk4-app :type gir::object-instance)
    (windows :std (make-hash-table)) ; see hasher, the hash keys is a symbol or integer
-   (current-window :std nil :type (or null cffi:foreign-pointer keyword))))
+   (current-window :std nil  :type (or null cffi:foreign-pointer keyword))))
 
 (defclass/std lisp-window ()
-  ((gir-window :type (or gir::object-instance keyword)
-               :documentation "Either gir window or symbol used in test drawing")
+  ((gir-window  :type (or gir::object-instance keyword)
+                :documentation "Either gir window or symbol used in test drawing")
    (children :documentation "Window can be divided into multiple sections with different content")
    (current-child :type (or null box))
    (hovered)
    (mouse-coordinates)
    (dimensions)))
+
+;;; ========================== window manipulation =============================
+;;; either the integer or testing keyword being the key of (gethash window (windows lisp-app))
+(defmethod hasher ((window sb-sys:system-area-pointer))
+  (cffi:pointer-address window))
+(defmethod hasher ((window gir::object-instance))
+  (cffi:pointer-address (gir::this-of window)))
+(defmethod hasher ((window symbol))
+  window)
+
+(defmethod window-add :before ((app lisp-app) (window gir::object-instance))
+  (assert (equal "ApplicationWindow"
+                 (gir:info-get-name (gir::info-of (gir:gir-class-of window))))))
+
+(defmethod window-add ((app lisp-app) (window T))
+  (assert (or (typep window 'gir::object-instance)
+              (typep window 'sb-sys:system-area-pointer)
+              (typep window 'symbol)))
+  (setf (gethash (hasher window)
+                 (windows app))
+        (make-instance 'lisp-window
+                       :gir-window window)))
+
+(defmethod window-remove ((app lisp-app) (window T))
+  (assert (or (typep window 'gir::object-instance)
+              (typep window 'sb-sys:system-area-pointer)
+              (typep window 'symbol)))
+  (if (remhash (hasher window) (windows app))
+      (warn "success, window removed ~S" window)
+      (warn "strange, window not removed ~S" window)))
 
 ;; =========================== dialogs =========================================
 (defun present-about-dialog ()
@@ -109,7 +191,7 @@
 
   (gtk4:connect window "close-request" (lambda (widget &rest args)
                                          (declare (ignore widget args))
-                                         (clops:window-remove *lisp-app* window)
+                                         (window-remove *lisp-app* window)
                                          (gtk4:window-close window))))
 
 (defun canvas-events (canvas)
@@ -176,7 +258,7 @@
       (gtk4:application-add-window app window)
 
       (setf
-       (gtk4:application-menubar app) (clops:menu-bar-menu app)
+       (gtk4:application-menubar app) (funcall *menu-bar-menu-fn* app)
        (gtk4:application-window-show-menubar-p window) T)
 
       (setf
@@ -188,7 +270,7 @@
         (let ((canvas (gtk4:make-drawing-area)))
 
           (setf (gtk4:widget-vexpand-p canvas) T
-                (gtk4:drawing-area-draw-func canvas) (list (cffi:callback clops:%draw-func)
+                (gtk4:drawing-area-draw-func canvas) (list (cffi:callback %draw-func)
                                                            (cffi:null-pointer)
                                                            (cffi:null-pointer)))
           (canvas-events canvas)
@@ -206,7 +288,7 @@
 (defun window-activation (app)
   (gtk4:connect app "activate"
                 (lambda (app)
-                  (clops:window-add *lisp-app* (new-window-for-app app)))))
+                  (window-add *lisp-app* (new-window-for-app app)))))
 
 (defun window ()
   (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
