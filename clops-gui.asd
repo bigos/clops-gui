@@ -11,8 +11,7 @@
                 ((:file "packages")
                  (:file "gui-events")
                  (:file "gui-menu")
-                 (:file "gui-window")
-                 (:file "main"))))
+                 (:file "gui-window"))))
   :description "GUI for clops in separate system")
 
 ;; (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)

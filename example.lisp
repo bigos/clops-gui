@@ -7,8 +7,23 @@
 
 ;;; ============================ view ==========================================
 (defun draw-objects (window)            ; view
-    (assert (typep window 'gui-window:lisp-window))
-  (warn "would draw on window"))
+  (assert (typep window 'gui-window:lisp-window))
+  (warn "would draw on window")
+
+  (cairo:set-source-rgb  1 1 1)
+  (cairo:paint)
+
+  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
+  (cairo:set-font-size 20)
+
+  (let ((my-text "This is going to be interactive one day."))
+    (multiple-value-bind  (xb yb width height)
+        (cairo:text-extents my-text)
+      (declare (ignore xb yb width height)))
+
+    (cairo:set-source-rgb 0 0 0)
+    (cairo:move-to 10 20)
+    (cairo:show-text (format nil "~A" my-text))))
 
 ;;; ===================== menu declaration =====================================
 
@@ -61,7 +76,19 @@
 ;;; ====================== event processing ====================================
 (defun process-event (event args)
   (unless (member event '(:timeout :motion))
-    (warn "prcessing event ~S ~S" event args)))
+    (warn "prcessing event ~S ~S" event args))
+
+  (loop for awp being the hash-key in (gui-window:windows gui-window:*lisp-app*)
+        for awp-lisp-window = (gethash awp (gui-window:windows gui-window:*lisp-app*))
+        for awp-gir-window = (gui-window:gir-window awp-lisp-window)
+        do
+           (progn
+             (when nil
+               ;; atm we have nil because we call it in experiment, not in the event handling
+               (gui-window:simulate-draw-func awp-lisp-window))
+
+             ;; canvas for awp that later will be passed and drawn as lisp-window
+             (gtk4:widget-queue-draw awp-gir-window ))))
 
 (defun init ()
   ;; define external functions
