@@ -98,18 +98,21 @@
     (otherwise
      (warn "not processed event ~S ~S" event args)))
 
+  ;; this could be extended to work with multiple windows
   (loop for awp being the hash-key in (gui-window:windows gui-window:*lisp-app*)
         for awp-lisp-window = (gethash awp (gui-window:windows gui-window:*lisp-app*))
         for awp-gir-window = (gui-window:gir-window awp-lisp-window)
-        for wn = 0 then (1+ wn)
-        do
-           (progn
-             (when nil
-               ;; atm we have nil because we call it in experiment, not in the event handling
-               (gui-window:simulate-draw-func awp-lisp-window))
+        do (gui-window:redraw-canvas awp-gir-window)))
 
-             ;; canvas for awp that later will be passed and drawn as lisp-window
-             (gui-window:redraw-canvas awp-gir-window))))
+(defun experiment ()
+  (setf
+   *model* (make-instance 'model)
+   gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
+  (assert (zerop (hash-table-count (gui-window:windows gui-window:*lisp-app*))))
+  (gui-window::window-add gui-window:*lisp-app* :testing)
+  (process-event :timeout nil)
+  (gui-window::simulate-draw-func (gethash :testing
+                                           (gui-window::windows gui-window::*lisp-app*))))
 
 (defun init ()
   ;; define external functions

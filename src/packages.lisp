@@ -1,13 +1,19 @@
 (defpackage #:gui-menu
   (:use #:cl)
   (:export
-   :build-menu :build-items
-   :prepare-submenu :prepare-section :prepare-item-simple :prepare-item-bool
-   :prepare-item-radio :prepare-radio-action))
+   :build-items
+   :build-menu
+   :prepare-item-bool
+   :prepare-item-radio
+   :prepare-item-simple
+   :prepare-radio-action
+   :prepare-section
+   :prepare-submenu))
 
 (defpackage #:gui-window
   (:use #:cl)
-  (:import-from :defclass-std :defclass/std)
+  (:import-from :defclass-std
+   :defclass/std)
   (:export
    :*draw-objects-fn*
    :*lisp-app*
@@ -24,8 +30,10 @@
 
 (defpackage #:gui-events
   (:use #:cl)
-  (:import-from :serapeum :~>)
-  (:import-from :defclass-std :defclass/std)
+  (:import-from :serapeum
+   :~>)
+  (:import-from :defclass-std
+   :defclass/std)
   (:export
    :*process-event-fn*
    :de-focus-enter
