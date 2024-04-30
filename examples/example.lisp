@@ -106,7 +106,6 @@
     (otherwise
      (warn "not processed event ~S ~S" event args)))
 
-  ;; this could be extended to work with multiple windows
   (loop for awp being the hash-key in (gui-window:windows gui-window:*lisp-app*)
         for awp-lisp-window = (gethash awp (gui-window:windows gui-window:*lisp-app*))
         for awp-gir-window = (gui-window:gir-window awp-lisp-window)
