@@ -31,7 +31,12 @@
       (gui-window:set-rgba "red")
       (gui-window:set-rgba "#002244AA"))
   (cairo:move-to 10 50)
-  (cairo:show-text (format nil "~A" (mouse-coordinates *model*))))
+  (cairo:show-text (format nil "~A" (mouse-coordinates *model*)))
+
+  (cairo:move-to 10 80)
+  (cairo:show-text (format nil "~A" (gui-window::dimensions window)))
+
+  )
 
 ;;; ===================== menu declaration =====================================
 
@@ -88,8 +93,7 @@
      nil)
     (:resize
      (destructuring-bind ((w h win)) args
-       (warn "doing resize ~A ~A ~A ~A" args w h win)
-       (setf zzzdimension (cons w h))))
+       (gui-window::window-resize w h win)))
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (setf (mouse-coordinates *model*)
            (cons (first args) (second args))))
@@ -115,8 +119,12 @@
    gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
   (assert (zerop (hash-table-count (gui-window:windows gui-window:*lisp-app*))))
   (gui-window::window-add gui-window:*lisp-app* :testing)
-  (process-event :resize 600 200 :testing)
-  (process-event :timeout :testing)) ;; add simulated drawing in the right place
+  (process-event :resize (list 600 200 (gui-window::window-get gui-window:*lisp-app* :testing)))
+  (process-event :timeout)
+  (process-event :motion-enter (list 50 50 (gui-window::window-get gui-window:*lisp-app* :testing)))
+  ;; end
+  (warn "please check your folder ~S for images drawn by the procedure simulate-draw-func"
+        (uiop:temporary-directory)))
 
 (defun init ()
   ;; define external functions

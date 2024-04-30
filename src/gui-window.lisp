@@ -98,11 +98,13 @@
 
 ;;; either the integer or testing keyword being the key of (gethash window (windows lisp-app))
 (defmethod hasher ((window sb-sys:system-area-pointer))
-    (cffi:pointer-address window))
+  (cffi:pointer-address window))
 (defmethod hasher ((window gir::object-instance))
   (cffi:pointer-address (gir::this-of window)))
 (defmethod hasher ((window symbol))
   window)
+(defmethod hasher ((window lisp-window))
+  (gir-window window))
 
 (defun window-assert (window)
     (assert (or (typep window 'gir::object-instance)
@@ -113,20 +115,26 @@
   (assert (equal "ApplicationWindow"
                  (gir:info-get-name (gir::info-of (gir:gir-class-of window))))))
 
-(defmethod window-add ((app lisp-app) (window T))
-  (window-assert window)
+(defmethod window-add ((app lisp-app) (window gir::object-instance))
+  (setf (gethash (hasher window)
+                 (windows app))
+        (make-instance 'lisp-window
+                       :gir-window window)))
+(defmethod window-add ((app lisp-app) (window symbol))
   (setf (gethash (hasher window)
                  (windows app))
         (make-instance 'lisp-window
                        :gir-window window)))
 
 (defmethod window-get ((app lisp-app) (window T))
-  (window-assert window)
   (gethash (hasher window)
            (windows app)))
 
+(defmethod window-resize (w h win)
+  (setf (dimensions (window-get *lisp-app* win)) (cons w h)))
+
 (defmethod window-remove ((app lisp-app) (window T))
-  (window-assert window)
+    (window-assert window)
   (if (remhash (hasher window) (windows app))
       (warn "success, window removed ~S" window)
       (warn "strange, window not removed ~S" window)))
