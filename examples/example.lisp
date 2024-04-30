@@ -104,15 +104,14 @@
         for awp-gir-window = (gui-window:gir-window awp-lisp-window)
         do (gui-window:redraw-canvas awp-gir-window)))
 
+;;; REPL usege (cl::experiment)
 (defun experiment ()
   (setf
    *model* (make-instance 'model)
    gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
   (assert (zerop (hash-table-count (gui-window:windows gui-window:*lisp-app*))))
   (gui-window::window-add gui-window:*lisp-app* :testing)
-  (process-event :timeout nil)
-  (gui-window::simulate-draw-func (gethash :testing
-                                           (gui-window::windows gui-window::*lisp-app*))))
+  (process-event :timeout nil)) ;; add simulated drawing in the right place
 
 (defun init ()
   ;; define external functions
