@@ -10,14 +10,16 @@
   (:import-from :defclass-std :defclass/std)
   (:export
    :*draw-objects-fn*
-   :*menu-bar-menu-fn*
    :*lisp-app*
-   :set-rgba
-   :windows
+   :*menu-bar-menu-fn*
+   :close-all-windows-and-quit
    :gir-window
-   :simulate-draw-func
    :lisp-window
-   :present-about-dialog :new-window-for-app :close-all-windows-and-quit
+   :new-window-for-app
+   :present-about-dialog
+   :redraw-canvas
+   :set-rgba
+   :simulate-draw-func
    :window))
 
 (defpackage #:gui-events

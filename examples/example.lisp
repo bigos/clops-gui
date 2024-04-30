@@ -109,8 +109,7 @@
                (gui-window:simulate-draw-func awp-lisp-window))
 
              ;; canvas for awp that later will be passed and drawn as lisp-window
-             (gtk4:widget-queue-draw
-              (serapeum:~> awp-gir-window gtk4:widget-first-child gtk4:widget-first-child )))))
+             (gui-window:redraw-canvas awp-gir-window))))
 
 (defun init ()
   ;; define external functions

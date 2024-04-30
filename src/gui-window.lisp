@@ -87,18 +87,22 @@
                 :documentation "Either gir window or symbol used in test drawing")))
 
 ;;; ========================== window manipulation =============================
+(defmethod redraw-canvas ((window gir::object-instance))
+  (gtk4:widget-queue-draw
+   (serapeum:~> window gtk4:widget-first-child gtk4:widget-first-child)))
+
 ;;; either the integer or testing keyword being the key of (gethash window (windows lisp-app))
 (defmethod hasher ((window sb-sys:system-area-pointer))
-  (cffi:pointer-address window))
+    (cffi:pointer-address window))
 (defmethod hasher ((window gir::object-instance))
   (cffi:pointer-address (gir::this-of window)))
 (defmethod hasher ((window symbol))
   window)
 
 (defun window-assert (window)
-  (assert (or (typep window 'gir::object-instance)
-              (typep window 'sb-sys:system-area-pointer)
-              (typep window 'symbol))))
+    (assert (or (typep window 'gir::object-instance)
+                (typep window 'sb-sys:system-area-pointer)
+                (typep window 'symbol))))
 
 (defmethod window-add :before ((app lisp-app) (window gir::object-instance))
   (assert (equal "ApplicationWindow"
