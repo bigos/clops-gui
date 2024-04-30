@@ -24,10 +24,12 @@
     (multiple-value-bind  (xb yb width height)
         (cairo:text-extents my-text)
       (declare (ignore xb yb width height)))
-
     (cairo:set-source-rgb 0 0 0)
     (cairo:move-to 10 20)
     (cairo:show-text (format nil "~A" my-text)))
+  (if (null (mouse-coordinates *model*))
+      (gui-window:set-rgba "red")
+      (gui-window:set-rgba "#002244AA"))
   (cairo:move-to 10 50)
   (cairo:show-text (format nil "~A" (mouse-coordinates *model*))))
 
@@ -86,9 +88,7 @@
      nil)
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (setf (mouse-coordinates *model*)
-           (cons (first args) (second args)))
-     (setf (gtk4:widget-sensitive-p (third args)) t)
-     (warn "zzzzzzzzzzzzzzz ~A ~A ~A" event args (mouse-coordinates *model*)))
+           (cons (first args) (second args))))
     (:motion-leave
      (setf (mouse-coordinates *model*)
            nil))

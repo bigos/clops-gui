@@ -12,6 +12,7 @@
    :*draw-objects-fn*
    :*menu-bar-menu-fn*
    :*lisp-app*
+   :set-rgba
    :windows
    :gir-window
    :simulate-draw-func
