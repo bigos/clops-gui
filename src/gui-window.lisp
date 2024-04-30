@@ -58,16 +58,11 @@
 (defclass/std lisp-app ()
   ((gtk4-app :type gir::object-instance)
    (windows :std (make-hash-table)) ; see hasher, the hash keys is a symbol or integer
-   (current-window :std nil  :type (or null cffi:foreign-pointer keyword))))
+   ))
 
 (defclass/std lisp-window ()
   ((gir-window  :type (or gir::object-instance keyword)
-                :documentation "Either gir window or symbol used in test drawing")
-   (children :documentation "Window can be divided into multiple sections with different content")
-   (current-child :type (or null box))
-   (hovered)
-   (mouse-coordinates)
-   (dimensions)))
+                :documentation "Either gir window or symbol used in test drawing")))
 
 ;;; ========================== window manipulation =============================
 ;;; either the integer or testing keyword being the key of (gethash window (windows lisp-app))
