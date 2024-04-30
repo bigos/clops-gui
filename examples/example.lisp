@@ -1,4 +1,4 @@
-;; (load "~/Programming/Lisp/clops-gui/example.lisp")
+;; (load "~/Programming/Lisp/clops-gui/examples/example.lisp")
 
 (in-package #:cl)
 

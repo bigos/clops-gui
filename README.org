@@ -1,10 +1,26 @@
 * Clops-Gui
 
+A system that uses cl-gtk4 and allows other apps to use its GUI capabilities for
+drawing canvas, menu and events. Quite limited subset of Gtk4 capabilities has
+been implemented, but it may be enough for simple 2D graphics or games.
+
+So far it can only do multiple windows that contain only one widget, that is
+DrawingArea. The examples folder will contain examples of using the system.
+
+There is a limitation https://github.com/bohonghuang/cl-gtk4/issues/58 of what
+the underlying library can do, so you may have to implement your own widget
+system similar to those in Smalltalk systems.
+
+Perhaps it would be possible to have a declarative way to define other widgets
+than DrawingArea, in similar manner to function ~menu-bar-menu~ is used for menu,
+but that is not my priority.
+
 ** Usage
-#+begin_example
-(push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload :clops-gui
-(clops::main)
-#+end_example
+
+#+begin_src lisp
+  (load "~/Programming/Lisp/clops-gui/examples/example.lisp")
+#+end_src
 
 ** Installation
+
+You need SBCL, quicklisp and ultralisp. Please follow the relevant instructions.
