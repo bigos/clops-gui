@@ -26,7 +26,9 @@
    :redraw-canvas
    :set-rgba
    :simulate-draw-func
-   :window))
+   :window
+   :windows
+   ))
 
 (defpackage #:gui-events
   (:use #:cl)

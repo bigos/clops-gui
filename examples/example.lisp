@@ -82,10 +82,14 @@
     (values menu)))
 
 ;;; ====================== event processing ====================================
-(defun process-event (event args)
+(defun process-event (event &rest args)
   (case event
     (:timeout
      nil)
+    (:resize
+     (destructuring-bind ((w h win)) args
+       (warn "doing resize ~A ~A ~A ~A" args w h win)
+       (setf zzzdimension (cons w h))))
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (setf (mouse-coordinates *model*)
            (cons (first args) (second args))))
@@ -111,7 +115,8 @@
    gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
   (assert (zerop (hash-table-count (gui-window:windows gui-window:*lisp-app*))))
   (gui-window::window-add gui-window:*lisp-app* :testing)
-  (process-event :timeout nil)) ;; add simulated drawing in the right place
+  (process-event :resize 600 200 :testing)
+  (process-event :timeout :testing)) ;; add simulated drawing in the right place
 
 (defun init ()
   ;; define external functions

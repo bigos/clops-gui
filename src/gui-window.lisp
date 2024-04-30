@@ -59,8 +59,9 @@
 
 (defun simulate-draw-func (window)
   (let* ((surface (cairo:create-image-surface :argb32
-                                              (car (dimensions window))
-                                              (cdr (dimensions window)))))
+                                              ;; use defaults if dimensions are nil
+                                              (or (car (dimensions window)) 150)
+                                              (or (cdr (dimensions window)) 100))))
 
     ;; #########################################################################
     (setf  cairo:*context* (cairo:create-context surface))
@@ -84,12 +85,16 @@
 
 (defclass/std lisp-window ()
   ((gir-window  :type (or gir::object-instance keyword)
-                :documentation "Either gir window or symbol used in test drawing")))
+                :documentation "Either gir window or symbol used in test drawing")
+   (dimensions :documentation "Cons with width and height or resized window")))
 
 ;;; ========================== window manipulation =============================
 (defmethod redraw-canvas ((window gir::object-instance))
   (gtk4:widget-queue-draw
    (serapeum:~> window gtk4:widget-first-child gtk4:widget-first-child)))
+
+(defmethod redraw-canvas ((window symbol))
+  (simulate-draw-func (gethash window (windows *lisp-app*))))
 
 ;;; either the integer or testing keyword being the key of (gethash window (windows lisp-app))
 (defmethod hasher ((window sb-sys:system-area-pointer))
