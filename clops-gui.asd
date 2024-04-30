@@ -13,6 +13,3 @@
                  (:file "gui-menu")
                  (:file "gui-window"))))
   :description "GUI for clops in separate system")
-
-;; (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-;; (ql:quickload :clops-gui)
