@@ -315,7 +315,8 @@
 
       (setf
        (gtk4:window-title window) "CLOS Toy"  ; TODO - make it settable by the client
-       (gtk4:window-resizable-p window) T
+       ;; it may not be needed as in wsl we can still use left edge and corners
+       ;; (gtk4:window-resizable-p window) T
        (gtk4:window-default-size window) (list *initial-window-width*
                                                *initial-window-height*))
 
