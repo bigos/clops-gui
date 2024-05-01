@@ -39,7 +39,7 @@
       (gui-window:set-rgba "red")
       (gui-window:set-rgba "green"))
   (cairo:move-to 10 80)
-  (cairo:show-text (format nil "~A" (gui-window::dimensions window)))
+  (cairo:show-text (format nil "~A" (gui-window:dimensions window)))
 
   )
 
@@ -98,7 +98,7 @@
      nil)
     (:resize
      (destructuring-bind ((w h win)) args
-       (gui-window::window-resize w h win)))
+       (gui-window:window-resize w h win)))
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (setf (mouse-coordinates *model*)
            (cons (first args) (second args))))
@@ -112,15 +112,15 @@
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
        (cond ((equal menu-item "new-window")
-              (gui-window::window-activation-menu (format nil
+              (gui-window:window-activation-from-menu (format nil
                                                           "~A ~A"
                                                           gui-window:*initial-title*
                                                           (get-internal-run-time))))
              ((equal menu-item "quit")
-              (gui-window::close-all-windows-and-quit))
+              (gui-window:close-all-windows-and-quit))
+
              ((equal menu-item "about")
-              (warn "going to show about dialog")
-              (gui-window::present-about-dialog
+              (gui-window:present-about-dialog
                (list
                 :authors (list "Jacek Podkanski")
                 :website "https://github.com/bigos"

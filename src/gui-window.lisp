@@ -347,7 +347,7 @@
                 (lambda (app)
                   (window-activation-and-connection *lisp-app* app window-title))))
 
-(defun window-activation-menu (window-title)
+(defun window-activation-from-menu (window-title)
   (window-activation-and-connection *lisp-app* (gtk4-app *lisp-app*) window-title))
 
 (defun window-activation-and-connection (lisp-app app window-title)
