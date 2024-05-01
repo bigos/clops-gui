@@ -153,21 +153,22 @@
       (warn "strange, window not removed ~S" window)))
 
 ;; =========================== dialogs =========================================
-(defun present-about-dialog ()
-  (let ((dialog (about-dialog)))
+(defun present-about-dialog (data)
+  (let ((dialog (about-dialog data)))
     (setf (gtk4:window-modal-p dialog) t
           (gtk4:window-transient-for dialog) (gtk4:application-active-window (gtk4-app *lisp-app*)))
     (gtk4:window-present dialog)))
 
-(defun about-dialog (dialog-data)
+(defun about-dialog (data)
+  (warn "called about dialog")
   (let ((dialog (gtk4:make-about-dialog)))
-    (setf (gtk4:about-dialog-authors      dialog)   (list "Jacek Podkanski")
-          (gtk4:about-dialog-website      dialog)   "https://github.com/bigos"
-          (gtk4:about-dialog-program-name dialog)   "CLops"
-          (gtk4:about-dialog-comments     dialog)   "Common Lisp Overly Premature System"
-          (gtk4:about-dialog-license      dialog)   "GPL-3.0-or-later"
-          (gtk4:about-dialog-system-information dialog) (format nil "~A" (uiop/os:implementation-identifier))
-          (gtk4:about-dialog-logo-icon-name dialog) "application-x-addon")
+    (setf (gtk4:about-dialog-authors      dialog) (getf data :authors)
+          (gtk4:about-dialog-website      dialog) (getf data :website)
+          (gtk4:about-dialog-program-name dialog) (getf data :program-name)
+          (gtk4:about-dialog-comments     dialog) (getf data :comments)
+          (gtk4:about-dialog-license      dialog) (getf data :license)
+          (gtk4:about-dialog-system-information dialog) (getf data :system-information)
+          (gtk4:about-dialog-logo-icon-name dialog) (getf data :logo-icon-name))
     (values dialog)))
 
 ;; =========================== closing everything ==============================
