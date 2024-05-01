@@ -1,4 +1,5 @@
 ;; (load "~/Programming/Lisp/clops-gui/examples/example.lisp")
+(declaim (optimize (speed 0) (safety 2) (debug 3)))
 
 (in-package #:cl)
 ;;; === load ===================================================================
@@ -110,20 +111,19 @@
     (otherwise
      (warn "not processed event ~S ~S" event args)))
 
-  (loop for awp being the hash-key in (gui-window:windows gui-window:*lisp-app*)
-        for awp-lisp-window = (gui-window::window-get gui-window:*lisp-app* awp)
-        do (gui-window:redraw-canvas awp-lisp-window)))
+  (maphash (lambda (key lwin) (gui-window:redraw-canvas lwin))
+           (gui-window:all-windows)))
 
 ;;; REPL usege (cl::experiment)
 (defun experiment ()
   (setf
    *model* (make-instance 'model)
    gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
-  (assert (zerop (hash-table-count (gui-window:windows gui-window:*lisp-app*))))
+  (assert (zerop (hash-table-count (gui-window:all-windows))))
   (gui-window::window-add gui-window:*lisp-app* :testing)
-  (process-event :resize (list 600 200 (gui-window::window-get gui-window:*lisp-app* :testing)))
+  (process-event :resize (list 600 200 (gui-window:window-symb :testing)))
   (process-event :timeout)
-  (process-event :motion-enter (list 50 50 (gui-window::window-get gui-window:*lisp-app* :testing)))
+  (process-event :motion-enter (list 50 50 (gui-window:window-symb :testing)))
   ;; end
   (warn "please check your folder ~S for images drawn by the procedure simulate-draw-func"
         (uiop:temporary-directory)))

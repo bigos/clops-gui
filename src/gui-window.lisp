@@ -87,6 +87,9 @@
   ((gir-window  :type (or gir::object-instance keyword)
                 :documentation "Either gir window or symbol used in test drawing")
    (dimensions :documentation "Cons with width and height or resized window")))
+;;; ====== all windows =========================================================
+(defun all-windows ()
+  (windows *lisp-app*))
 
 ;;; ========================== window manipulation =============================
 (defmethod redraw-canvas ((window gir::object-instance))
@@ -131,6 +134,9 @@
                  (windows app))
         (make-instance 'lisp-window
                        :gir-window window)))
+
+(defmethod window-symb ((window T))
+  (window-get *lisp-app* window))
 
 (defmethod window-get ((app lisp-app) (window T))
   (gethash (hasher window)

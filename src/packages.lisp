@@ -18,6 +18,7 @@
    :*draw-objects-fn*
    :*lisp-app*
    :*menu-bar-menu-fn*
+   :all-windows
    :close-all-windows-and-quit
    :dimensions
    :gir-window
@@ -28,6 +29,8 @@
    :set-rgba
    :simulate-draw-func
    :window
+   :window-get
+   :window-symb
    :windows
    ))
 
