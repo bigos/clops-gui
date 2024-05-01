@@ -96,6 +96,12 @@
 (defmethod redraw-canvas ((window symbol))
   (simulate-draw-func (window-get *lisp-app* window)))
 
+(defmethod redraw-canvas ((window lisp-window))
+  (redraw-canvas (gir-window window)))
+
+
+(defmethod hasher ((window integer))
+  window)
 (defmethod hasher ((window sb-sys:system-area-pointer))
   (cffi:pointer-address window))
 (defmethod hasher ((window gir::object-instance))

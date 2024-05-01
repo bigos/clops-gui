@@ -111,9 +111,8 @@
      (warn "not processed event ~S ~S" event args)))
 
   (loop for awp being the hash-key in (gui-window:windows gui-window:*lisp-app*)
-        for awp-lisp-window = (gethash awp (gui-window:windows gui-window:*lisp-app*))
-        for awp-gir-window = (gui-window:gir-window awp-lisp-window)
-        do (gui-window:redraw-canvas awp-gir-window)))
+        for awp-lisp-window = (gui-window::window-get gui-window:*lisp-app* awp)
+        do (gui-window:redraw-canvas awp-lisp-window)))
 
 ;;; REPL usege (cl::experiment)
 (defun experiment ()
