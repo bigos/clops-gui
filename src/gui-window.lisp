@@ -159,7 +159,7 @@
           (gtk4:window-transient-for dialog) (gtk4:application-active-window (gtk4-app *lisp-app*)))
     (gtk4:window-present dialog)))
 
-(defun about-dialog ()
+(defun about-dialog (dialog-data)
   (let ((dialog (gtk4:make-about-dialog)))
     (setf (gtk4:about-dialog-authors      dialog)   (list "Jacek Podkanski")
           (gtk4:about-dialog-website      dialog)   "https://github.com/bigos"

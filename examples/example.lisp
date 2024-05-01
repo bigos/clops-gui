@@ -118,6 +118,16 @@
                                                           (get-internal-run-time))))
              ((equal menu-item "quit")
               (gui-window::close-all-windows-and-quit))
+             ((equal menu-item "about")
+              (gui-window::about-dialog
+               '(:autors (list "Jacek Podkanski")
+                 :website "https://github.com/bigos"
+                 :program-name "Example"
+                 :comments "Nothing to say"
+                 :license "Public Domain"
+                 :system-information (format nil "~A" (uiop/os:implementation-identifier))
+                 :logo-icon-name "application-x-addon")))
+
              (T
               (warn "not processed event ~S ~S" event args)))))
     (otherwise
