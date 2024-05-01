@@ -4,7 +4,7 @@
 (in-package #:cl)
 ;;; === load ===================================================================
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui :serapeum))
+(ql:quickload '(:clops-gui))
 
 ;;; === classes ================================================================
 (defclass-std:defclass/std model ()

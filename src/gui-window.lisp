@@ -314,7 +314,8 @@
        (gtk4:application-window-show-menubar-p window) T)
 
       (setf
-       (gtk4:window-title window) "CLOS Toy"
+       (gtk4:window-title window) "CLOS Toy"  ; TODO - make it settable by the client
+       (gtk4:window-resizable-p window) T
        (gtk4:window-default-size window) (list *initial-window-width*
                                                *initial-window-height*))
 
