@@ -20,19 +20,23 @@
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
-  (let ((my-text "Try moving the mouse over the window."))
+  (let ((my-text "Try moving the mouse over the window or resizing it."))
     (multiple-value-bind  (xb yb width height)
         (cairo:text-extents my-text)
       (declare (ignore xb yb width height)))
     (cairo:set-source-rgb 0 0 0)
     (cairo:move-to 10 20)
     (cairo:show-text (format nil "~A" my-text)))
+
   (if (null (mouse-coordinates *model*))
       (gui-window:set-rgba "red")
       (gui-window:set-rgba "#002244AA"))
   (cairo:move-to 10 50)
   (cairo:show-text (format nil "~A" (mouse-coordinates *model*)))
 
+  (if (< (car (gui-window:dimensions window)) 200)
+      (gui-window:set-rgba "red")
+      (gui-window:set-rgba "green"))
   (cairo:move-to 10 80)
   (cairo:show-text (format nil "~A" (gui-window::dimensions window)))
 

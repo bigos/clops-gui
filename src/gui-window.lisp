@@ -94,9 +94,8 @@
    (serapeum:~> window gtk4:widget-first-child gtk4:widget-first-child)))
 
 (defmethod redraw-canvas ((window symbol))
-  (simulate-draw-func (gethash window (windows *lisp-app*))))
+  (simulate-draw-func (window-get *lisp-app* window)))
 
-;;; either the integer or testing keyword being the key of (gethash window (windows lisp-app))
 (defmethod hasher ((window sb-sys:system-area-pointer))
   (cffi:pointer-address window))
 (defmethod hasher ((window gir::object-instance))
@@ -104,7 +103,8 @@
 (defmethod hasher ((window symbol))
   window)
 (defmethod hasher ((window lisp-window))
-  (gir-window window))
+  (hasher
+   (gir-window window)))
 
 (defun window-assert (window)
     (assert (or (typep window 'gir::object-instance)

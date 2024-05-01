@@ -19,6 +19,7 @@
    :*lisp-app*
    :*menu-bar-menu-fn*
    :close-all-windows-and-quit
+   :dimensions
    :gir-window
    :lisp-window
    :new-window-for-app
