@@ -5,6 +5,7 @@
 (defparameter *draw-objects-fn* nil)
 (defparameter *initial-window-width* 400)
 (defparameter *initial-window-height* 200)
+(defparameter *initial-title* "change me")
 (defparameter *lisp-app* nil)
 
 ;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -314,7 +315,7 @@
        (gtk4:application-window-show-menubar-p window) T)
 
       (setf
-       (gtk4:window-title window) "CLOS Toy"  ; TODO - make it settable by the client
+       (gtk4:window-title window) *initial-title*
        ;; it may not be needed as in wsl we can still use left edge and corners
        ;; (gtk4:window-resizable-p window) T
        (gtk4:window-default-size window) (list *initial-window-width*

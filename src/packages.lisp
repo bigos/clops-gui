@@ -16,6 +16,7 @@
    :defclass/std)
   (:export
    :*draw-objects-fn*
+   :*initial-title*
    :*lisp-app*
    :*menu-bar-menu-fn*
    :all-windows

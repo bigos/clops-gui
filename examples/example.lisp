@@ -133,7 +133,9 @@
   (setf
    gui-window:*draw-objects-fn*  'cl::draw-objects
    gui-window:*menu-bar-menu-fn* 'cl::menu-bar-menu
-   gui-events:*process-event-fn* 'cl::process-event)
+   gui-events:*process-event-fn* 'cl::process-event
+   gui-window:*initial-title* "Example window"
+   )
   (setf *model* (make-instance 'model)))
 
 (defparameter *model* nil)
