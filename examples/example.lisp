@@ -108,6 +108,14 @@
     (:key-pressed
      (when (equal (first args) "k")
        (break "mouse coordinates ~S" (mouse-coordinates *model*))))
+    (:menu-simple
+     (destructuring-bind ((menu-item)) args
+       (cond ((equal menu-item "new-window")
+              (gui-window::window-activation-menu (format nil
+                                                          "~A ~A"
+                                                          gui-window:*initial-title*
+                                                          (get-internal-run-time)))
+              (warn "pressed ~a" menu-item)))))
     (otherwise
      (warn "not processed event ~S ~S" event args)))
 
@@ -134,8 +142,8 @@
    gui-window:*draw-objects-fn*  'cl::draw-objects
    gui-window:*menu-bar-menu-fn* 'cl::menu-bar-menu
    gui-events:*process-event-fn* 'cl::process-event
-   gui-window:*initial-title* "Example window"
-   )
+   gui-window:*initial-title*    "Example window")
+
   (setf *model* (make-instance 'model)))
 
 (defparameter *model* nil)

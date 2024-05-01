@@ -306,7 +306,7 @@
 
 ;; =============================================================================
 
-(defun new-window-for-app (app)
+(defun new-window-for-app (app window-title)
     (let ((window (gtk4:make-application-window :application app)))
       (gtk4:application-add-window app window)
 
@@ -315,7 +315,7 @@
        (gtk4:application-window-show-menubar-p window) T)
 
       (setf
-       (gtk4:window-title window) *initial-title*
+       (gtk4:window-title window) window-title
        ;; it may not be needed as in wsl we can still use left edge and corners
        ;; (gtk4:window-resizable-p window) T
        (gtk4:window-default-size window) (list *initial-window-width*
@@ -341,18 +341,24 @@
 
       window))
 
-(defun window-activation (app)
+(defun window-activation (app window-title)
   (gtk4:connect app "activate"
                 (lambda (app)
-                  (window-add *lisp-app* (new-window-for-app app)))))
+                  (window-activation-and-connection *lisp-app* app window-title))))
+
+(defun window-activation-menu (window-title)
+  (window-activation-and-connection *lisp-app* (gtk4-app *lisp-app*) window-title))
+
+(defun window-activation-and-connection (lisp-app app window-title)
+  (window-add lisp-app (new-window-for-app app window-title)))
 
 (defun window ()
-  (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
-                                   :flags gio:+application-flags-flags-none+)))
-    (setf *lisp-app* (make-instance 'lisp-app :gtk4-app app))
-    (window-activation app)
+    (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
+                                     :flags gio:+application-flags-flags-none+)))
+      (setf *lisp-app* (make-instance 'lisp-app :gtk4-app app))
+      (window-activation app *initial-title*)
 
-    (let ((status (gtk:application-run app nil)))
-      (gobj:object-unref app)
-      (setf *lisp-app*  nil)
-      status)))
+      (let ((status (gtk:application-run app nil)))
+        (gobj:object-unref app)
+        (setf *lisp-app*  nil)
+        status)))
