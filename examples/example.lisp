@@ -110,12 +110,16 @@
        (break "mouse coordinates ~S" (mouse-coordinates *model*))))
     (:menu-simple
      (destructuring-bind ((menu-item)) args
+       (warn "menu item ~s" menu-item)
        (cond ((equal menu-item "new-window")
               (gui-window::window-activation-menu (format nil
                                                           "~A ~A"
                                                           gui-window:*initial-title*
-                                                          (get-internal-run-time)))
-              (warn "pressed ~a" menu-item)))))
+                                                          (get-internal-run-time))))
+             ((equal menu-item "quit")
+              (gui-window::close-all-windows-and-quit))
+             (T
+              (warn "not processed event ~S ~S" event args)))))
     (otherwise
      (warn "not processed event ~S ~S" event args)))
 
