@@ -1,7 +1,7 @@
 ;;;
 (in-package #:gui-events)
 
-(defparameter *process-event-fn* nil)
+(defparameter *client-fn-process-event* nil)
 
 ;;; ================================= All defined GUI Events ===========================
 
@@ -24,6 +24,6 @@
 ;;; ======================= update and view ====================================
 
 (defun process-event (event &rest args)
-  (if (null *process-event-fn*)
+  (if (null *client-fn-process-event*)
       (error "implement process-event")
-      (funcall *process-event-fn* event args)))
+      (funcall *client-fn-process-event* event args)))

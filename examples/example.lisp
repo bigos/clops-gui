@@ -156,9 +156,9 @@
   ;; define external functions
   (setf
    gui-window:*client-fn-draw-objects*  'cl::draw-objects
-   gui-window:*client-fn-menu-bar* 'cl::menu-bar-menu
-   gui-events:*process-event-fn* 'cl::process-event
-   gui-window:*initial-title*    "Example window")
+   gui-window:*client-fn-menu-bar*      'cl::menu-bar-menu
+   gui-events:*client-fn-process-event* 'cl::process-event
+   gui-window:*initial-title*           "Example window")
 
   (setf *model* (make-instance 'model)))
 

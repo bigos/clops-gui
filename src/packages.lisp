@@ -44,7 +44,7 @@
   (:import-from :defclass-std
    :defclass/std)
   (:export
-   :*process-event-fn*
+   :*client-fn-process-event*
    :de-focus-enter
    :de-focus-leave
    :de-key-pressed
