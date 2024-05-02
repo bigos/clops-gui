@@ -8,12 +8,43 @@
 
 ;;; === classes ================================================================
 (defclass-std:defclass/std model ()
-  ((mouse-coordinates :std nil)))
+  ((current-motion)
+   (current-focus)
+   (mouse-coordinates :std nil)))
 
+;;; ====== methods =============================================================
+(defun currents (model )
+  (break "examine me")
+  (let ((current-motion (when (current-motion model)
+                          (gir::this-of (current-motion model))))
+        (current-focus  (when (current-focus model)
+                          (gir::this-of (current-focus model)))))
+    (warn "passed the 2 vars")
+    (warn "currents ~S" (list current-motion
+                              current-focus
+                              (type-of current-motion)
+                              (type-of current-focus)))))
+
+;;; ============================= experimental testing =========================
+;;; REPL usege (cl::experiment)
+(defun experiment ()
+    (setf
+     *model* (make-instance 'model)
+     gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
+  (assert (zerop (hash-table-count (gui-window:all-windows))))
+  (gui-window::window-add gui-window:*lisp-app* :testing)
+  (process-event :resize (list 600 200 (gui-window:window-symb :testing)))
+  (process-event :timeout)
+  (process-event :motion-enter (list 50 50 (gui-window:window-symb :testing)))
+  ;; end
+  (warn "please check your folder ~S for images drawn by the procedure simulate-draw-func"
+        (uiop:temporary-directory)))
+
+;;; ============================= client functions =============================
 ;;; ============================ view ==========================================
 (defun draw-objects (window)            ; view
   (assert (typep window 'gui-window:lisp-window))
-  (warn "would draw on window")
+  ;; (warn "would draw on window")
 
   (cairo:set-source-rgb  1 1 1)
   (cairo:paint)
@@ -93,29 +124,18 @@
 
 ;;; ====================== event processing ====================================
 (defun process-event (event &rest args)
+  ;; (format t "going to process ~A ~A  " event args)
   (case event
     (:timeout
      nil)
-    (:resize
-     (destructuring-bind ((w h win)) args
-       (gui-window:window-resize w h win)))
-    ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
-     (setf (mouse-coordinates *model*)
-           (cons (first args) (second args))))
-    (:motion-leave
-     (setf (mouse-coordinates *model*)
-           nil))
-    (:key-pressed
-     (when (equal (first args) "k")
-       (break "mouse coordinates ~S" (mouse-coordinates *model*))))
     (:menu-simple
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
        (cond ((equal menu-item "new-window")
               (gui-window:window-activation-from-menu (format nil
-                                                          "~A ~A"
-                                                          gui-window:*initial-title*
-                                                          (get-internal-run-time))))
+                                                              "~A ~A"
+                                                              gui-window:*initial-title*
+                                                              (get-internal-run-time))))
              ((equal menu-item "quit")
               (gui-window:close-all-windows-and-quit))
 
@@ -132,25 +152,34 @@
 
              (T
               (warn "not processed event ~S ~S" event args)))))
+    (:menu-bool (warn "not processed event ~S ~S" event args))
+    (:menu-radio (warn "not processed event ~S ~S" event args))
+    ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
+     (destructuring-bind ((x y win)) args
+       (setf (mouse-coordinates *model*) (cons x y)
+             (current-motion    *model*) win)))
+    (:motion-leave
+     (setf (mouse-coordinates *model*) nil
+           (current-motion *model*) nil))
+    (:focus-enter
+     (setf (current-focus *model*) (first args)))
+    (:focus-leave
+     (setf (current-focus *model*) nil))
+    (:pressed (warn "not processed event ~S ~S" event args))
+    (:released (warn "not processed event ~S ~S" event args))
+    (:scroll (warn "not processed event ~S ~S" event args))
+    (:resize
+     (destructuring-bind ((w h win)) args
+       (gui-window:window-resize w h win)))
+    (:key-pressed
+     (currents cl::*model*)
+     (when (equal (first args) "k")
+       (break "mouse coordinates ~S" (mouse-coordinates *model*))))
     (otherwise
      (warn "not processed event ~S ~S" event args)))
 
   (maphash (lambda (key lwin) (gui-window:redraw-canvas lwin))
            (gui-window:all-windows)))
-
-;;; REPL usege (cl::experiment)
-(defun experiment ()
-  (setf
-   *model* (make-instance 'model)
-   gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
-  (assert (zerop (hash-table-count (gui-window:all-windows))))
-  (gui-window::window-add gui-window:*lisp-app* :testing)
-  (process-event :resize (list 600 200 (gui-window:window-symb :testing)))
-  (process-event :timeout)
-  (process-event :motion-enter (list 50 50 (gui-window:window-symb :testing)))
-  ;; end
-  (warn "please check your folder ~S for images drawn by the procedure simulate-draw-func"
-        (uiop:temporary-directory)))
 
 (defun init ()
   ;; define external functions
