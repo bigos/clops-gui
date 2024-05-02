@@ -13,25 +13,23 @@
    (mouse-coordinates :std nil)))
 
 ;;; ====== methods =============================================================
-(defun currents (model)
-  (warn "current arhs ~S" (list (current-motion model)
-                                (current-focus model)))
-  (let ((current-motion (when (current-motion model)
-                          (gui-window:hasher (current-motion model))))
-        (current-focus  (when (current-focus model)
-                          (gui-window:hasher (current-focus model)))))
-    (warn "passed the 2 vars ~A ~a" current-motion current-focus)
-    (warn "currents ~S" (list current-motion
-                              current-focus
-                              (type-of current-motion)
-                              (type-of current-focus)))))
+
+(defmethod current-motion-d ((model model) (window t))
+  (let ((m (gui-window:hasher (current-motion model)))
+        (w (gui-window:hasher window)))
+    (eq m w)))
+
+(defmethod current-focus-d  ((model model) (window t))
+  (let ((h (gui-window:hasher (current-focus model)))
+        (w (gui-window:hasher window)))
+    (eq h w)))
 
 ;;; ============================= experimental testing =========================
 ;;; REPL usege (cl::experiment)
 (defun experiment ()
-    (setf
-     *model* (make-instance 'model)
-     gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
+      (setf
+       *model* (make-instance 'model)
+       gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
   (assert (zerop (hash-table-count (gui-window:all-windows))))
   (gui-window::window-add gui-window:*lisp-app* :testing)
   (process-event :resize (list 600 200 (gui-window:window-symb :testing)))
@@ -65,13 +63,23 @@
       (gui-window:set-rgba "red")
       (gui-window:set-rgba "#002244AA"))
   (cairo:move-to 10 50)
-  (cairo:show-text (format nil "~A" (mouse-coordinates *model*)))
+  (when (current-motion-d *model* window)
+      (cairo:show-text (format nil "~A" (mouse-coordinates *model*))))
 
   (if (< (car (gui-window:dimensions window)) 200)
       (gui-window:set-rgba "red")
       (gui-window:set-rgba "green"))
   (cairo:move-to 10 80)
   (cairo:show-text (format nil "~A" (gui-window:dimensions window)))
+
+  (cairo:move-to 10 100)
+  (cairo:show-text (format nil "motion ~A" (current-motion-d *model* window)))
+
+  (cairo:move-to 10 120)
+  (cairo:show-text (format nil "focus ~A" (current-focus-d *model* window)))
+
+  (cairo:move-to 10 140)
+  (cairo:show-text (format nil "hasher ~A" (gui-window:hasher window)))
 
   )
 
@@ -133,6 +141,9 @@
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
        (cond ((equal menu-item "new-window")
+              ;; TODO
+              ;; there is problem with incorrect focus when we have multiple
+              ;; windows and new window is created from the menu
               (gui-window:window-activation-from-menu (format nil
                                                               "~A ~A"
                                                               gui-window:*initial-title*
@@ -158,19 +169,15 @@
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y win)) args
        (setf (mouse-coordinates *model*) (cons x y)
-             (current-motion    *model*) win))
-     (currents *model*))
+             (current-motion    *model*) win)))
     (:motion-leave
      (setf (mouse-coordinates *model*) nil
-           (current-motion *model*) nil)
-     (currents *model*))
+           (current-motion *model*) nil))
     (:focus-enter
      (destructuring-bind ((win)) args
-       (setf (current-focus *model*) win))
-     (currents *model*))
+       (setf (current-focus *model*) win)))
     (:focus-leave
-     (setf (current-focus *model*) nil)
-     (currents *model*))
+     (setf (current-focus *model*) nil))
     (:pressed (warn "not processed event ~S ~S" event args))
     (:released (warn "not processed event ~S ~S" event args))
     (:scroll (warn "not processed event ~S ~S" event args))
@@ -178,7 +185,6 @@
      (destructuring-bind ((w h win)) args
        (gui-window:window-resize w h win)))
     (:key-pressed
-     (currents cl::*model*)
      (when (equal (first args) "k")
        (break "mouse coordinates ~S" (mouse-coordinates *model*))))
     (otherwise
