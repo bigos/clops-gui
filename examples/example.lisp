@@ -8,7 +8,7 @@
 
 ;;; === classes ================================================================
 (defclass-std:defclass/std model ()
-  ((current-motion)
+  ((current-motion)                     ;move those to lisp-app and lisp-window
    (current-focus)
    (mouse-coordinates :std nil)))
 
@@ -144,6 +144,9 @@
               ;; TODO
               ;; there is problem with incorrect focus when we have multiple
               ;; windows and new window is created from the menu
+              ;; that favours moving current motion and current focus to
+              ;; lisp-app
+              ;; file:~/Programming/Lisp/clops-gui/src/gui-window.lisp::82
               (gui-window:window-activation-from-menu (format nil
                                                               "~A ~A"
                                                               gui-window:*initial-title*

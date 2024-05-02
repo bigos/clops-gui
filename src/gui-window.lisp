@@ -82,12 +82,15 @@
 (defclass/std lisp-app ()
   ((gtk4-app :type gir::object-instance)
    (windows :std (make-hash-table)) ; see hasher, the hash keys is a symbol or integer
+   (current-motion)
+   (current-focus)
    ))
 
 (defclass/std lisp-window ()
   ((gir-window  :type (or gir::object-instance keyword)
                 :documentation "Either gir window or symbol used in test drawing")
-   (dimensions :documentation "Cons with width and height or resized window")))
+   (dimensions :documentation "Cons with width and height or resized window")
+   (mouse-coordinates)))
 ;;; ====== all windows =========================================================
 (defun all-windows ()
   (windows *lisp-app*))
