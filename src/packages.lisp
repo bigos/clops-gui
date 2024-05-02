@@ -23,6 +23,7 @@
    :close-all-windows-and-quit
    :dimensions
    :gir-window
+   :hasher
    :lisp-window
    :new-window-for-app
    :present-about-dialog

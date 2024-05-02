@@ -4,7 +4,7 @@
 (in-package #:cl)
 ;;; === load ===================================================================
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui))
+(ql:quickload '(:clops-gui) :silent t)
 
 ;;; === classes ================================================================
 (defclass-std:defclass/std model ()
@@ -13,13 +13,14 @@
    (mouse-coordinates :std nil)))
 
 ;;; ====== methods =============================================================
-(defun currents (model )
-  (break "examine me")
+(defun currents (model)
+  (warn "current arhs ~S" (list (current-motion model)
+                                (current-focus model)))
   (let ((current-motion (when (current-motion model)
-                          (gir::this-of (current-motion model))))
+                          (gui-window:hasher (current-motion model))))
         (current-focus  (when (current-focus model)
-                          (gir::this-of (current-focus model)))))
-    (warn "passed the 2 vars")
+                          (gui-window:hasher (current-focus model)))))
+    (warn "passed the 2 vars ~A ~a" current-motion current-focus)
     (warn "currents ~S" (list current-motion
                               current-focus
                               (type-of current-motion)
@@ -124,7 +125,7 @@
 
 ;;; ====================== event processing ====================================
 (defun process-event (event &rest args)
-  ;; (format t "going to process ~A ~A  " event args)
+  (format t "~&going to process ~A ~A  " event args)
   (case event
     (:timeout
      nil)
@@ -157,14 +158,19 @@
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y win)) args
        (setf (mouse-coordinates *model*) (cons x y)
-             (current-motion    *model*) win)))
+             (current-motion    *model*) win))
+     (currents *model*))
     (:motion-leave
      (setf (mouse-coordinates *model*) nil
-           (current-motion *model*) nil))
+           (current-motion *model*) nil)
+     (currents *model*))
     (:focus-enter
-     (setf (current-focus *model*) (first args)))
+     (destructuring-bind ((win)) args
+       (setf (current-focus *model*) win))
+     (currents *model*))
     (:focus-leave
-     (setf (current-focus *model*) nil))
+     (setf (current-focus *model*) nil)
+     (currents *model*))
     (:pressed (warn "not processed event ~S ~S" event args))
     (:released (warn "not processed event ~S ~S" event args))
     (:scroll (warn "not processed event ~S ~S" event args))
