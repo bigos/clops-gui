@@ -45,7 +45,7 @@
 
 ;;; ===================== menu declaration =====================================
 
-(defun menu-bar-menu (app)
+(defun menu-bar (app)
   (let ((menu (gio:make-menu)))
     (gui-menu:build-menu
      menu
@@ -156,7 +156,7 @@
   ;; define external functions
   (setf
    gui-window:*client-fn-draw-objects*  'cl::draw-objects
-   gui-window:*client-fn-menu-bar*      'cl::menu-bar-menu
+   gui-window:*client-fn-menu-bar*      'cl::menu-bar
    gui-events:*client-fn-process-event* 'cl::process-event
    gui-window:*initial-title*           "Example window")
 
