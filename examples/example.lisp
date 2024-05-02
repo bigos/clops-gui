@@ -155,8 +155,8 @@
 (defun init ()
   ;; define external functions
   (setf
-   gui-window:*draw-objects-fn*  'cl::draw-objects
-   gui-window:*menu-bar-menu-fn* 'cl::menu-bar-menu
+   gui-window:*client-fn-draw-objects*  'cl::draw-objects
+   gui-window:*client-fn-menu-bar* 'cl::menu-bar-menu
    gui-events:*process-event-fn* 'cl::process-event
    gui-window:*initial-title*    "Example window")
 

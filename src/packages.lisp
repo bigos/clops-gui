@@ -15,10 +15,10 @@
   (:import-from :defclass-std
    :defclass/std)
   (:export
-   :*draw-objects-fn*
+   :*client-fn-draw-objects*
    :*initial-title*
    :*lisp-app*
-   :*menu-bar-menu-fn*
+   :*client-fn-menu-bar*
    :all-windows
    :close-all-windows-and-quit
    :dimensions

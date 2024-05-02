@@ -1,8 +1,8 @@
 ;;; ============================ package gui-window ============================
 (in-package #:gui-window)
 
-(defparameter *menu-bar-menu-fn* nil)
-(defparameter *draw-objects-fn* nil)
+(defparameter *client-fn-menu-bar* nil)
+(defparameter *client-fn-draw-objects* nil)
 (defparameter *initial-window-width* 400)
 (defparameter *initial-window-height* 200)
 (defparameter *initial-title* "change me")
@@ -50,7 +50,7 @@
                                        :height height
                                        :pixel-based-p nil))
   ;; call actual drawing
-  (funcall *draw-objects-fn* (window-get *lisp-app* (gtk4:widget-parent
+  (funcall *client-fn-draw-objects* (window-get *lisp-app* (gtk4:widget-parent
                                                      (gtk4:widget-parent
                                                       (gir:build-object-ptr (gir:nget gtk4:*ns* "DrawingArea") area)))))
   ;; ############################################################################
@@ -67,7 +67,7 @@
     ;; #########################################################################
     (setf  cairo:*context* (cairo:create-context surface))
     ;; call actual drawing
-    (funcall *draw-objects-fn* window)
+    (funcall *client-fn-draw-objects* window)
     ;; #########################################################################
 
     ;; put drawn surface to a file
@@ -312,7 +312,7 @@
       (gtk4:application-add-window app window)
 
       (setf
-       (gtk4:application-menubar app) (funcall *menu-bar-menu-fn* app)
+       (gtk4:application-menubar app) (funcall *client-fn-menu-bar* app)
        (gtk4:application-window-show-menubar-p window) T)
 
       (setf
