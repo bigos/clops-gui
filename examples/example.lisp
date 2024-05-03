@@ -139,7 +139,7 @@
                                                               "~A ~A"
                                                               gui-window:*initial-title*
                                                               (get-internal-run-time)))
-              (warn "examine added window ~s" (list (gui-window:current-focus gui-window:*lisp-app*))))
+              (warn "examine added window ~s" (gui-window:hasher (gui-window:current-focus gui-window:*lisp-app*))))
              ((equal menu-item "quit")
               (gui-window:close-all-windows-and-quit))
 
@@ -167,7 +167,7 @@
            (gui-window:current-motion gui-window:*lisp-app*) nil))
     (:focus-enter
      (destructuring-bind ((win)) args
-       (warn "focus enter ~S" win (type-of win))
+       (warn "focus enter ~S" (gui-window:hasher win) )
        (setf (gui-window:current-focus gui-window:*lisp-app*) win)))
     (:focus-leave
      (setf (gui-window:current-focus gui-window:*lisp-app*) nil))

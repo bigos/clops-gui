@@ -241,7 +241,7 @@
                   (lambda (e &rest args)
                     (declare (ignore e))
                     (apply #'gui-events:de-key-released (funcall #'translate-key-args args))))
-
+    ;; for some reason enter and leave are not reliable and I need to add window as in key-pressed to some events
     (gtk4:connect focus-controller "enter"
                   (lambda (e &rest args)
                     (declare (ignore e args))
