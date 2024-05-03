@@ -84,18 +84,28 @@
    (windows :std (make-hash-table)) ; see hasher, the hash keys is a symbol or integer
    (current-motion)
    (current-focus)
+   (mouse-coordinates)
    ))
 
 (defclass/std lisp-window ()
   ((gir-window  :type (or gir::object-instance keyword)
                 :documentation "Either gir window or symbol used in test drawing")
-   (dimensions :documentation "Cons with width and height or resized window")
-   (mouse-coordinates)))
+   (dimensions :documentation "Cons with width and height or resized window")))
 ;;; ====== all windows =========================================================
 (defun all-windows ()
   (windows *lisp-app*))
 
 ;;; ========================== window manipulation =============================
+(defmethod current-motion-window ((model lisp-app) (window t))
+  (let ((m (gui-window:hasher (current-motion model)))
+        (w (gui-window:hasher window)))
+    (eq m w)))
+
+(defmethod current-focus-window  ((model lisp-app) (window t))
+  (let ((h (gui-window:hasher (current-focus model)))
+        (w (gui-window:hasher window)))
+    (eq h w)))
+
 (defmethod redraw-canvas ((window gir::object-instance))
   (gtk4:widget-queue-draw
    (serapeum:~> window gtk4:widget-first-child gtk4:widget-first-child)))

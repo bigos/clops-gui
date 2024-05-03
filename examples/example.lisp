@@ -8,21 +8,10 @@
 
 ;;; === classes ================================================================
 (defclass-std:defclass/std model ()
-  ((current-motion)                     ;move those to lisp-app and lisp-window
-   (current-focus)
-   (mouse-coordinates :std nil)))
+  ())
 
 ;;; ====== methods =============================================================
 
-(defmethod current-motion-d ((model model) (window t))
-  (let ((m (gui-window:hasher (current-motion model)))
-        (w (gui-window:hasher window)))
-    (eq m w)))
-
-(defmethod current-focus-d  ((model model) (window t))
-  (let ((h (gui-window:hasher (current-focus model)))
-        (w (gui-window:hasher window)))
-    (eq h w)))
 
 ;;; ============================= experimental testing =========================
 ;;; REPL usege (cl::experiment)
@@ -59,12 +48,12 @@
     (cairo:move-to 10 20)
     (cairo:show-text (format nil "~A" my-text)))
 
-  (if (null (mouse-coordinates *model*))
+  (if (null (gui-window:mouse-coordinates gui-window:*lisp-app*))
       (gui-window:set-rgba "red")
       (gui-window:set-rgba "#002244AA"))
   (cairo:move-to 10 50)
-  (when (current-motion-d *model* window)
-      (cairo:show-text (format nil "~A" (mouse-coordinates *model*))))
+  (when (gui-window:current-motion-window gui-window:*lisp-app* window)
+      (cairo:show-text (format nil "~A" (gui-window:mouse-coordinates gui-window:*lisp-app*))))
 
   (if (< (car (gui-window:dimensions window)) 200)
       (gui-window:set-rgba "red")
@@ -73,10 +62,10 @@
   (cairo:show-text (format nil "~A" (gui-window:dimensions window)))
 
   (cairo:move-to 10 100)
-  (cairo:show-text (format nil "motion ~A" (current-motion-d *model* window)))
+  (cairo:show-text (format nil "motion ~A" (gui-window:current-motion-window gui-window:*lisp-app* window)))
 
   (cairo:move-to 10 120)
-  (cairo:show-text (format nil "focus ~A" (current-focus-d *model* window)))
+  (cairo:show-text (format nil "focus ~A" (gui-window:current-focus-window gui-window:*lisp-app* window)))
 
   (cairo:move-to 10 140)
   (cairo:show-text (format nil "hasher ~A" (gui-window:hasher window)))
@@ -171,16 +160,16 @@
     (:menu-radio (warn "not processed event ~S ~S" event args))
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y win)) args
-       (setf (mouse-coordinates *model*) (cons x y)
-             (current-motion    *model*) win)))
+       (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) (cons x y)
+             (gui-window:current-motion    gui-window:*lisp-app*) win)))
     (:motion-leave
-     (setf (mouse-coordinates *model*) nil
-           (current-motion *model*) nil))
+     (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
+           (gui-window:current-motion gui-window:*lisp-app*) nil))
     (:focus-enter
      (destructuring-bind ((win)) args
-       (setf (current-focus *model*) win)))
+       (setf (gui-window:current-focus gui-window:*lisp-app*) win)))
     (:focus-leave
-     (setf (current-focus *model*) nil))
+     (setf (gui-window:current-focus gui-window:*lisp-app*) nil))
     (:pressed (warn "not processed event ~S ~S" event args))
     (:released (warn "not processed event ~S ~S" event args))
     (:scroll (warn "not processed event ~S ~S" event args))
@@ -189,7 +178,7 @@
        (gui-window:window-resize w h win)))
     (:key-pressed
      (when (equal (first args) "k")
-       (break "mouse coordinates ~S" (mouse-coordinates *model*))))
+       (break "mouse coordinates ~S" (gui-window:mouse-coordinates gui-window:*lisp-app*))))
     (otherwise
      (warn "not processed event ~S ~S" event args)))
 

@@ -21,10 +21,15 @@
    :*client-fn-menu-bar*
    :all-windows
    :close-all-windows-and-quit
+   :current-motion
+   :current-focus
+   :current-motion-window
+   :current-focus-window
    :dimensions
    :gir-window
    :hasher
    :lisp-window
+   :mouse-coordinates
    :new-window-for-app
    :present-about-dialog
    :redraw-canvas
