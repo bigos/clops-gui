@@ -83,7 +83,7 @@
   ((gtk4-app :type gir::object-instance)
    (windows :std (make-hash-table)) ; see hasher, the hash keys is a symbol or integer
    (current-motion)
-   (current-focus)
+   (current-focus) ; it is not reliable for the last created window
    (mouse-coordinates)
    ))
 
