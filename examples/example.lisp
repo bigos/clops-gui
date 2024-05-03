@@ -69,13 +69,12 @@
     (cairo:show-text (format nil "motion ~A" cmotion)))
 
   (cairo:move-to 10 120)
-  (let ((cfocus  (gui-window:current-focus-window gui-window:*lisp-app* window)))
+  (let ((cfocus (gui-window:hasher (gui-window:current-focus-window gui-window:*lisp-app* window))))
     (if cfocus
         (gui-window:set-rgba "green")
         (gui-window:set-rgba "red"))
-    (cairo:show-text (format nil "focus ~A ~A"
-                             cfocus
-                             (gui-window:current-focus gui-window:*lisp-app*))))
+    (cairo:show-text (format nil "focus ~A"
+                             cfocus)))
 
   (cairo:move-to 10 140)
   (gui-window:set-rgba "blue")
