@@ -96,6 +96,11 @@
   (windows *lisp-app*))
 
 ;;; ========================== window manipulation =============================
+(defmethod (setf current-focus) :before ((window T) (lisp-app lisp-app))
+  (warn "~&??????????????????? setting current focus to ~s ~s"
+        (hasher window)
+        (type-of window)))
+
 (defmethod current-motion-window ((lisp-app lisp-app) (window t))
   (let ((m (gui-window:hasher (current-motion lisp-app)))
         (w (gui-window:hasher window)))
@@ -129,10 +134,11 @@
   (hasher
    (gir-window window)))
 
+
 (defun window-assert (window)
-    (assert (or (typep window 'gir::object-instance)
-                (typep window 'sb-sys:system-area-pointer)
-                (typep window 'symbol))))
+      (assert (or (typep window 'gir::object-instance)
+                  (typep window 'sb-sys:system-area-pointer)
+                  (typep window 'symbol))))
 
 (defmethod window-add :before ((app lisp-app) (window gir::object-instance))
   (assert (equal "ApplicationWindow"
