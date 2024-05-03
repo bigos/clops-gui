@@ -233,6 +233,7 @@
     (gtk4:connect key-controller "key-pressed"
                   (lambda (e &rest args)
                     (declare (ignore e))
+                    (setf (current-focus *lisp-app*) window)
                     (apply #'gui-events:de-key-pressed
                            (append  (funcall #'translate-key-args args)
                                     (list window)))))
@@ -245,11 +246,13 @@
     (gtk4:connect focus-controller "enter"
                   (lambda (e &rest args)
                     (declare (ignore e args))
+                    (setf (current-focus *lisp-app*) window)
                     (apply #'gui-events:de-focus-enter (list window))))
 
     (gtk4:connect focus-controller "leave"
                   (lambda (e &rest args)
                     (declare (ignore e args))
+                    (setf (current-focus *lisp-app*) nil)
                     (apply #'gui-events:de-focus-leave (list window)))))
 
   (glib:timeout-add 1000

@@ -132,7 +132,16 @@
 ;;; ====================== event processing ====================================
 (defun process-event (event &rest args)
   (unless (member event '(:timeout :motion))
-    (format t "~&going to process ~A ~A  " event args))
+    (format t "~&going to process ~A ~A  " event
+            (case event
+              ((:focus-enter :focus-leave)
+               (destructuring-bind ((win)) args
+                 (gui-window:hasher win)))
+              (:key-pressed
+               (destructuring-bind ((letter name code mods window)) args
+                 (list letter name code mods (gui-window:hasher window))
+                   ))
+              (T args))))
   (case event
     (:timeout
      (incf (timeout-count *model*))
@@ -174,11 +183,9 @@
      (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
            (gui-window:current-motion gui-window:*lisp-app*) nil))
     (:focus-enter
-     (destructuring-bind ((win)) args
-       (warn "focus enter ~S" (gui-window:hasher win) )
-       (setf (gui-window:current-focus gui-window:*lisp-app*) win)))
+     )
     (:focus-leave
-     (setf (gui-window:current-focus gui-window:*lisp-app*) nil))
+     )
     (:pressed (warn "not processed event ~S ~S" event args))
     (:released (warn "not processed event ~S ~S" event args))
     (:scroll (warn "not processed event ~S ~S" event args))
@@ -186,10 +193,7 @@
      (destructuring-bind ((w h win)) args
        (gui-window:window-resize w h win)))
     (:key-pressed
-     (destructuring-bind ((letter name code mods window)) args
-       (warn "key pressed triggered by window ~S" (gui-window:hasher window))
-       (when (equal letter "k")
-         (break "mouse coordinates ~S" (gui-window:mouse-coordinates gui-window:*lisp-app*)))))
+   )
     (otherwise
      (warn "not processed event ~S ~S" event args)))
 
