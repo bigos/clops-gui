@@ -114,10 +114,8 @@
 (defmethod redraw-canvas ((window gir::object-instance))
   (gtk4:widget-queue-draw
    (serapeum:~> window gtk4:widget-first-child gtk4:widget-first-child)))
-
 (defmethod redraw-canvas ((window symbol))
   (simulate-draw-func (window-get *lisp-app* window)))
-
 (defmethod redraw-canvas ((window lisp-window))
   (redraw-canvas (gir-window window)))
 
@@ -133,7 +131,6 @@
 (defmethod hasher ((window lisp-window))
   (hasher
    (gir-window window)))
-
 
 (defun window-assert (window)
       (assert (or (typep window 'gir::object-instance)
@@ -366,24 +363,24 @@
 
       window))
 
-(defun window-activation (app window-title)
-  (gtk4:connect app "activate"
-                (lambda (app)
-                  (window-activation-and-connection *lisp-app* app window-title))))
+(defun window-activation-and-connection (lisp-app app window-title)
+  (window-add lisp-app (new-window-for-app app window-title)))
 
 (defun window-activation-from-menu (window-title)
   (let ((new-window (window-activation-and-connection *lisp-app* (gtk4-app *lisp-app*) window-title)))
     (setf (current-focus *lisp-app*) (gir-window new-window))
     new-window))
 
-(defun window-activation-and-connection (lisp-app app window-title)
-  (window-add lisp-app (new-window-for-app app window-title)))
+(defun window-activation-from-main (app window-title)
+  (gtk4:connect app "activate"
+                (lambda (app)
+                  (window-activation-and-connection *lisp-app* app window-title))))
 
 (defun window ()
     (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
                                      :flags gio:+application-flags-flags-none+)))
       (setf *lisp-app* (make-instance 'lisp-app :gtk4-app app))
-      (window-activation app *initial-title*)
+      (window-activation-from-main app *initial-title*)
 
       (let ((status (gtk:application-run app nil)))
         (gobj:object-unref app)

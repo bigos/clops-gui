@@ -16,9 +16,9 @@
 ;;; ============================= experimental testing =========================
 ;;; REPL usege (cl::experiment)
 (defun experiment ()
-      (setf
-       *model* (make-instance 'model)
-       gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
+  (setf
+   *model* (make-instance 'model)
+   gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
   (assert (zerop (hash-table-count (gui-window:all-windows))))
   (gui-window::window-add gui-window:*lisp-app* :testing)
   (process-event :resize (list 600 200 (gui-window:window-symb :testing)))
@@ -132,19 +132,18 @@
 ;;; ====================== event processing ====================================
 (defun process-event (event &rest args)
   (unless (member event '(:timeout :motion))
-    (format t "~&going to process ~A ~A  " event
-            (case event
-              ((:focus-enter :focus-leave)
-               (destructuring-bind ((win)) args
-                 (gui-window:hasher win)))
-              (:key-pressed
-               (destructuring-bind ((letter name code mods window)) args
-                 (list letter name code mods (gui-window:hasher window))
-                   ))
-              (T args))))
+        (format t "~&going to process ~A ~A  " event
+                (case event
+                  ((:focus-enter :focus-leave)
+                   (destructuring-bind ((win)) args
+                     (gui-window:hasher win)))
+                  (:key-pressed
+                   (destructuring-bind ((letter name code mods window)) args
+                     (warn "pressed ~S" (list letter name code mods (gui-window:hasher window)))))
+                  (T args))))
   (case event
     (:timeout
-     (incf (timeout-count *model*))
+          (incf (timeout-count *model*))
      (when (> (timeout-count *model*) 5)
        (setf (timeout-count *model*) 0))
      nil)
@@ -155,8 +154,7 @@
               (gui-window:window-activation-from-menu (format nil
                                                               "~A ~A"
                                                               gui-window:*initial-title*
-                                                              (get-internal-run-time)))
-              (warn "examine added window ~s" (gui-window:hasher (gui-window:current-focus gui-window:*lisp-app*))))
+                                                              (get-internal-run-time))))
              ((equal menu-item "quit")
               (gui-window:close-all-windows-and-quit))
 
@@ -193,7 +191,7 @@
      (destructuring-bind ((w h win)) args
        (gui-window:window-resize w h win)))
     (:key-pressed
-   )
+     )
     (otherwise
      (warn "not processed event ~S ~S" event args)))
 
