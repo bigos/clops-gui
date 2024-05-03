@@ -178,8 +178,10 @@
      (destructuring-bind ((w h win)) args
        (gui-window:window-resize w h win)))
     (:key-pressed
-     (when (equal (first args) "k")
-       (break "mouse coordinates ~S" (gui-window:mouse-coordinates gui-window:*lisp-app*))))
+     (destructuring-bind ((letter name code mods window)) args
+       (warn "key pressed triggered by window ~S" (gui-window:hasher window))
+       (when (equal letter "k")
+         (break "mouse coordinates ~S" (gui-window:mouse-coordinates gui-window:*lisp-app*)))))
     (otherwise
      (warn "not processed event ~S ~S" event args)))
 
