@@ -233,7 +233,9 @@
     (gtk4:connect key-controller "key-pressed"
                   (lambda (e &rest args)
                     (declare (ignore e))
-                    (apply #'gui-events:de-key-pressed (funcall #'translate-key-args args))))
+                    (apply #'gui-events:de-key-pressed
+                           (append  (funcall #'translate-key-args args)
+                                    (list window)))))
 
     (gtk4:connect key-controller "key-released"
                   (lambda (e &rest args)

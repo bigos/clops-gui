@@ -16,7 +16,7 @@
 (defun de-pressed      (button x y)            (process-event :pressed   button x y))
 (defun de-released     (button x y)            (process-event :released  button x y))
 (defun de-scroll       (dx dy)                 (process-event :scroll    dx dy))
-(defun de-key-pressed  (letter name code mods) (process-event :key-pressed   letter name code mods))
+(defun de-key-pressed  (letter name code mods window) (process-event :key-pressed   letter name code mods window))
 (defun de-key-released (letter name code mods) (process-event :key-released  letter name code mods))
 (defun de-resize       (width height window)   (process-event :resize width height window))
 (defun de-timeout      ()                      (process-event :timeout))
