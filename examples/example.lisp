@@ -8,7 +8,7 @@
 
 ;;; === classes ================================================================
 (defclass-std:defclass/std model ()
-  ())
+  ((timeout-count :std 0)))
 
 ;;; ====== methods =============================================================
 
@@ -75,6 +75,10 @@
   (gui-window:set-rgba "blue")
   (cairo:show-text (format nil "hasher ~A" (gui-window:hasher window)))
 
+  (cairo:move-to 10 160)
+  (gui-window:set-rgba "black")
+  (cairo:show-text (format nil "count ~A" (timeout-count *model*)))
+
   )
 
 ;;; ===================== menu declaration =====================================
@@ -127,9 +131,13 @@
 
 ;;; ====================== event processing ====================================
 (defun process-event (event &rest args)
-  ;; (format t "~&going to process ~A ~A  " event args)
+  (unless (member event '(:timeout :motion))
+    (format t "~&going to process ~A ~A  " event args))
   (case event
     (:timeout
+     (incf (timeout-count *model*))
+     (when (> (timeout-count *model*) 5)
+       (setf (timeout-count *model*) 0))
      nil)
     (:menu-simple
      (destructuring-bind ((menu-item)) args
