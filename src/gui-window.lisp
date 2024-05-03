@@ -96,13 +96,13 @@
   (windows *lisp-app*))
 
 ;;; ========================== window manipulation =============================
-(defmethod current-motion-window ((model lisp-app) (window t))
-  (let ((m (gui-window:hasher (current-motion model)))
+(defmethod current-motion-window ((lisp-app lisp-app) (window t))
+  (let ((m (gui-window:hasher (current-motion lisp-app)))
         (w (gui-window:hasher window)))
     (eq m w)))
 
-(defmethod current-focus-window  ((model lisp-app) (window t))
-  (let ((h (gui-window:hasher (current-focus model)))
+(defmethod current-focus-window  ((lisp-app lisp-app) (window t))
+  (let ((h (gui-window:hasher (current-focus lisp-app)))
         (w (gui-window:hasher window)))
     (eq h w)))
 
@@ -361,7 +361,9 @@
                   (window-activation-and-connection *lisp-app* app window-title))))
 
 (defun window-activation-from-menu (window-title)
-  (window-activation-and-connection *lisp-app* (gtk4-app *lisp-app*) window-title))
+  (let ((new-window (window-activation-and-connection *lisp-app* (gtk4-app *lisp-app*) window-title)))
+    (setf (current-focus *lisp-app*) (gir-window new-window))
+    new-window))
 
 (defun window-activation-and-connection (lisp-app app window-title)
   (window-add lisp-app (new-window-for-app app window-title)))

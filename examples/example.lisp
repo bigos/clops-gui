@@ -65,9 +65,14 @@
   (cairo:show-text (format nil "motion ~A" (gui-window:current-motion-window gui-window:*lisp-app* window)))
 
   (cairo:move-to 10 120)
-  (cairo:show-text (format nil "focus ~A" (gui-window:current-focus-window gui-window:*lisp-app* window)))
+  (let ((cfocus  (gui-window:current-focus-window gui-window:*lisp-app* window)))
+    (if cfocus
+        (gui-window:set-rgba "green")
+        (gui-window:set-rgba "red"))
+    (cairo:show-text (format nil "focus ~A ~A" cfocus (gui-window:hasher (gui-window:current-focus gui-window:*lisp-app*)))))
 
   (cairo:move-to 10 140)
+  (gui-window:set-rgba "blue")
   (cairo:show-text (format nil "hasher ~A" (gui-window:hasher window)))
 
   )
@@ -122,7 +127,7 @@
 
 ;;; ====================== event processing ====================================
 (defun process-event (event &rest args)
-  (format t "~&going to process ~A ~A  " event args)
+  ;; (format t "~&going to process ~A ~A  " event args)
   (case event
     (:timeout
      nil)
@@ -130,16 +135,11 @@
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
        (cond ((equal menu-item "new-window")
-              ;; TODO
-              ;; there is problem with incorrect focus when we have multiple
-              ;; windows and new window is created from the menu
-              ;; that favours moving current motion and current focus to
-              ;; lisp-app
-              ;; file:~/Programming/Lisp/clops-gui/src/gui-window.lisp::82
               (gui-window:window-activation-from-menu (format nil
                                                               "~A ~A"
                                                               gui-window:*initial-title*
-                                                              (get-internal-run-time))))
+                                                              (get-internal-run-time)))
+              (warn "examine added window ~s" (list (gui-window:current-focus gui-window:*lisp-app*))))
              ((equal menu-item "quit")
               (gui-window:close-all-windows-and-quit))
 
@@ -167,6 +167,7 @@
            (gui-window:current-motion gui-window:*lisp-app*) nil))
     (:focus-enter
      (destructuring-bind ((win)) args
+       (warn "focus enter ~S" win (type-of win))
        (setf (gui-window:current-focus gui-window:*lisp-app*) win)))
     (:focus-leave
      (setf (gui-window:current-focus gui-window:*lisp-app*) nil))
