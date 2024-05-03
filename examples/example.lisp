@@ -185,10 +185,8 @@
     (:motion-leave
      (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
            (gui-window:current-motion gui-window:*lisp-app*) nil))
-    (:focus-enter
-     )
-    (:focus-leave
-     )
+    (:focus-enter)
+    (:focus-leave)
     (:pressed (warn "not processed event ~S ~S" event args))
     (:released (warn "not processed event ~S ~S" event args))
     (:scroll (warn "not processed event ~S ~S" event args))
