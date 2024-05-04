@@ -93,14 +93,10 @@
    (dimensions :documentation "Cons with width and height or resized window")))
 
 (defclass/std lisp-window-gir (lisp-window)
-  ((gir-window  :type (or gir::object-instance keyword)
-                :documentation "gir window used in gtk")
-   (dimensions :documentation "Cons with width and height or resized window")))
+  ())
 
-(defclass/std lisp-window-sym (lisp-window)  ;used for simulation drawing, not production
-  ((gir-window  :type (or gir::object-instance keyword)
-                :documentation "symbol used in test drawing")
-   (dimensions :documentation "Cons with width and height or resized window")))
+(defclass/std lisp-window-sym (lisp-window)  ;used for simulation test drawing, not in gtk4
+  ())
 
 ;;; ====== all windows =========================================================
 (defun all-windows ()
