@@ -91,9 +91,20 @@
   ((gir-window  :type (or gir::object-instance keyword)
                 :documentation "Either gir window or symbol used in test drawing")
    (dimensions :documentation "Cons with width and height or resized window")))
+
+(defclass/std lisp-window-gir (lisp-window)
+  ((gir-window  :type (or gir::object-instance keyword)
+                :documentation "Either gir window or symbol used in test drawing")
+   (dimensions :documentation "Cons with width and height or resized window")))
+
+(defclass/std lisp-window-sym (lisp-window)  ;used for simulation drawing, not production
+  ((gir-window  :type (or gir::object-instance keyword)
+                :documentation "Either gir window or symbol used in test drawing")
+   (dimensions :documentation "Cons with width and height or resized window")))
+
 ;;; ====== all windows =========================================================
 (defun all-windows ()
-  (windows *lisp-app*))
+    (windows *lisp-app*))
 
 ;;; ========================== window manipulation =============================
 (defmethod (setf current-focus) :before ((window T) (lisp-app lisp-app))
@@ -146,12 +157,12 @@
 (defmethod window-add ((app lisp-app) (window gir::object-instance))
   (setf (gethash (hasher window)
                  (windows app))
-        (make-instance 'lisp-window
+        (make-instance 'lisp-window-gir
                        :gir-window window)))
 (defmethod window-add ((app lisp-app) (window symbol))
   (setf (gethash (hasher window)
                  (windows app))
-        (make-instance 'lisp-window
+        (make-instance 'lisp-window-sym
                        :gir-window window)))
 
 (defmethod window-symb ((window T))
