@@ -43,63 +43,6 @@
         (uiop:temporary-directory)))
 
 ;;; ============================= client functions =============================
-;;; ============================ view ==========================================
-(defun draw-objects (window)            ; view
-  (assert (typep window 'gui-window:lisp-window))
-  ;; (warn "would draw on window")
-
-  (cairo:set-source-rgb  1 1 1)
-  (cairo:paint)
-
-  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
-  (cairo:set-font-size 20)
-
-  (let ((my-text "Try moving the mouse over the window or resizing it."))
-    (multiple-value-bind  (xb yb width height)
-        (cairo:text-extents my-text)
-      (declare (ignore xb yb width height)))
-    (cairo:set-source-rgb 0 0 0)
-    (cairo:move-to 10 20)
-    (cairo:show-text (format nil "~A" my-text)))
-
-  (if (null (gui-window:mouse-coordinates gui-window:*lisp-app*))
-      (gui-window:set-rgba "red")
-      (gui-window:set-rgba "#002244AA"))
-  (cairo:move-to 10 50)
-  (when (gui-window:current-motion-window gui-window:*lisp-app* window)
-      (cairo:show-text (format nil "~A" (gui-window:mouse-coordinates gui-window:*lisp-app*))))
-
-  (if (< (car (gui-window:dimensions window)) 200)
-      (gui-window:set-rgba "red")
-      (gui-window:set-rgba "green"))
-  (cairo:move-to 10 80)
-  (cairo:show-text (format nil "~A" (gui-window:dimensions window)))
-
-  (cairo:move-to 10 100)
-  (let ((cmotion    (gui-window:current-motion-window gui-window:*lisp-app* window)))
-    (if cmotion
-        (gui-window:set-rgba "green")
-        (gui-window:set-rgba "red"))
-    (cairo:show-text (format nil "motion ~A" cmotion)))
-
-  (cairo:move-to 10 120)
-  (let ((cfocus (gui-window:hasher (gui-window:current-focus-window gui-window:*lisp-app* window))))
-    (if cfocus
-        (gui-window:set-rgba "green")
-        (gui-window:set-rgba "red"))
-    (cairo:show-text (format nil "focus ~A"
-                             cfocus)))
-
-  (cairo:move-to 10 140)
-  (gui-window:set-rgba "blue")
-  (cairo:show-text (format nil "hasher ~A" (gui-window:hasher window)))
-
-  (cairo:move-to 10 160)
-  (gui-window:set-rgba "black")
-  (cairo:show-text (format nil "count ~A" (timeout-count *model*)))
-
-  )
-
 ;;; ===================== menu declaration =====================================
 
 (defun menu-bar (app)
@@ -147,6 +90,63 @@
         (gui-menu:prepare-item-simple app menu "About" "about")))))
 
     (values menu)))
+
+;;; ============================ view ==========================================
+(defun view (window)            ; view
+  (assert (typep window 'gui-window:lisp-window))
+  ;; (warn "would draw on window")
+
+  (cairo:set-source-rgb  1 1 1)
+  (cairo:paint)
+
+  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
+  (cairo:set-font-size 20)
+
+  (let ((my-text "Try moving the mouse over the window or resizing it."))
+    (multiple-value-bind  (xb yb width height)
+        (cairo:text-extents my-text)
+      (declare (ignore xb yb width height)))
+    (cairo:set-source-rgb 0 0 0)
+    (cairo:move-to 10 20)
+    (cairo:show-text (format nil "~A" my-text)))
+
+  (if (null (gui-window:mouse-coordinates gui-window:*lisp-app*))
+      (gui-window:set-rgba "red")
+      (gui-window:set-rgba "#002244AA"))
+  (cairo:move-to 10 50)
+  (when (gui-window:current-motion-window gui-window:*lisp-app* window)
+    (cairo:show-text (format nil "~A" (gui-window:mouse-coordinates gui-window:*lisp-app*))))
+
+  (if (< (car (gui-window:dimensions window)) 200)
+      (gui-window:set-rgba "red")
+      (gui-window:set-rgba "green"))
+  (cairo:move-to 10 80)
+  (cairo:show-text (format nil "~A" (gui-window:dimensions window)))
+
+  (cairo:move-to 10 100)
+  (let ((cmotion    (gui-window:current-motion-window gui-window:*lisp-app* window)))
+    (if cmotion
+        (gui-window:set-rgba "green")
+        (gui-window:set-rgba "red"))
+    (cairo:show-text (format nil "motion ~A" cmotion)))
+
+  (cairo:move-to 10 120)
+  (let ((cfocus (gui-window:hasher (gui-window:current-focus-window gui-window:*lisp-app* window))))
+    (if cfocus
+        (gui-window:set-rgba "green")
+        (gui-window:set-rgba "red"))
+    (cairo:show-text (format nil "focus ~A"
+                             cfocus)))
+
+  (cairo:move-to 10 140)
+  (gui-window:set-rgba "blue")
+  (cairo:show-text (format nil "hasher ~A" (gui-window:hasher window)))
+
+  (cairo:move-to 10 160)
+  (gui-window:set-rgba "black")
+  (cairo:show-text (format nil "count ~A" (timeout-count *model*)))
+
+  )
 
 ;;; ====================== event processing ====================================
 (defun process-event (event &rest args)
@@ -218,8 +218,8 @@
 (defun init ()
   ;; define external functions
   (setf
-   gui-window:*client-fn-draw-objects*  'cl::draw-objects
    gui-window:*client-fn-menu-bar*      'cl::menu-bar
+   gui-window:*client-fn-draw-objects*  'cl::view
    gui-events:*client-fn-process-event* 'cl::process-event
    gui-window:*initial-title*           "Example window")
 
