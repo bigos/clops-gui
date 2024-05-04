@@ -130,17 +130,12 @@
 (defmethod redraw-canvas ((window lisp-window))
   (redraw-canvas (gir-window window)))
 
-
-
-(defmethod hasher ((window integer))
-  window)
-(defmethod hasher ((window sb-sys:system-area-pointer))
-  (cffi:pointer-address window))
 (defmethod hasher ((window gir::object-instance))
+  (warn "333")
   (cffi:pointer-address (gir::this-of window)))
-
 (defmethod hasher ((window symbol))
-    window)
+  (warn "444")
+  window)
 (defmethod hasher ((window lisp-window))
   (hasher
    (gir-window window)))
@@ -165,16 +160,12 @@
         (make-instance 'lisp-window-sym
                        :gir-window window)))
 
-(defmethod window-symb ((window T))
-  (window-get *lisp-app* window))
-
 (defmethod window-get ((app lisp-app) (window T))
   (warn "existing windows ~S" (loop for k being the hash-key of (windows app) collect k ))
   (gethash (hasher window)
            (windows app)))
 
 (defmethod window-resize (w h win)
-  (warn "resizing ~A ~A ~A" w h (hasher win))
   (setf (dimensions (window-get *lisp-app* win)) (cons w h)))
 
 (defmethod window-remove ((app lisp-app) (window T))
