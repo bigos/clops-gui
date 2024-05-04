@@ -92,7 +92,7 @@
     (values menu)))
 
 ;;; ============================ view ==========================================
-(defun view (window)            ; view
+(defun draw-window (window)            ; view
   (assert (typep window 'gui-window:lisp-window))
   ;; (warn "would draw on window")
 
@@ -215,11 +215,12 @@
   (maphash (lambda (key lwin) (gui-window:redraw-canvas lwin))
            (gui-window:all-windows)))
 
+;;; TODO some winndows may havve no menu, or have different menu
 (defun init ()
   ;; define external functions
   (setf
    gui-window:*client-fn-menu-bar*      'cl::menu-bar
-   gui-window:*client-fn-draw-objects*  'cl::view
+   gui-window:*client-fn-draw-objects*  'cl::draw-window
    gui-events:*client-fn-process-event* 'cl::process-event
    gui-window:*initial-title*           "Example window")
 
