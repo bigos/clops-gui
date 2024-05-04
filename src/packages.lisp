@@ -36,7 +36,7 @@
    :set-rgba
    :simulate-draw-func
    :window
-   :window-activation-from-menu
+   :window-creation-from-menu
    :window-get
    :window-resize
    :windows

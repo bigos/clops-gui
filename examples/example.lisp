@@ -20,7 +20,7 @@
    *model* (make-instance 'model)
    gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
   (assert (zerop (hash-table-count (gui-window:all-windows))))
-  (gui-window::window-add gui-window:*lisp-app* :testing)
+  (gui-window::window-creation-from-simulation :testing)
   (assert (eq 1 (hash-table-count (gui-window:all-windows))))
   (process-event :resize (list 600 200 (gui-window:window-get gui-window:*lisp-app* :testing)))
   (process-event :timeout)
@@ -28,7 +28,7 @@
 
   (warn "trying tools")
   (assert (eq 1 (hash-table-count (gui-window:all-windows))))
-  (gui-window::window-add gui-window:*lisp-app* :tools)
+  (gui-window::window-creation-from-simulation :tools)
   (warn "should have tools window")
   (assert (eq 2 (hash-table-count (gui-window:all-windows))))
   ;; seems like resize is changing the wrong window
@@ -170,7 +170,7 @@
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
        (cond ((equal menu-item "new-window")
-              (gui-window:window-activation-from-menu (format nil
+              (gui-window:window-creation-from-menu (format nil
                                                               "~A ~A"
                                                               gui-window:*initial-title*
                                                               (get-internal-run-time))))
