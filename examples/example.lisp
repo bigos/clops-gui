@@ -21,9 +21,19 @@
    gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
   (assert (zerop (hash-table-count (gui-window:all-windows))))
   (gui-window::window-add gui-window:*lisp-app* :testing)
-  (process-event :resize (list 600 200 (gui-window:window-symb :testing)))
+  (assert (eq 1 (hash-table-count (gui-window:all-windows))))
+  (process-event :resize (list 600 200 (gui-window:window-get gui-window:*lisp-app* :testing)))
   (process-event :timeout)
-  (process-event :motion-enter (list 50 50 (gui-window:window-symb :testing)))
+  (process-event :motion-enter (list 50 50 (gui-window:window-get gui-window:*lisp-app* :testing)))
+
+  (warn "trying tools")
+  (assert (eq 1 (hash-table-count (gui-window:all-windows))))
+  (gui-window::window-add gui-window:*lisp-app* :tools)
+  (assert (eq 2 (hash-table-count (gui-window:all-windows))))
+  (process-event :resize (list 250 500 (gui-window:window-get gui-window:*lisp-app* :testing)))
+  (process-event :timeout)
+  (process-event :motion-enter (list 10 10 (gui-window:window-get gui-window:*lisp-app* :testing)))
+
   ;; end
   (warn "please check your folder ~S for images drawn by the procedure simulate-draw-func"
         (uiop:temporary-directory)))

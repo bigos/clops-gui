@@ -39,7 +39,6 @@
    :window-activation-from-menu
    :window-get
    :window-resize
-   :window-symb
    :windows
    ))
 
