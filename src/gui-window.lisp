@@ -113,28 +113,24 @@
         (type-of window)))
 
 (defmethod current-motion-window ((lisp-app lisp-app) (window t))
-  (let ((m (gui-window:hasher (current-motion lisp-app)))
-        (w (gui-window:hasher window)))
+  (let ((m (hasher (current-motion lisp-app)))
+        (w (hasher window)))
     (eq m w)))
 
 (defmethod current-focus-window  ((lisp-app lisp-app) (window t))
-  (let ((h (gui-window:hasher (current-focus lisp-app)))
-        (w (gui-window:hasher window)))
+  (let ((h (hasher (current-focus lisp-app)))
+        (w (hasher window)))
     (eq h w)))
 
-(defmethod redraw-canvas ((window gir::object-instance))
+(defmethod redraw-canvas ((window lisp-window-gir))
   (gtk4:widget-queue-draw
-   (serapeum:~> window gtk4:widget-first-child gtk4:widget-first-child)))
-(defmethod redraw-canvas ((window symbol))
+   (serapeum:~> window gir-window gtk4:widget-first-child gtk4:widget-first-child)))
+(defmethod redraw-canvas ((window lisp-window-sym))
   (simulate-draw-func (window-get *lisp-app* window)))
-(defmethod redraw-canvas ((window lisp-window))
-  (redraw-canvas (gir-window window)))
 
 (defmethod hasher ((window gir::object-instance))
-  (warn "333")
   (cffi:pointer-address (gir::this-of window)))
 (defmethod hasher ((window symbol))
-  (warn "444")
   window)
 (defmethod hasher ((window lisp-window))
   (hasher
@@ -148,7 +144,6 @@
 (defmethod window-add :before ((app lisp-app) (window gir::object-instance))
   (assert (equal "ApplicationWindow"
                  (gir:info-get-name (gir::info-of (gir:gir-class-of window))))))
-
 (defmethod window-add ((app lisp-app) (window gir::object-instance))
   (setf (gethash (hasher window)
                  (windows app))
