@@ -131,6 +131,7 @@
 (defmethod hasher ((window gir::object-instance))
   (cffi:pointer-address (gir::this-of window)))
 (defmethod hasher ((window symbol))
+  "This form is only used in simulated drawing, but not in gtk4"
   window)
 (defmethod hasher ((window lisp-window))
   (hasher
