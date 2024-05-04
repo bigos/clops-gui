@@ -29,10 +29,14 @@
   (warn "trying tools")
   (assert (eq 1 (hash-table-count (gui-window:all-windows))))
   (gui-window::window-add gui-window:*lisp-app* :tools)
+  (warn "should have tools window")
   (assert (eq 2 (hash-table-count (gui-window:all-windows))))
-  (process-event :resize (list 250 500 (gui-window:window-get gui-window:*lisp-app* :testing)))
+  ;; seems like resize is changing the wrong window
+  (warn "added window trying to resize")
+  (process-event :resize (list 250 500 (gui-window:window-get gui-window:*lisp-app* :tools)))
+  (warn "resized tools")
   (process-event :timeout)
-  (process-event :motion-enter (list 10 10 (gui-window:window-get gui-window:*lisp-app* :testing)))
+  (process-event :motion-enter (list 10 10 (gui-window:window-get gui-window:*lisp-app* :tools)))
 
   ;; end
   (warn "please check your folder ~S for images drawn by the procedure simulate-draw-func"
