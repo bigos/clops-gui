@@ -45,51 +45,64 @@
 ;;; ============================= client functions =============================
 ;;; ===================== menu declaration =====================================
 
-(defun menu-bar (app)
+(defun menu-bar-simple (app)
   (let ((menu (gio:make-menu)))
     (gui-menu:build-menu
      menu
      (gui-menu:prepare-submenu
       "File"
-      ;; (prepare-section
-      ;;  nil
-      ;;  (build-items
-      ;;   (prepare-item-bool app menu "Dark mode" "dark-mode" nil)))
-
       (gui-menu:prepare-section
        nil
        (gui-menu:build-items
-        (gui-menu:prepare-item-simple app menu "New Window" "new-window")))
-
-      ;; (prepare-submenu
-      ;;  "New Game"
-      ;;  (prepare-section
-      ;;   nil
-      ;;   (progn
-      ;;     (prepare-radio-action app "new-game-size" "SMALL")
-      ;;     (build-items
-      ;;      (prepare-item-radio app menu "Small 8x8"    "new-game-size" "SMALL")
-      ;;      (prepare-item-radio app menu "Medium 16x16" "new-game-size" "MEDIUM")
-      ;;      (prepare-item-radio app menu "Large 32x32"  "new-game-size" "LARGE")))))
-
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple app menu "Quit" "quit"))))
-     (gui-menu:prepare-submenu
-      "Help"
-      ;; for now I plan to have only the About menu item
-      ;; (prepare-section
-      ;;  nil
-      ;;  (build-items
-      ;;   (prepare-item-simple app menu "Help" "help")
-      ;;   (prepare-item-simple app menu "Tutorial" "tutorial" :disabled T)))
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple app menu "About" "about")))))
+        (gui-menu:prepare-item-simple app menu "Quit" "quit")))))
 
     (values menu)))
+
+(defun menu-bar (app)
+    (let ((menu (gio:make-menu)))
+      (gui-menu:build-menu
+       menu
+       (gui-menu:prepare-submenu
+        "File"
+        ;; (prepare-section
+        ;;  nil
+        ;;  (build-items
+        ;;   (prepare-item-bool app menu "Dark mode" "dark-mode" nil)))
+
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple app menu "New Window" "new-window")))
+
+        ;; (prepare-submenu
+        ;;  "New Game"
+        ;;  (prepare-section
+        ;;   nil
+        ;;   (progn
+        ;;     (prepare-radio-action app "new-game-size" "SMALL")
+        ;;     (build-items
+        ;;      (prepare-item-radio app menu "Small 8x8"    "new-game-size" "SMALL")
+        ;;      (prepare-item-radio app menu "Medium 16x16" "new-game-size" "MEDIUM")
+        ;;      (prepare-item-radio app menu "Large 32x32"  "new-game-size" "LARGE")))))
+
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple app menu "Quit" "quit"))))
+       (gui-menu:prepare-submenu
+        "Help"
+        ;; for now I plan to have only the About menu item
+        ;; (prepare-section
+        ;;  nil
+        ;;  (build-items
+        ;;   (prepare-item-simple app menu "Help" "help")
+        ;;   (prepare-item-simple app menu "Tutorial" "tutorial" :disabled T)))
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple app menu "About" "about")))))
+
+      (values menu)))
 
 ;;; ============================ view ==========================================
 (defun draw-window (window)            ; view
@@ -151,18 +164,18 @@
 ;;; ====================== event processing ====================================
 (defun process-event (event &rest args)
   (unless (member event '(:timeout :motion))
-        (format t "~&going to process ~A ~A  " event
-                (case event
-                  ((:focus-enter :focus-leave)
-                   (destructuring-bind ((win)) args
-                     (gui-window:hasher win)))
-                  (:key-pressed
-                   (destructuring-bind ((letter name code mods window)) args
-                     (warn "pressed ~S" (list letter name code mods (gui-window:hasher window)))))
-                  (T args))))
+            (format t "~&going to process ~A ~A  " event
+                    (case event
+                      ((:focus-enter :focus-leave)
+                       (destructuring-bind ((win)) args
+                         (gui-window:hasher win)))
+                      (:key-pressed
+                       (destructuring-bind ((letter name code mods window)) args
+                         (warn "pressed ~S" (list letter name code mods (gui-window:hasher window)))))
+                      (T args))))
   (case event
     (:timeout
-          (incf (timeout-count *model*))
+               (incf (timeout-count *model*))
      (when (> (timeout-count *model*) 5)
        (setf (timeout-count *model*) 0))
      nil)
@@ -170,10 +183,13 @@
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
        (cond ((equal menu-item "new-window")
-              (gui-window:window-creation-from-menu (format nil
-                                                              "~A ~A"
-                                                              gui-window:*initial-title*
-                                                              (get-internal-run-time))))
+              (gui-window:window-creation-from-menu
+               (format nil
+                       "~A ~A"
+                       gui-window:*initial-title*
+                       (get-internal-run-time))
+               ;; commenting it out will show windows without menu
+               'cl::menu-bar-simple))
              ((equal menu-item "quit")
               (gui-window:close-all-windows-and-quit))
 

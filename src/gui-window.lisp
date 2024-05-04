@@ -364,7 +364,11 @@
   (window-add lisp-app (new-window-for-app app window-title window-menu-fn)))
 
 (defun window-creation-from-menu (window-title &optional window-menu-fn)
-  (let ((new-window (window-activation-and-connection *lisp-app* (gtk4-app *lisp-app*) window-title)))
+  (let ((new-window (window-activation-and-connection
+                     *lisp-app*
+                     (gtk4-app *lisp-app*)
+                     window-title
+                     window-menu-fn)))
     (setf (current-focus *lisp-app*) (gir-window new-window))
     new-window))
 
