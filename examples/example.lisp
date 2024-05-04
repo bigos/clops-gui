@@ -11,7 +11,10 @@
   ((timeout-count :std 0)))
 
 ;;; ====== methods =============================================================
-
+(defmethod inc-timer ((model model))
+  (incf (timeout-count *model*))
+  (when (> (timeout-count *model*) 5)
+    (setf (timeout-count *model*) 0)))
 
 ;;; ============================= experimental testing =========================
 ;;; REPL usege (cl::experiment)
@@ -175,10 +178,7 @@
                       (T args))))
   (case event
     (:timeout
-               (incf (timeout-count *model*))
-     (when (> (timeout-count *model*) 5)
-       (setf (timeout-count *model*) 0))
-     nil)
+     (inc-timer *model*))
     (:menu-simple
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
