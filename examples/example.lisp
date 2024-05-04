@@ -116,7 +116,7 @@
   (cairo:paint)
 
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
-  (cairo:set-font-size 20)
+  (cairo:set-font-size 10)
 
   (let ((my-text "Try moving the mouse over the window or resizing it."))
     (multiple-value-bind  (xb yb width height)
@@ -126,6 +126,9 @@
     (cairo:move-to 10 20)
     (cairo:show-text (format nil "~A" my-text)))
 
+  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
+  (cairo:set-font-size 15)
+
   (if (null (gui-window:mouse-coordinates gui-window:*lisp-app*))
       (gui-window:set-rgba "red")
       (gui-window:set-rgba "#002244AA"))
@@ -133,11 +136,17 @@
   (when (gui-window:current-motion-window gui-window:*lisp-app* window)
     (cairo:show-text (format nil "~A" (gui-window:mouse-coordinates gui-window:*lisp-app*))))
 
+  (cairo:select-font-face "Ubuntu Mono" :normal :normal)
+  (cairo:set-font-size 20)
+
   (if (< (car (gui-window:dimensions window)) 200)
       (gui-window:set-rgba "red")
       (gui-window:set-rgba "green"))
   (cairo:move-to 10 80)
   (cairo:show-text (format nil "~A" (gui-window:dimensions window)))
+
+  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
+  (cairo:set-font-size 20)
 
   (cairo:move-to 10 100)
   (let ((cmotion    (gui-window:current-motion-window gui-window:*lisp-app* window)))
@@ -145,6 +154,9 @@
         (gui-window:set-rgba "green")
         (gui-window:set-rgba "red"))
     (cairo:show-text (format nil "motion ~A" cmotion)))
+
+  (cairo:select-font-face "Ubuntu Mono" :oblique :normal)
+  (cairo:set-font-size 20)
 
   (cairo:move-to 10 120)
   (let ((cfocus (gui-window:window-hkey (gui-window:current-focus-window gui-window:*lisp-app* window))))
