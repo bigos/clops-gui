@@ -27,7 +27,6 @@
    :current-focus-window
    :dimensions
    :gir-window
-   :hasher
    :lisp-window
    :mouse-coordinates
    :new-window-for-app
@@ -38,6 +37,7 @@
    :window
    :window-creation-from-menu
    :window-get
+   :window-hkey
    :window-resize
    :windows
    ))

@@ -81,7 +81,7 @@
 
 (defclass/std lisp-app ()
   ((gtk4-app :type gir::object-instance)
-   (windows :std (make-hash-table)) ; see hasher, the hash keys is a symbol or integer
+   (windows :std (make-hash-table))
    (current-motion)
    (current-focus) ; it is not reliable for the last created window
    (mouse-coordinates)
@@ -103,17 +103,17 @@
 ;;; ========================== window manipulation =============================
 (defmethod (setf current-focus) :before ((window T) (lisp-app lisp-app))
   (warn "~&??????????????????? setting current focus to ~s ~s~%~%"
-        (hasher window)
+        (window-hkey window)
         (type-of window)))
 
 (defmethod current-motion-window ((lisp-app lisp-app) (window t))
-  (let ((m (hasher (current-motion lisp-app)))
-        (w (hasher window)))
+  (let ((m (window-hkey (current-motion lisp-app)))
+        (w (window-hkey window)))
     (eq m w)))
 
 (defmethod current-focus-window  ((lisp-app lisp-app) (window t))
-  (let ((h (hasher (current-focus lisp-app)))
-        (w (hasher window)))
+  (let ((h (window-hkey (current-focus lisp-app)))
+        (w (window-hkey window)))
     (eq h w)))
 
 (defmethod redraw-canvas ((window lisp-window-gir))
@@ -122,13 +122,13 @@
 (defmethod redraw-canvas ((window lisp-window-sym))
   (simulate-draw-func (window-get *lisp-app* window)))
 
-(defmethod hasher ((window gir::object-instance))
+(defmethod window-hkey ((window gir::object-instance))
   (cffi:pointer-address (gir::this-of window)))
-(defmethod hasher ((window symbol))
+(defmethod window-hkey ((window symbol))
   "This form is only used in simulated drawing, but not in gtk4"
   window)
-(defmethod hasher ((window lisp-window))
-  (hasher
+(defmethod window-hkey ((window lisp-window))
+  (window-hkey
    (gir-window window)))
 
 (defun window-assert (window)
@@ -140,19 +140,19 @@
   (assert (equal "ApplicationWindow"
                  (gir:info-get-name (gir::info-of (gir:gir-class-of window))))))
 (defmethod window-add ((app lisp-app) (window gir::object-instance))
-  (setf (gethash (hasher window)
+  (setf (gethash (window-hkey window)
                  (windows app))
         (make-instance 'lisp-window-gir
                        :gir-window window)))
 (defmethod window-add ((app lisp-app) (window symbol))
-  (setf (gethash (hasher window)
+  (setf (gethash (window-hkey window)
                  (windows app))
         (make-instance 'lisp-window-sym
                        :gir-window window)))
 
 (defmethod window-get ((app lisp-app) (window T))
   (warn "existing windows ~S" (loop for k being the hash-key of (windows app) collect k ))
-  (gethash (hasher window)
+  (gethash (window-hkey window)
            (windows app)))
 
 (defmethod window-resize (w h win)
@@ -160,7 +160,7 @@
 
 (defmethod window-remove ((app lisp-app) (window T))
     (window-assert window)
-  (if (remhash (hasher window) (windows app))
+  (if (remhash (window-hkey window) (windows app))
       (warn "success, window removed ~S" window)
       (warn "strange, window not removed ~S" window)))
 

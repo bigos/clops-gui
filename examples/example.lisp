@@ -147,7 +147,7 @@
     (cairo:show-text (format nil "motion ~A" cmotion)))
 
   (cairo:move-to 10 120)
-  (let ((cfocus (gui-window:hasher (gui-window:current-focus-window gui-window:*lisp-app* window))))
+  (let ((cfocus (gui-window:window-hkey (gui-window:current-focus-window gui-window:*lisp-app* window))))
     (if cfocus
         (gui-window:set-rgba "green")
         (gui-window:set-rgba "red"))
@@ -156,7 +156,7 @@
 
   (cairo:move-to 10 140)
   (gui-window:set-rgba "blue")
-  (cairo:show-text (format nil "hasher ~A" (gui-window:hasher window)))
+  (cairo:show-text (format nil "window-hkey ~A" (gui-window:window-hkey window)))
 
   (cairo:move-to 10 160)
   (gui-window:set-rgba "black")
@@ -171,10 +171,10 @@
                     (case event
                       ((:focus-enter :focus-leave)
                        (destructuring-bind ((win)) args
-                         (gui-window:hasher win)))
+                         (gui-window:window-hkey win)))
                       (:key-pressed
                        (destructuring-bind ((letter name code mods window)) args
-                         (warn "pressed ~S" (list letter name code mods (gui-window:hasher window)))))
+                         yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy(warn "pressed ~S" (list letter name code mods (gui-window:window-hkey window)))))
                       (T args))))
   (case event
     (:timeout
