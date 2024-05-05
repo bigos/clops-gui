@@ -1,7 +1,10 @@
 ;; (load "~/Programming/Lisp/clops-gui/examples/example.lisp")
 (declaim (optimize (speed 0) (safety 2) (debug 3)))
 
-(in-package #:cl)
+(defpackage #:example
+  (:use #:cl))
+
+(in-package #:example)
 ;;; === load ===================================================================
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
 (ql:quickload '(:clops-gui) :silent nil)
@@ -183,7 +186,7 @@
                          (gui-window:window-hkey win)))
                       (:key-pressed
                        (destructuring-bind ((letter name code mods window)) args
-                         yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy(warn "pressed ~S" (list letter name code mods (gui-window:window-hkey window)))))
+                         (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey window)))))
                       (T args))))
   (case event
     (:timeout
@@ -198,7 +201,7 @@
                        gui-window:*initial-title*
                        (get-internal-run-time))
                ;; commenting it out will show windows without menu
-               'cl::menu-bar-simple))
+               'example::menu-bar-simple))
              ((equal menu-item "quit")
               (gui-window:close-all-windows-and-quit))
 
@@ -244,9 +247,9 @@
 (defun init ()
   ;; define external functions
   (setf
-   gui-window:*client-fn-menu-bar*      'cl::menu-bar
-   gui-window:*client-fn-draw-objects*  'cl::draw-window
-   gui-events:*client-fn-process-event* 'cl::process-event
+   gui-window:*client-fn-menu-bar*      'example::menu-bar
+   gui-window:*client-fn-draw-objects*  'example::draw-window
+   gui-events:*client-fn-process-event* 'example::process-event
    gui-window:*initial-title*           "Example window")
 
   (setf *model* (make-instance 'model)))
