@@ -13,9 +13,12 @@
 (defclass-std:defclass/std model ()
   ((timeout-count :std 0)))
 
+(defclass-std:defclass/std help-window (gui-window:lisp-window)
+  ())
+
 ;;; ====== methods =============================================================
 (defmethod inc-timer ((model model))
-  (incf (timeout-count *model*))
+    (incf (timeout-count *model*))
   (when (> (timeout-count *model*) 5)
     (setf (timeout-count *model*) 0)))
 
@@ -111,7 +114,7 @@
       (values menu)))
 
 ;;; ============================ view ==========================================
-(defun draw-window (window)            ; view
+(defmethod draw-window ((window gui-window:lisp-window))            ; view
   (assert (typep window 'gui-window:lisp-window))
   ;; (warn "would draw on window")
 
@@ -179,15 +182,15 @@
 ;;; ====================== event processing ====================================
 (defun process-event (event &rest args)
   (unless (member event '(:timeout :motion))
-            (format t "~&going to process ~A ~A  " event
-                    (case event
-                      ((:focus-enter :focus-leave)
-                       (destructuring-bind ((win)) args
-                         (gui-window:window-hkey win)))
-                      (:key-pressed
-                       (destructuring-bind ((letter name code mods window)) args
-                         (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey window)))))
-                      (T args))))
+    (format t "~&going to process ~A ~A  " event
+            (case event
+              ((:focus-enter :focus-leave)
+               (destructuring-bind ((win)) args
+                 (gui-window:window-hkey win)))
+              (:key-pressed
+               (destructuring-bind ((letter name code mods window)) args
+                 (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey window)))))
+              (T args))))
   (case event
     (:timeout
      (inc-timer *model*))
@@ -243,7 +246,7 @@
   (maphash (lambda (key lwin) (gui-window:redraw-canvas lwin))
            (gui-window:all-windows)))
 
-;;; TODO some winndows may havve no menu, or have different menu
+
 (defun init ()
   ;; define external functions
   (setf
