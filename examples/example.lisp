@@ -182,6 +182,22 @@
 
   )
 
+(defmethod draw-window ((window help-window))
+  (cairo:set-source-rgb  1 1 1)
+  (cairo:paint)
+
+  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
+  (cairo:set-font-size 30)
+
+  (let ((my-text "HEEELP ME TO LEARN LISP!!!"))
+    (multiple-value-bind  (xb yb width height)
+        (cairo:text-extents my-text)
+      (declare (ignore xb yb width height)))
+    (cairo:set-source-rgb 0 0 0)
+    (cairo:move-to 10 20)
+    (cairo:show-text (format nil "~A" my-text)))
+  )
+
 ;;; ====================== event processing ====================================
 (defun process-event (event &rest args)
   (unless (member event '(:timeout :motion))
@@ -207,9 +223,16 @@
                        gui-window:*initial-title*
                        (get-internal-run-time))
                ;; commenting it out will show windows without menu
-               'example::menu-bar-simple))
+               'example::menu-bar-simple
+               'example::app-window))
              ((equal menu-item "quit")
               (gui-window:close-all-windows-and-quit))
+
+             ((equal menu-item "help")
+              (gui-window:window-creation-from-menu
+               (format nil "~A" "Help")
+               nil
+               'example::help-window))
 
              ((equal menu-item "about")
               (gui-window:present-about-dialog
