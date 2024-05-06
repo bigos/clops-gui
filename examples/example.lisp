@@ -13,6 +13,9 @@
 (defclass-std:defclass/std model ()
   ((timeout-count :std 0)))
 
+(defclass-std:defclass/std app-window (gui-window:lisp-window)
+  ())
+
 (defclass-std:defclass/std help-window (gui-window:lisp-window)
   ())
 
@@ -253,7 +256,10 @@
    gui-window:*client-fn-menu-bar*      'example::menu-bar
    gui-window:*client-fn-draw-objects*  'example::draw-window
    gui-events:*client-fn-process-event* 'example::process-event
-   gui-window:*initial-title*           "Example window")
+   gui-window:*initial-title*           "Example window"
+   ;; not yet, we need to hadle gir of sym first
+   ;; gui-window:*app-window-class*        'example::app-window
+   )
 
   (setf *model* (make-instance 'model)))
 
