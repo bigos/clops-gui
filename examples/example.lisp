@@ -104,11 +104,11 @@
        (gui-menu:prepare-submenu
         "Help"
         ;; for now I plan to have only the About menu item
-        ;; (prepare-section
-        ;;  nil
-        ;;  (build-items
-        ;;   (prepare-item-simple app menu "Help" "help")
-        ;;   (prepare-item-simple app menu "Tutorial" "tutorial" :disabled T)))
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple app menu "Help" "help")
+          (gui-menu:prepare-item-simple app menu "Tutorial" "tutorial" :disabled T)))
         (gui-menu:prepare-section
          nil
          (gui-menu:build-items
@@ -257,7 +257,7 @@
    gui-window:*client-fn-draw-objects*  'example::draw-window
    gui-events:*client-fn-process-event* 'example::process-event
    gui-window:*initial-title*           "Example window"
-   gui-window::*window-class*       'example::app-window
+   gui-window:*window-class*            'example::app-window
    )
 
   (setf *model* (make-instance 'model)))
