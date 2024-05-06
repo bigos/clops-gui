@@ -7,7 +7,7 @@
 (defparameter *initial-window-height* 200)
 (defparameter *initial-title* "change me")
 (defparameter *lisp-app* nil)
-(defparameter *app-window-class* nil)
+(defparameter *window-class* nil)
 
 ;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -135,18 +135,18 @@
                   (typep window 'sb-sys:system-area-pointer)
                   (typep window 'symbol))))
 
-(defmethod window-add :before ((app lisp-app) (window gir::object-instance))
+(defmethod window-add :before ((app lisp-app) (window gir::object-instance) window-class)
   (assert (equal "ApplicationWindow"
                  (gir:info-get-name (gir::info-of (gir:gir-class-of window))))))
-(defmethod window-add ((app lisp-app) (window gir::object-instance))
+(defmethod window-add ((app lisp-app) (window gir::object-instance) window-class)
   (setf (gethash (window-hkey window)
                  (windows app))
-        (make-instance 'lisp-window
+        (make-instance window-class
                        :gir-window window)))
-(defmethod window-add ((app lisp-app) (window symbol))
+(defmethod window-add ((app lisp-app) (window symbol) window-class)
   (setf (gethash (window-hkey window)
                  (windows app))
-        (make-instance 'lisp-window
+        (make-instance window-class
                        :gir-window window)))
 
 (defmethod window-get ((app lisp-app) (window T))
@@ -361,8 +361,12 @@
 
 (defun window-activation-and-connection (lisp-app gtk4-app window-title window-menu-fn)
   (if gtk4-app
-      (window-add lisp-app (new-window-for-app gtk4-app window-title window-menu-fn))
-      (window-add lisp-app window-title)))
+      (window-add lisp-app
+                  (new-window-for-app gtk4-app window-title window-menu-fn)
+                  *window-class*)
+      (window-add lisp-app
+                  window-title
+                  *window-class*)))
 
 (defun window-creation-from-simulation (window-title)
   (assert (symbolp window-title))
