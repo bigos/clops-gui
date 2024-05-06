@@ -7,11 +7,12 @@
 (defparameter *initial-window-height* 200)
 (defparameter *initial-title* "change me")
 (defparameter *lisp-app* nil)
+(defparameter *app-window-class* nil)
 
 ;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 (cffi:defcstruct gdk-rgba
-  (red   :float)
+    (red   :float)
   (green :float)
   (blue  :float)
   (alpha :float))
@@ -91,10 +92,6 @@
   ((gir-window  :type (or gir::object-instance keyword)
                 :documentation "Either gir window or symbol used in test drawing")
    (dimensions :documentation "Cons with width and height or resized window")))
-(defclass/std lisp-window-gir (lisp-window)
-  ())
-(defclass/std lisp-window-sym (lisp-window)  ;used for simulation test drawing, not in gtk4
-  ())
 
 ;;; ====== all windows =========================================================
 (defun all-windows ()
@@ -116,11 +113,13 @@
         (w (window-hkey window)))
     (eq h w)))
 
-(defmethod redraw-canvas ((window lisp-window-gir))
-  (gtk4:widget-queue-draw
-   (serapeum:~> window gir-window gtk4:widget-first-child gtk4:widget-first-child)))
-(defmethod redraw-canvas ((window lisp-window-sym))
-  (simulate-draw-func (window-get *lisp-app* window)))
+(defmethod redraw-canvas ((window lisp-window))
+  (etypecase (gir-window window)
+    (keyword
+     (simulate-draw-func (window-get *lisp-app* window)))
+    (t
+     (gtk4:widget-queue-draw
+      (serapeum:~> window gir-window gtk4:widget-first-child gtk4:widget-first-child)))))
 
 (defmethod window-hkey ((window gir::object-instance))
   (cffi:pointer-address (gir::this-of window)))
@@ -142,12 +141,12 @@
 (defmethod window-add ((app lisp-app) (window gir::object-instance))
   (setf (gethash (window-hkey window)
                  (windows app))
-        (make-instance 'lisp-window-gir
+        (make-instance 'lisp-window
                        :gir-window window)))
 (defmethod window-add ((app lisp-app) (window symbol))
   (setf (gethash (window-hkey window)
                  (windows app))
-        (make-instance 'lisp-window-sym
+        (make-instance 'lisp-window
                        :gir-window window)))
 
 (defmethod window-get ((app lisp-app) (window T))
@@ -372,14 +371,14 @@
     (setf (current-focus *lisp-app*) (gir-window new-window))
     new-window))
 
+(defun window-creation-from-simulation (window-title &optional window-menu-fn)
+  (assert (symbolp window-title))
+  (window-add *lisp-app* window-title))
+
 (defun window-creation-from-main (app window-title &optional window-menu-fn)
   (gtk4:connect app "activate"
                 (lambda (app)
                   (window-activation-and-connection *lisp-app* app window-title window-menu-fn))))
-
-(defun window-creation-from-simulation (window-title &optional window-menu-fn)
-  (assert (symbolp window-title))
-  (window-add *lisp-app* window-title))
 
 (defun window ()
       (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
