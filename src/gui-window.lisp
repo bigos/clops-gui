@@ -344,40 +344,38 @@
 
     window))
 
-(defun window-activation-and-connection (lisp-app gtk4-app window-title window-menu-fn window-class)
+(defun window-activation-and-connection (lisp-app gtk4-app window-title window-menu-fn lisp-window)
   (if gtk4-app
-      (let* ((new-lisp-window (make-instance window-class))
-             (new-gtk4-window (new-window-for-app gtk4-app window-title window-menu-fn new-lisp-window)))
-        (setf (gir-window new-lisp-window) new-gtk4-window
-              (gethash (window-hkey new-gtk4-window) (windows lisp-app)) new-lisp-window))
+      (let* ((new-gtk4-window (new-window-for-app gtk4-app window-title window-menu-fn lisp-window)))
+        (setf (gir-window lisp-window) new-gtk4-window
+              (gethash (window-hkey new-gtk4-window) (windows lisp-app)) lisp-window))
       ;; we still need better way of creating simulated windows
-      (let* ((new-lisp-window (make-instance window-class))
-             (new-sim-window window-title))
-        (setf (gir-window new-lisp-window) window-title
-              (gethash (window-hkey new-sim-window) (windows lisp-app)) new-lisp-window))))
+      (let* ((new-sim-window window-title))
+        (setf (gir-window lisp-window) window-title
+              (gethash (window-hkey new-sim-window) (windows lisp-app)) lisp-window))))
 
-(defun window-creation-from-simulation (window-title window-class)
+(defun window-creation-from-simulation (window-title lisp-window)
   (assert (symbolp window-title))
   (let ((new-window (window-activation-and-connection
                      *lisp-app*
                      nil
                      window-title
                      nil
-                     window-class)))
+                     lisp-window)))
     (setf (current-focus *lisp-app*) (gir-window new-window))
     new-window))
 
-(defun window-creation-from-menu (window-title &optional window-menu-fn window-class)
+(defun window-creation-from-menu (window-title &optional window-menu-fn lisp-window)
   (let ((new-window (window-activation-and-connection
                      *lisp-app*
                      (gtk4-app *lisp-app*)
                      window-title
                      window-menu-fn
-                     window-class)))
+                     lisp-window)))
     (setf (current-focus *lisp-app*) (gir-window new-window))
     new-window))
 
-(defun window-creation-from-main (app window-title &optional window-menu-fn window-class)
+(defun window-creation-from-main (app window-title &optional window-menu-fn lisp-window)
   (gtk4:connect app "activate"
                 (lambda (app)
                   (let ((new-window (window-activation-and-connection
@@ -385,15 +383,15 @@
                                      app
                                      window-title
                                      window-menu-fn
-                                     window-class)))
+                                     lisp-window)))
                     (setf (current-focus *lisp-app*) (gir-window new-window))
                     new-window))))
 
-(defun window ()
+(defun window (lisp-window)
       (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
                                        :flags gio:+application-flags-flags-none+)))
         (setf *lisp-app* (make-instance 'lisp-app :gtk4-app app))
-        (window-creation-from-main app *initial-title* *client-fn-menu-bar* *window-class*)
+        (window-creation-from-main app *initial-title* *client-fn-menu-bar* lisp-window)
 
         (let ((status (gtk:application-run app nil)))
           (gobj:object-unref app)

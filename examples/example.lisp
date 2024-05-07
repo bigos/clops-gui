@@ -117,7 +117,7 @@
       (values menu)))
 
 ;;; ============================ view ==========================================
-(defmethod draw-window ((window app-window))            ; view
+(defmethod draw-window ((window gui-window:lisp-window))            ; view
   (assert (typep window 'gui-window:lisp-window))
   ;; (warn "would draw on window")
 
@@ -280,7 +280,6 @@
    gui-window:*client-fn-draw-objects*  'example::draw-window
    gui-events:*client-fn-process-event* 'example::process-event
    gui-window:*initial-title*           "Example window"
-   gui-window:*window-class*            'example::app-window
    )
 
   (setf *model* (make-instance 'model)))
@@ -289,6 +288,7 @@
 
 (defun main ()
   (init)
-  (gui-window:window))
+
+  (gui-window:window (make-instance 'gui-window:lisp-window)))
 
 (main)
