@@ -207,7 +207,7 @@
                       collect modname)))))
 
 ;; ============================ events =========================================
-(defun window-events (window window-class)
+(defun window-events (window lisp-window)
   (let ((key-controller   (gtk4:make-event-controller-key))
         (focus-controller (gtk4:make-event-controller-focus)))
 
@@ -250,7 +250,7 @@
                                          (window-remove *lisp-app* window)
                                          (gtk4:window-close window))))
 
-(defun canvas-events (canvas window-class)
+(defun canvas-events (canvas lisp-window)
   (labels
       ((canvas-window (c)
          (gtk4:widget-parent (gtk4:widget-parent c))))
@@ -309,7 +309,7 @@
 
 ;; =============================================================================
 
-(defun new-window-for-app (app window-title window-menu-fn window-class)
+(defun new-window-for-app (app window-title window-menu-fn lisp-window)
     (let ((window (gtk4:make-application-window :application app)))
       (gtk4:application-add-window app window)
 
@@ -333,11 +333,11 @@
                 (gtk4:drawing-area-draw-func canvas) (list (cffi:callback %draw-func)
                                                            (cffi:null-pointer)
                                                            (cffi:null-pointer)))
-          (canvas-events canvas window-class)
+          (canvas-events canvas lisp-window)
           (gtk4:box-append box canvas))
         (setf (gtk4:window-child window) box))
 
-      (window-events window window-class)
+      (window-events window lisp-window)
 
       (format t "actions defined for app ~A~%"  (gio:action-group-list-actions app))
 
