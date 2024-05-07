@@ -309,40 +309,40 @@
 ;; =============================================================================
 
 (defun new-window-for-app (app window-title window-menu-fn lisp-window)
-    (let ((window (gtk4:make-application-window :application app)))
-      (gtk4:application-add-window app window)
+  (let ((window (gtk4:make-application-window :application app)))
+    (gtk4:application-add-window app window)
 
-      (when window-menu-fn
-        (setf
-         (gtk4:application-menubar app) (funcall window-menu-fn app lisp-window)
-         (gtk4:application-window-show-menubar-p window) T))
-
+    (when window-menu-fn
       (setf
-       (gtk4:window-title window) window-title
-       ;; it may not be needed as in wsl we can still use left edge and corners
-       ;; (gtk4:window-resizable-p window) T
-       (gtk4:window-default-size window) (list *initial-window-width*
-                                               *initial-window-height*))
+       (gtk4:application-menubar app) (funcall window-menu-fn app lisp-window)
+       (gtk4:application-window-show-menubar-p window) T))
 
-      (let ((box (gtk4:make-box :orientation gtk4:+orientation-vertical+
-                                :spacing 0)))
-        (let ((canvas (gtk4:make-drawing-area)))
+    (setf
+     (gtk4:window-title window) window-title
+     ;; it may not be needed as in wsl we can still use left edge and corners
+     ;; (gtk4:window-resizable-p window) T
+     (gtk4:window-default-size window) (list *initial-window-width*
+                                             *initial-window-height*))
 
-          (setf (gtk4:widget-vexpand-p canvas) T
-                (gtk4:drawing-area-draw-func canvas) (list (cffi:callback %draw-func)
-                                                           (cffi:null-pointer)
-                                                           (cffi:null-pointer)))
-          (canvas-events canvas lisp-window)
-          (gtk4:box-append box canvas))
-        (setf (gtk4:window-child window) box))
+    (let ((box (gtk4:make-box :orientation gtk4:+orientation-vertical+
+                              :spacing 0)))
+      (let ((canvas (gtk4:make-drawing-area)))
 
-      (window-events window lisp-window)
+        (setf (gtk4:widget-vexpand-p canvas) T
+              (gtk4:drawing-area-draw-func canvas) (list (cffi:callback %draw-func)
+                                                         (cffi:null-pointer)
+                                                         (cffi:null-pointer)))
+        (canvas-events canvas lisp-window)
+        (gtk4:box-append box canvas))
+      (setf (gtk4:window-child window) box))
 
-      (format t "actions defined for app ~A~%"  (gio:action-group-list-actions app))
+    (window-events window lisp-window)
 
-      (gtk:window-present window)
+    (format t "actions defined for app ~A~%"  (gio:action-group-list-actions app))
 
-      window))
+    (gtk:window-present window)
+
+    window))
 
 (defun window-activation-and-connection (lisp-app gtk4-app window-title window-menu-fn window-class)
   (if gtk4-app

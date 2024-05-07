@@ -33,7 +33,7 @@
                                   :detailed-action (format nil "app.~A" action-name))))
     (setf (gio:menu-item-action-and-target-value item)
           (list (format nil  "app.~A" action-name) (glib:make-string-variant
-                                       :string string)))
+                                                    :string string)))
     item))
 
 (defun prepare-item-bool (lisp-window app menu label action-name default &key (disabled nil))
