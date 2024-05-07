@@ -291,6 +291,6 @@
 (defun main ()
   (init)
 
-  (gui-window:window (make-instance 'gui-window:lisp-window)))
+  (gui-window:window (make-instance 'app-window)))
 
 (main)
