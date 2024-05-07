@@ -229,7 +229,8 @@
                        (get-internal-run-time))
                ;; commenting it out will show windows without menu
                'example::menu-bar-simple
-               'example::app-window))
+               (make-instance 'app-window)))
+
              ((equal menu-item "quit")
               (gui-window:close-all-windows-and-quit))
 
@@ -237,7 +238,7 @@
               (gui-window:window-creation-from-menu
                (format nil "~A" "Help")
                nil
-               'example::help-window))
+               (make-instance 'help-window)))
 
              ((equal menu-item "about")
               (gui-window:present-about-dialog

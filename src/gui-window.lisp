@@ -220,8 +220,7 @@
                     (setf (current-focus *lisp-app*) window)
                     (apply #'gui-events:de-key-pressed
                            (append (list lisp-window)
-                                   (funcall #'translate-key-args args)
-                                   (list window)))))
+                                   (funcall #'translate-key-args args)))))
 
     (gtk4:connect key-controller "key-released"
                   (lambda (e &rest args)
