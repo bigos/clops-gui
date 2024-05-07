@@ -21,9 +21,6 @@
   ())
 
 ;;; ====== methods =============================================================
-(defmethod (setf gir-window) ((gtk4-window gir::object-instance) (lisp-window example::app-window)))
-(defmethod (setf gir-window) ((gtk4-window gir::object-instance) (lisp-window example::help-window)))
-
 (defmethod inc-timer ((model model))
   (incf (timeout-count *model*))
   (when (> (timeout-count *model*) 5)
