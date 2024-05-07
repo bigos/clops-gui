@@ -135,20 +135,6 @@
                   (typep window 'sb-sys:system-area-pointer)
                   (typep window 'symbol))))
 
-(defmethod window-add :before ((app lisp-app) (window gir::object-instance) window-class)
-  (assert (equal "ApplicationWindow"
-                 (gir:info-get-name (gir::info-of (gir:gir-class-of window))))))
-(defmethod window-add ((app lisp-app) (window gir::object-instance) window-class)
-  (setf (gethash (window-hkey window)
-                 (windows app))
-        (make-instance window-class
-                       :gir-window window)))
-(defmethod window-add ((app lisp-app) (window symbol) window-class)
-  (setf (gethash (window-hkey window)
-                 (windows app))
-        (make-instance window-class
-                       :gir-window window)))
-
 (defmethod window-get ((app lisp-app) (window T))
   (warn "existing windows ~S" (loop for k being the hash-key of (windows app) collect k ))
   (gethash (window-hkey window)
@@ -361,12 +347,14 @@
 
 (defun window-activation-and-connection (lisp-app gtk4-app window-title window-menu-fn window-class)
   (if gtk4-app
-      (window-add lisp-app
-                  (new-window-for-app gtk4-app window-title window-menu-fn window-class)
-                  window-class)
-      (window-add lisp-app
-                  window-title
-                  window-class)))
+      (let* ((new-lisp-window (make-instance window-class))
+             (new-gtk4-window (new-window-for-app gtk4-app window-title window-menu-fn new-lisp-window)))
+        (setf (gir-window new-lisp-window) new-gtk4-window
+              (gethash (window-hkey new-gtk4-window) (windows lisp-app)) new-lisp-window))
+      (let* ((new-lisp-window (make-instance window-class))
+             (new-sim-window window-title))
+        (setf (gir-window new-lisp-window) window-title
+              (gethash (window-hkey new-sim-window) (windows lisp-app)) new-lisp-window))))
 
 (defun window-creation-from-simulation (window-title window-class)
   (assert (symbolp window-title))
