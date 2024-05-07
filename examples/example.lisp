@@ -26,7 +26,7 @@
     (setf (timeout-count *model*) 0)))
 
 ;;; ============================= experimental testing =========================
-;;; REPL usege (cl::experiment)
+;;; REPL usage (cl::experiment)
 (defun experiment ()
   (setf
    *model* (make-instance 'model)
@@ -54,7 +54,7 @@
   (warn "please check your folder ~S for images drawn by the procedure simulate-draw-func"
         (uiop:temporary-directory)))
 
-;;; ============================= client functions =============================
+;;; ============================= client functions and methods =================
 ;;; ===================== menu declaration =====================================
 
 (defun menu-bar-simple (app lisp-window)
@@ -117,7 +117,7 @@
       (values menu)))
 
 ;;; ============================ view ==========================================
-(defmethod draw-window ((window gui-window:lisp-window))            ; view
+(defmethod draw-window ((window app-window))            ; view
   (assert (typep window 'gui-window:lisp-window))
   ;; (warn "would draw on window")
 
@@ -199,7 +199,7 @@
   )
 
 ;;; ====================== event processing ====================================
-(defun process-event (lisp-window event &rest args)
+(defmethod process-event ((lisp-window gui-window:lisp-window) event &rest args)
   (unless (member event '(:timeout :motion))
     (format t "~&going to process ~S ~A ~A  "
             (class-of lisp-window)
@@ -272,7 +272,6 @@
 
   (maphash (lambda (key lwin) (gui-window:redraw-canvas lwin))
            (gui-window:all-windows)))
-
 
 (defun init ()
   ;; define external functions
