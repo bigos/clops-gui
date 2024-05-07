@@ -219,30 +219,33 @@
                     (declare (ignore e))
                     (setf (current-focus *lisp-app*) window)
                     (apply #'gui-events:de-key-pressed
-                           (append  (funcall #'translate-key-args args)
-                                    (list window)))))
+                           (append (list lisp-window)
+                                   (funcall #'translate-key-args args)
+                                   (list window)))))
 
     (gtk4:connect key-controller "key-released"
                   (lambda (e &rest args)
                     (declare (ignore e))
-                    (apply #'gui-events:de-key-released (funcall #'translate-key-args args))))
+                    (apply #'gui-events:de-key-released
+                           (append (list lisp-window)
+                                   (funcall #'translate-key-args args)))))
     ;; for some reason enter and leave are not reliable and I need to add window as in key-pressed to some events
     (gtk4:connect focus-controller "enter"
                   (lambda (e &rest args)
                     (declare (ignore e args))
                     (setf (current-focus *lisp-app*) window)
-                    (apply #'gui-events:de-focus-enter (list window))))
+                    (apply #'gui-events:de-focus-enter (list lisp-window))))
 
     (gtk4:connect focus-controller "leave"
                   (lambda (e &rest args)
                     (declare (ignore e args))
                     (setf (current-focus *lisp-app*) nil)
-                    (apply #'gui-events:de-focus-leave (list window)))))
+                    (apply #'gui-events:de-focus-leave (list lisp-window)))))
 
   (glib:timeout-add 1000
                     (lambda (&rest args)
                       (declare (ignore args))
-                      (funcall #'gui-events:de-timeout)
+                      (funcall #'gui-events:de-timeout lisp-window)
                       glib:+source-continue+))
 
   (gtk4:connect window "close-request" (lambda (widget &rest args)
@@ -259,33 +262,30 @@
 
       (gtk4:connect motion-controller "motion"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion
-                                                                       (append args
-                                                                               (list
-                                                                               (canvas-window
-                                                                                canvas))))))
+                                                                       (append (list lisp-window)
+                                                                               args
+                                                                               (list)))))
       (gtk4:connect motion-controller "enter"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion-enter
-                                                                       (append args
-                                                                               (list
-                                                                                (canvas-window
-                                                                                 canvas))))))
+                                                                       (append (list lisp-window)
+                                                                               args))))
       (gtk4:connect motion-controller "leave"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion-leave
-                                                                       (append args
-                                                                               (list
-                                                                                (canvas-window
-                                                                                 canvas)))))))
+                                                                       (append (list lisp-window)
+                                                                               args)))))
 
     (let ((scroll-controller (gtk4:make-event-controller-scroll :flags gtk4:+event-controller-scroll-flags-vertical+)))
       (gtk4:widget-add-controller canvas scroll-controller)
       (gtk4:connect scroll-controller "scroll"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-scroll
+                                                                       (append (list lisp-window))
                                                                        args))))
 
     (let ((gesture-click-controller (gtk4:make-gesture-click))
           (click-fn (lambda (event args click-de-fn)
                       (let ((current-button (gtk4:gesture-single-current-button event)))
-                        (apply click-de-fn (list current-button
+                        (apply click-de-fn (list lisp-window
+                                                 current-button
                                                  (nth 1 args)
                                                  (nth 2 args)))))))
       ;; make gesture click listen to other mouse buttons as well
@@ -304,8 +304,7 @@
 
     (gtk4:connect canvas "resize" (lambda (widget &rest args)
                                     (declare (ignore widget))
-                                    (gui-events:de-resize (first args) (second args) (canvas-window
-                                                                           canvas))))))
+                                    (gui-events:de-resize lisp-window (first args) (second args))))))
 
 ;; =============================================================================
 

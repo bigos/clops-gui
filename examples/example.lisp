@@ -199,16 +199,17 @@
   )
 
 ;;; ====================== event processing ====================================
-(defun process-event (event &rest args)
+(defun process-event (lisp-window event &rest args)
   (unless (member event '(:timeout :motion))
-    (format t "~&going to process ~A ~A  " event
+    (format t "~&going to process ~S ~A ~A  "
+            (class-of lisp-window)
+            event
             (case event
               ((:focus-enter :focus-leave)
-               (destructuring-bind ((win)) args
-                 (gui-window:window-hkey win)))
+               (gui-window:window-hkey lisp-window))
               (:key-pressed
-               (destructuring-bind ((letter name code mods window)) args
-                 (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey window)))))
+               (destructuring-bind ((letter name code mods)) args
+                 (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
               (T args))))
   (case event
     (:timeout
@@ -250,9 +251,9 @@
     (:menu-bool (warn "not processed event ~S ~S" event args))
     (:menu-radio (warn "not processed event ~S ~S" event args))
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
-     (destructuring-bind ((x y win)) args
+     (destructuring-bind ((x y)) args
        (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) (cons x y)
-             (gui-window:current-motion    gui-window:*lisp-app*) win)))
+             (gui-window:current-motion    gui-window:*lisp-app*) lisp-window)))
     (:motion-leave
      (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
            (gui-window:current-motion gui-window:*lisp-app*) nil))
@@ -262,8 +263,8 @@
     (:released (warn "not processed event ~S ~S" event args))
     (:scroll (warn "not processed event ~S ~S" event args))
     (:resize
-     (destructuring-bind ((w h win)) args
-       (gui-window:window-resize w h win)))
+     (destructuring-bind ((w h)) args
+       (gui-window:window-resize w h lisp-window)))
     (:key-pressed
      )
     (otherwise
