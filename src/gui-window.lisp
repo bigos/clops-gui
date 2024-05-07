@@ -136,7 +136,7 @@
                   (typep window 'symbol))))
 
 (defmethod window-get ((app lisp-app) (window T))
-  (warn "existing windows ~S" (loop for k being the hash-key of (windows app) collect k ))
+  ;; (warn "existing windows ~S" (loop for k being the hash-key of (windows app) collect k ))
   (gethash (window-hkey window)
            (windows app)))
 
