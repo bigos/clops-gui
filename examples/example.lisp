@@ -57,7 +57,7 @@
 ;;; ============================= client functions =============================
 ;;; ===================== menu declaration =====================================
 
-(defun menu-bar-simple (app)
+(defun menu-bar-simple (app lisp-window)
   (let ((menu (gio:make-menu)))
     (gui-menu:build-menu
      menu
@@ -66,53 +66,53 @@
       (gui-menu:prepare-section
        nil
        (gui-menu:build-items
-        (gui-menu:prepare-item-simple app menu "Quit" "quit")))))
+        (gui-menu:prepare-item-simple lisp-window app menu "Quit" "quit")))))
 
     (values menu)))
 
-(defun menu-bar (app)
+(defun menu-bar (app lisp-window)
     (let ((menu (gio:make-menu)))
       (gui-menu:build-menu
        menu
        (gui-menu:prepare-submenu
         "File"
-        ;; (prepare-section
-        ;;  nil
-        ;;  (build-items
-        ;;   (prepare-item-bool app menu "Dark mode" "dark-mode" nil)))
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-bool lisp-window app menu "Dark mode" "dark-mode" nil)))
 
         (gui-menu:prepare-section
          nil
          (gui-menu:build-items
-          (gui-menu:prepare-item-simple app menu "New Window" "new-window")))
+          (gui-menu:prepare-item-simple lisp-window app menu "New Window" "new-window")))
 
-        ;; (prepare-submenu
-        ;;  "New Game"
-        ;;  (prepare-section
-        ;;   nil
-        ;;   (progn
-        ;;     (prepare-radio-action app "new-game-size" "SMALL")
-        ;;     (build-items
-        ;;      (prepare-item-radio app menu "Small 8x8"    "new-game-size" "SMALL")
-        ;;      (prepare-item-radio app menu "Medium 16x16" "new-game-size" "MEDIUM")
-        ;;      (prepare-item-radio app menu "Large 32x32"  "new-game-size" "LARGE")))))
+        (gui-menu:prepare-submenu
+         "New Game"
+         (gui-menu:prepare-section
+          nil
+          (progn
+            (gui-menu:prepare-radio-action lisp-window app "new-game-size" "SMALL")
+            (gui-menu:build-items
+             (gui-menu:prepare-item-radio lisp-window app menu "Small 8x8"    "new-game-size" "SMALL")
+             (gui-menu:prepare-item-radio lisp-window app menu "Medium 16x16" "new-game-size" "MEDIUM")
+             (gui-menu:prepare-item-radio lisp-window app menu "Large 32x32"  "new-game-size" "LARGE")))))
 
         (gui-menu:prepare-section
          nil
          (gui-menu:build-items
-          (gui-menu:prepare-item-simple app menu "Quit" "quit"))))
+          (gui-menu:prepare-item-simple lisp-window app menu "Quit" "quit"))))
        (gui-menu:prepare-submenu
         "Help"
         ;; for now I plan to have only the About menu item
         (gui-menu:prepare-section
          nil
          (gui-menu:build-items
-          (gui-menu:prepare-item-simple app menu "Help" "help")
-          (gui-menu:prepare-item-simple app menu "Tutorial" "tutorial" :disabled T)))
+          (gui-menu:prepare-item-simple lisp-window app menu "Help" "help")
+          (gui-menu:prepare-item-simple lisp-window app menu "Tutorial" "tutorial" :disabled T)))
         (gui-menu:prepare-section
          nil
          (gui-menu:build-items
-          (gui-menu:prepare-item-simple app menu "About" "about")))))
+          (gui-menu:prepare-item-simple lisp-window app menu "About" "about")))))
 
       (values menu)))
 

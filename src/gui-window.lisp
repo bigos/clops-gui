@@ -314,7 +314,7 @@
 
       (when window-menu-fn
         (setf
-         (gtk4:application-menubar app) (funcall window-menu-fn app)
+         (gtk4:application-menubar app) (funcall window-menu-fn app lisp-window)
          (gtk4:application-window-show-menubar-p window) T))
 
       (setf

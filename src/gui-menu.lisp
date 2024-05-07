@@ -3,25 +3,27 @@
 
 (in-package #:gui-menu)
 
-(defun prepare-radio-action (app action-name default)
-      (let ((action
-              (gio:make-stateful-simple-action :name action-name
-                                               :parameter-type (glib:make-variant-type
-                                                                :type-string "s")
-                                               :state (glib:make-string-variant
-                                                       :string default))))
-        (gio:action-map-add-action app action)
-        (gtk4:connect action "activate"
-                      (lambda (event parameter)
-                        (declare (ignore event))
-                        (gio:action-change-state action parameter)
+(defun prepare-radio-action (lisp-window app action-name default)
+  (let ((action
+          (gio:make-stateful-simple-action :name action-name
+                                           :parameter-type (glib:make-variant-type
+                                                            :type-string "s")
+                                           :state (glib:make-string-variant
+                                                   :string default))))
+    (gio:action-map-add-action app action)
+    (gtk4:connect action "activate"
+                  (lambda (event parameter)
+                    (declare (ignore event))
+                    (gio:action-change-state action parameter)
 
-                        (apply 'gui-events:de-menu-radio (list action-name
-                                                    (glib:variant-string
-                                                     (gio:action-state action))))))
-        (gobj:object-unref action)))
+                    (apply 'gui-events:de-menu-radio (list
+                                                      lisp-window
+                                                      action-name
+                                                      (glib:variant-string
+                                                       (gio:action-state action))))))
+    (gobj:object-unref action)))
 
-(defun prepare-item-radio (app menu label action-name string)
+(defun prepare-item-radio (lisp-window app menu label action-name string)
   (declare (ignore app))
 
   (format t "preparing radio item ~S~%" (list label action-name string))
@@ -34,7 +36,7 @@
                                        :string string)))
     item))
 
-(defun prepare-item-bool (app menu label action-name default &key (disabled nil))
+(defun prepare-item-bool (lisp-window app menu label action-name default &key (disabled nil))
   (let ((action (gio:make-stateful-simple-action :name action-name
                                                  :parameter-type nil
                                                  :state (glib:make-boolean-variant
@@ -50,7 +52,8 @@
                                                                T
                                                                nil)))
                    (apply 'gui-events:de-menu-bool
-                          (list action-name
+                          (list lisp-window
+                                action-name
                                 (glib:variant-hash (gio:action-state action))))))
     (gobj:object-unref action))
 
@@ -58,7 +61,7 @@
                       :label label
                       :detailed-action (format nil  "app.~A" action-name)))
 
-(defun prepare-item-simple (app menu label action-name &key (disabled nil))
+(defun prepare-item-simple (lisp-window app menu label action-name &key (disabled nil))
   (let ((action (gio:make-simple-action :name action-name
                                         :parameter-type nil)))
     (when disabled (setf (gio:simple-action-enabled-p action) nil))
@@ -68,7 +71,7 @@
                   (lambda (event parameter)
                     (declare (ignore event parameter))
 
-                    (apply 'gui-events:de-menu-simple (list action-name))))
+                    (apply 'gui-events:de-menu-simple (list lisp-window action-name))))
     (gobj:object-unref action))
 
   (gio:make-menu-item :model menu
