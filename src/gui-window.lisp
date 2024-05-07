@@ -221,7 +221,7 @@
                       collect modname)))))
 
 ;; ============================ events =========================================
-(defun window-events (window)
+(defun window-events (window window-class)
   (let ((key-controller   (gtk4:make-event-controller-key))
         (focus-controller (gtk4:make-event-controller-focus)))
 
@@ -264,7 +264,7 @@
                                          (window-remove *lisp-app* window)
                                          (gtk4:window-close window))))
 
-(defun canvas-events (canvas)
+(defun canvas-events (canvas window-class)
   (labels
       ((canvas-window (c)
          (gtk4:widget-parent (gtk4:widget-parent c))))
@@ -323,7 +323,7 @@
 
 ;; =============================================================================
 
-(defun new-window-for-app (app window-title window-menu-fn)
+(defun new-window-for-app (app window-title window-menu-fn window-class)
     (let ((window (gtk4:make-application-window :application app)))
       (gtk4:application-add-window app window)
 
@@ -347,11 +347,11 @@
                 (gtk4:drawing-area-draw-func canvas) (list (cffi:callback %draw-func)
                                                            (cffi:null-pointer)
                                                            (cffi:null-pointer)))
-          (canvas-events canvas)
+          (canvas-events canvas window-class)
           (gtk4:box-append box canvas))
         (setf (gtk4:window-child window) box))
 
-      (window-events window)
+      (window-events window window-class)
 
       (format t "actions defined for app ~A~%"  (gio:action-group-list-actions app))
 
@@ -362,7 +362,7 @@
 (defun window-activation-and-connection (lisp-app gtk4-app window-title window-menu-fn window-class)
   (if gtk4-app
       (window-add lisp-app
-                  (new-window-for-app gtk4-app window-title window-menu-fn)
+                  (new-window-for-app gtk4-app window-title window-menu-fn window-class)
                   window-class)
       (window-add lisp-app
                   window-title
