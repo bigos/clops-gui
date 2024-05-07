@@ -19,7 +19,6 @@
    :*initial-title*
    :*lisp-app*
    :*client-fn-menu-bar*
-   :*window-class*
    :all-windows
    :close-all-windows-and-quit
    :current-motion

@@ -7,7 +7,6 @@
 (defparameter *initial-window-height* 200)
 (defparameter *initial-title* "change me")
 (defparameter *lisp-app* nil)
-(defparameter *window-class* nil)
 
 ;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
