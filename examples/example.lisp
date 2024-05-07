@@ -268,7 +268,7 @@
     (:key-pressed
      )
     (otherwise
-     (warn "not processed event ~S ~S" event args)))
+     (warn "not handled event ~S ~S" event args)))
 
   (maphash (lambda (key lwin) (gui-window:redraw-canvas lwin))
            (gui-window:all-windows)))
