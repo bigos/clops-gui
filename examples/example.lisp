@@ -1,4 +1,5 @@
 ;; (load "~/Programming/Lisp/clops-gui/examples/example.lisp")
+
 (declaim (optimize (speed 0) (safety 2) (debug 3)))
 
 (defpackage #:example
@@ -20,8 +21,11 @@
   ())
 
 ;;; ====== methods =============================================================
+(defmethod (setf gir-window) ((gtk4-window gir::object-instance) (lisp-window example::app-window)))
+(defmethod (setf gir-window) ((gtk4-window gir::object-instance) (lisp-window example::help-window)))
+
 (defmethod inc-timer ((model model))
-    (incf (timeout-count *model*))
+  (incf (timeout-count *model*))
   (when (> (timeout-count *model*) 5)
     (setf (timeout-count *model*) 0)))
 
