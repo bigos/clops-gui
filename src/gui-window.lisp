@@ -351,6 +351,7 @@
              (new-gtk4-window (new-window-for-app gtk4-app window-title window-menu-fn new-lisp-window)))
         (setf (gir-window new-lisp-window) new-gtk4-window
               (gethash (window-hkey new-gtk4-window) (windows lisp-app)) new-lisp-window))
+      ;; we still need better way of creating simulated windows
       (let* ((new-lisp-window (make-instance window-class))
              (new-sim-window window-title))
         (setf (gir-window new-lisp-window) window-title
