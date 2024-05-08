@@ -27,29 +27,32 @@
     (setf (timeout-count *model*) 0)))
 
 ;;; ============================= experimental testing =========================
-;;; REPL usage (cl::experiment)
+;;; REPL usage (example::experiment)
 (defun experiment ()
+  (warn "starting experiment")
   (setf
    *model* (make-instance 'model)
    gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
   (assert (zerop (hash-table-count (gui-window:all-windows))))
-  (gui-window::window-creation-from-simulation :testing)
-  (assert (eq 1 (hash-table-count (gui-window:all-windows))))
-  (process-event :resize (list 600 200 (gui-window:window-get gui-window:*lisp-app* :testing)))
-  (process-event :timeout)
-  (process-event :motion-enter (list 50 50 (gui-window:window-get gui-window:*lisp-app* :testing)))
+  (let ((lisp-window (make-instance 'gui-window:lisp-window)))
+    (gui-window::window-creation-from-simulation :testing lisp-window)
+    (assert (eq 1 (hash-table-count (gui-window:all-windows))))
+    (process-event lisp-window :resize (list 600 200 ))
+    (process-event lisp-window :timeout)
+    (process-event lisp-window :motion-enter (list 50 50 )))
 
   (warn "trying tools")
   (assert (eq 1 (hash-table-count (gui-window:all-windows))))
-  (gui-window::window-creation-from-simulation :tools)
-  (warn "should have tools window")
-  (assert (eq 2 (hash-table-count (gui-window:all-windows))))
-  ;; seems like resize is changing the wrong window
-  (warn "added window trying to resize")
-  (process-event :resize (list 250 500 (gui-window:window-get gui-window:*lisp-app* :tools)))
-  (warn "resized tools")
-  (process-event :timeout)
-  (process-event :motion-enter (list 10 10 (gui-window:window-get gui-window:*lisp-app* :tools)))
+  (let ((lisp-window (make-instance 'gui-window:lisp-window)))
+    (gui-window::window-creation-from-simulation :tools lisp-window)
+    (warn "should have tools window")
+    (assert (eq 2 (hash-table-count (gui-window:all-windows))))
+    ;; seems like resize is changing the wrong window
+    (warn "added window trying to resize")
+    (process-event lisp-window :resize (list 250 500 ))
+    (warn "resized tools")
+    (process-event lisp-window :timeout)
+    (process-event lisp-window :motion-enter (list 10 10)))
 
   ;; end
   (warn "please check your folder ~S for images drawn by the procedure simulate-draw-func"
