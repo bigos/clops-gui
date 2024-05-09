@@ -39,7 +39,14 @@
     (assert (eq 1 (hash-table-count (gui-window:all-windows))))
     (process-event lisp-window :resize (list 600 200 ))
     (process-event lisp-window :timeout)
-    (process-event lisp-window :motion-enter (list 50 50 )))
+    (process-event lisp-window :motion-enter (list 50 50 ))
+
+    (process-event lisp-window :key-pressed (list "" "Escape" 9  nil :testing ))
+    (process-event lisp-window :key-pressed (list "" "F1" 67     nil :testing ))
+    (process-event lisp-window :key-pressed (list "1" "1" 10     nil :testing ))
+    (process-event lisp-window :key-pressed (list " " "space" 65 nil :testing ))
+
+    )
 
   (warn "trying tools")
   (assert (eq 1 (hash-table-count (gui-window:all-windows))))
