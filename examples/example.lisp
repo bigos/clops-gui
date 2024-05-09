@@ -219,7 +219,7 @@
               ((:focus-enter :focus-leave)
                (gui-window:window-hkey lisp-window))
               (:key-pressed
-               (destructuring-bind ((letter name code mods)) args
+               (destructuring-bind ((letter name code mods &rest rest)) args
                  (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
               (T args))))
   (case event
@@ -278,11 +278,15 @@
      (destructuring-bind ((w h)) args
        (gui-window:window-resize w h lisp-window)))
     (:key-pressed
-     )
+     (destructuring-bind ((entered key-name key-code mods win)) args
+       (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods win))
+       ))
     (otherwise
      (warn "not handled event ~S ~S" event args)))
 
-  (maphash (lambda (key lwin) (gui-window:redraw-canvas lwin))
+  (maphash (lambda (key lwin)
+             (declare (ignore key))
+             (gui-window:redraw-canvas lwin))
            (gui-window:all-windows)))
 
 (defun init ()
