@@ -41,10 +41,10 @@
     (process-event lisp-window :timeout)
     (process-event lisp-window :motion-enter (list 50 50 ))
 
-    (process-event lisp-window :key-pressed (list "" "Escape" 9  nil :testing ))
-    (process-event lisp-window :key-pressed (list "" "F1" 67     nil :testing ))
-    (process-event lisp-window :key-pressed (list "1" "1" 10     nil :testing ))
-    (process-event lisp-window :key-pressed (list " " "space" 65 nil :testing ))
+    (process-event lisp-window :key-pressed (list "" "Escape" 9  nil))
+    (process-event lisp-window :key-pressed (list "" "F1" 67     nil))
+    (process-event lisp-window :key-pressed (list "1" "1" 10     nil))
+    (process-event lisp-window :key-pressed (list " " "space" 65 nil))
 
     )
 
@@ -219,7 +219,7 @@
               ((:focus-enter :focus-leave)
                (gui-window:window-hkey lisp-window))
               (:key-pressed
-               (destructuring-bind ((letter name code mods &rest rest)) args
+               (destructuring-bind ((letter name code mods)) args
                  (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
               (T args))))
   (case event
@@ -278,8 +278,8 @@
      (destructuring-bind ((w h)) args
        (gui-window:window-resize w h lisp-window)))
     (:key-pressed
-     (destructuring-bind ((entered key-name key-code mods win)) args
-       (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods win))
+     (destructuring-bind ((entered key-name key-code mods)) args
+       (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
        ))
     (otherwise
      (warn "not handled event ~S ~S" event args)))
