@@ -17,6 +17,8 @@
   (:export
    :*client-fn-draw-objects*
    :*initial-title*
+   :*initial-window-width*
+   :*initial-window-height*
    :*lisp-app*
    :*client-fn-menu-bar*
    :all-windows
