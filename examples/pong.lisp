@@ -265,9 +265,11 @@
     (otherwise
      (warn "not handled event ~S ~S" event args))))
 
+(defmethod process-event (lisp-window event &rest args)
+  (warn "@@@ handling weird event @@@ ~S" (list (type-of lisp-window) lisp-window event args) ))
 ;;; --- enent helpers ----------------------------------------------------------
 (defun restart-helper ()
-  (warn "implement restart"))
+    (warn "implement restart"))
 
 (defun show-tutorial-helper ()
   (gui-window:window-creation-from-menu
