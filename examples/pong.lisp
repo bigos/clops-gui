@@ -180,10 +180,7 @@
           (gui-window:close-all-windows-and-quit))
 
          ((equal menu-item "tutorial")
-          (gui-window:window-creation-from-menu
-           "Tutorial"
-           nil                          ; no menu
-           (make-instance 'tutorial-window)))
+          (show-tutorial-helper))
 
          ((equal menu-item "about")
           (gui-window:present-about-dialog
@@ -218,7 +215,14 @@
        (when *pong-game* (resize *pong-game* w h))))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
-       (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))))
+       (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
+       (cond
+
+         ((equalp entered "r")
+          (restart-helper))
+         ((equalp entered "t")
+          (show-tutorial-helper))
+         (t (warn "undandled key press ~S" args)))))
     (otherwise
      (warn "not handled event ~S ~S" event args)))
 
@@ -261,15 +265,25 @@
     (otherwise
      (warn "not handled event ~S ~S" event args))))
 
+;;; --- enent helpers ----------------------------------------------------------
+(defun restart-helper ()
+  (warn "implement restart"))
+
+(defun show-tutorial-helper ()
+  (gui-window:window-creation-from-menu
+   "Tutorial"
+   nil                                  ; no menu
+   (make-instance 'tutorial-window)))
+
 ;;; === main ===================================================================
 
 (defun main ()
-    (setf gui-window:*client-fn-menu-bar*      'pong::menu-bar
-          gui-window:*client-fn-draw-objects*  'pong::draw-window
-          gui-events:*client-fn-process-event* 'pong::process-event
-          gui-window:*initial-window-width*    600
-          gui-window:*initial-window-height*   400
-          gui-window:*initial-title*           "Pong")
+  (setf gui-window:*client-fn-menu-bar*      'pong::menu-bar
+        gui-window:*client-fn-draw-objects*  'pong::draw-window
+        gui-events:*client-fn-process-event* 'pong::process-event
+        gui-window:*initial-window-width*    600
+        gui-window:*initial-window-height*   400
+        gui-window:*initial-title*           "Pong")
 
   (gui-window:window (make-instance 'pong-window)))
 
