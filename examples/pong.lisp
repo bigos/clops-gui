@@ -49,7 +49,8 @@
   (()))
 
 (defclass/std game-area ()
-  (()))
+  ((top-left)
+   (bottom-right)))
 
 (defclass/std coordinates ()
   ((x)
@@ -59,7 +60,8 @@
   ((player-human    :a :std (make-instance 'player-human))
    (player-computer :a :std (make-instance 'player-computer))
    (ball            :a :std (make-instance 'ball))
-   (game-area       :a :std (make-instance 'game-area))))
+   (game-area       :a :std (make-instance 'game-area))
+   (pong-window)))
 
 ;;; === methods ================================================================
 (defmethod start-game ((game pong-game))
@@ -177,8 +179,7 @@
        (cond
          ((equal menu-item "restart")
           ;; start the game
-          (setf *pong-game* (make-instance 'pong-game))
-          (start-game *pong-game*))
+          (restart-helper lisp-window))
 
          ((equal menu-item "quit")
           (gui-window:close-all-windows-and-quit))
@@ -223,7 +224,7 @@
        (cond
 
          ((equalp entered "r")
-          (restart-helper))
+          (restart-helper lisp-window))
          ((equalp entered "t")
           (show-tutorial-helper))
          (t (warn "undandled key press ~S" args)))))
@@ -273,8 +274,8 @@
 ;;   (warn "@@@ handling weird event @@@ ~S" (list (type-of lisp-window) lisp-window event args) ))
 
 ;;; --- enent helpers ----------------------------------------------------------
-(defun restart-helper ()
-  (setf *pong-game* (make-instance 'pong-game)))
+(defmethod restart-helper ((pong-window pong-window))
+  (setf *pong-game* (make-instance 'pong-game :pong-window pong-window)))
 
 (defun show-tutorial-helper ()
   (gui-window:window-creation-from-menu
