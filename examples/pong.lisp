@@ -13,44 +13,45 @@
 ;;; === defgenerics ============================================================
 
 ;;; === classes ================================================================
+(defclass-std:defclass/std tutorial-window (gui-window:lisp-window))
 
 ;;; === methods ================================================================
 
 ;;; === menu declaration =======================================================
 (defun menu-bar (app lisp-window)
-  (let ((menu (gio:make-menu)))
-    (gui-menu:build-menu
-     menu
+    (let ((menu (gio:make-menu)))
+      (gui-menu:build-menu
+       menu
 
-     (gui-menu:prepare-submenu
-      "File"
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "Restart" "restart")))
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "Quit" "quit")))
-      ;; end of prepare-submenu File
-      )
+       (gui-menu:prepare-submenu
+        "File"
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple lisp-window app menu "Restart" "restart")))
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple lisp-window app menu "Quit" "quit")))
+        ;; end of prepare-submenu File
+        )
 
-     (gui-menu:prepare-submenu
-      "Help"
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "Tutorial" "tutorial")))
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "About" "about")))
-      ;; end of prepare-submenu Help
-      )
-     ;; end of build-menu
-     )
+       (gui-menu:prepare-submenu
+        "Help"
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple lisp-window app menu "Tutorial" "tutorial")))
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple lisp-window app menu "About" "about")))
+        ;; end of prepare-submenu Help
+        )
+       ;; end of build-menu
+       )
 
-    (values menu)))
+      (values menu)))
 
 ;;; === drawing ================================================================
 (defmethod draw-window ((window gui-window:lisp-window))
@@ -61,6 +62,21 @@
   (cairo:set-font-size 20)
 
   (let ((my-text "Pong will go here"))
+    (multiple-value-bind  (xb yb width height)
+        (cairo:text-extents my-text)
+      (declare (ignore xb yb width height)))
+    (cairo:set-source-rgb 0 0 0)
+    (cairo:move-to 20 20)
+    (cairo:show-text (format nil "~A" my-text))))
+
+(defmethod draw-window ((window tutorial-window))
+  (cairo:set-source-rgb  1 1 1)
+  (cairo:paint)
+
+  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
+  (cairo:set-font-size 20)
+
+  (let ((my-text "Tutorial will go here"))
     (multiple-value-bind  (xb yb width height)
         (cairo:text-extents my-text)
       (declare (ignore xb yb width height)))
