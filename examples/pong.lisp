@@ -51,6 +51,10 @@
 (defclass/std game-area ()
   (()))
 
+(defclass/std coordinates ()
+  ((x)
+   (y)))
+
 (defclass/std pong-game ()
   ((player-human    :a :std (make-instance 'player-human))
    (player-computer :a :std (make-instance 'player-computer))
@@ -62,7 +66,7 @@
   (warn "starting pong"))
 
 (defmethod resize ((game pong-game) w h)
-  (warn "resizing pong"))
+  (warn "resizing pong ~S" game))
 
 ;;; === menu declaration =======================================================
 
@@ -265,11 +269,12 @@
     (otherwise
      (warn "not handled event ~S ~S" event args))))
 
-(defmethod process-event (lisp-window event &rest args)
-  (warn "@@@ handling weird event @@@ ~S" (list (type-of lisp-window) lisp-window event args) ))
+;; (defmethod process-event (lisp-window event &rest args)
+;;   (warn "@@@ handling weird event @@@ ~S" (list (type-of lisp-window) lisp-window event args) ))
+
 ;;; --- enent helpers ----------------------------------------------------------
 (defun restart-helper ()
-    (warn "implement restart"))
+  (setf *pong-game* (make-instance 'pong-game)))
 
 (defun show-tutorial-helper ()
   (gui-window:window-creation-from-menu
