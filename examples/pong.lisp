@@ -8,7 +8,11 @@
 
 ;;; === package ================================================================
 (defpackage #:pong
-  (:use #:cl))
+  (:use #:cl)
+  (:import-from :serapeum
+                :~>)
+  (:import-from :defclass-std
+                :defclass/std))
 
 (in-package #:pong)
 
