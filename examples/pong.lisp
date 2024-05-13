@@ -2,18 +2,25 @@
 
 ;; (load "~/Programming/Lisp/clops-gui/examples/pong.lisp")
 
-(defpackage #:pong
-  (:use #:cl))
-
-(in-package #:pong)
 ;;; === load ===================================================================
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
 (ql:quickload '(:clops-gui) :silent nil)
 
+;;; === package ================================================================
+(defpackage #:pong
+    (:use #:cl)
+  (:import-from :serapeum
+   :~>)
+  (:import-from :defclass-std
+   :defclass/std))
+
+(in-package #:pong)
+
 ;;; === defgenerics ============================================================
 
 ;;; === classes ================================================================
-(defclass-std:defclass/std tutorial-window (gui-window:lisp-window))
+(defclass/std tutorial-window (gui-window:lisp-window)
+  (()))
 
 ;;; === methods ================================================================
 
