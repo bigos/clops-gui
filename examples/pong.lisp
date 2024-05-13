@@ -66,7 +66,7 @@
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
-  (let ((my-text "Pong will go here"))
+  (let ((my-text "New project will go here"))
     (multiple-value-bind  (xb yb width height)
         (cairo:text-extents my-text)
       (declare (ignore xb yb width height)))
