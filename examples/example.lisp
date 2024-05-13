@@ -2,13 +2,15 @@
 
 (declaim (optimize (speed 0) (safety 2) (debug 3)))
 
+;;; === load ===================================================================
+(push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
+(ql:quickload '(:clops-gui) :silent nil)
+
+;;; === package ================================================================
 (defpackage #:example
   (:use #:cl))
 
 (in-package #:example)
-;;; === load ===================================================================
-(push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui) :silent nil)
 
 ;;; === classes ================================================================
 (defclass-std:defclass/std model ()
