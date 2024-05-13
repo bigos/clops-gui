@@ -16,6 +16,8 @@
 
 (in-package #:pong)
 
+(defparameter *pong-game* nil)
+
 ;;; === defgenerics ============================================================
 
 ;;; === classes ================================================================
@@ -56,46 +58,53 @@
    (game-area       :a :std (make-instance 'game-area))))
 
 ;;; === methods ================================================================
+(defmethod start-game ((game pong-game))
+  (warn "starting pong"))
+
+(defmethod resize ((game pong-game) w h)
+  (warn "resizing pong"))
 
 ;;; === menu declaration =======================================================
+
 (defun menu-bar (app lisp-window)
-  (let ((menu (gio:make-menu)))
-    (gui-menu:build-menu
-     menu
+     (let ((menu (gio:make-menu)))
+       (gui-menu:build-menu
+        menu
 
-     (gui-menu:prepare-submenu
-      "File"
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "Restart" "restart")))
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "Quit" "quit")))
-      ;; end of prepare-submenu File
-      )
+        (gui-menu:prepare-submenu
+         "File"
+         (gui-menu:prepare-section
+          nil
+          (gui-menu:build-items
+           (gui-menu:prepare-item-simple lisp-window app menu "Restart" "restart")))
+         (gui-menu:prepare-section
+          nil
+          (gui-menu:build-items
+           (gui-menu:prepare-item-simple lisp-window app menu "Quit" "quit")))
+         ;; end of prepare-submenu File
+         )
 
-     (gui-menu:prepare-submenu
-      "Help"
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "Tutorial" "tutorial")))
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "About" "about")))
-      ;; end of prepare-submenu Help
-      )
-     ;; end of build-menu
-     )
+        (gui-menu:prepare-submenu
+         "Help"
+         (gui-menu:prepare-section
+          nil
+          (gui-menu:build-items
+           (gui-menu:prepare-item-simple lisp-window app menu "Tutorial" "tutorial")))
+         (gui-menu:prepare-section
+          nil
+          (gui-menu:build-items
+           (gui-menu:prepare-item-simple lisp-window app menu "About" "about")))
+         ;; end of prepare-submenu Help
+         )
+        ;; end of build-menu
+        )
 
-    (values menu)))
+       (values menu)))
 
 ;;; === drawing ================================================================
+
 (defmethod draw-window ((window pong-window))
-  (cairo:set-source-rgb  1 1 1)
+       (cairo:set-source-rgb  1 1 1)
   (cairo:paint)
 
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
@@ -110,7 +119,7 @@
     (cairo:show-text (format nil "~A" my-text))))
 
 (defmethod draw-window ((window tutorial-window))
-  (cairo:set-source-rgb  1 1 1)
+       (cairo:set-source-rgb  1 1 1)
   (cairo:paint)
 
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
@@ -125,17 +134,19 @@
     (cairo:show-text (format nil "~A" my-text))))
 
 ;;; === events =================================================================
+
+
 (defmethod process-event ((lisp-window pong-window) event &rest args)
-  (unless (member event '(:timeout :motion))
-    (format t "~&going to process ~A ~A  "
-            event
-            (case event
-              ((:focus-enter :focus-leave)
-               (gui-window:window-hkey lisp-window))
-              (:key-pressed
-               (destructuring-bind ((letter name code mods)) args
-                 (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
-              (T args))))
+    (unless (member event '(:timeout :motion))
+      (format t "~&going to process ~A ~A  "
+              event
+              (case event
+                ((:focus-enter :focus-leave)
+                 (gui-window:window-hkey lisp-window))
+                (:key-pressed
+                 (destructuring-bind ((letter name code mods)) args
+                   (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
+                (T args))))
 
   (case event
     (:timeout
@@ -145,13 +156,18 @@
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
        (cond
+         ((equal menu-item "restart")
+          ;; start the game
+          (setf *pong-game* (make-instance 'pong-game))
+          (start-game *pong-game*))
+
          ((equal menu-item "quit")
           (gui-window:close-all-windows-and-quit))
 
          ((equal menu-item "tutorial")
           (gui-window:window-creation-from-menu
            "Tutorial"
-           nil ; no menu
+           nil                          ; no menu
            (make-instance 'tutorial-window)))
 
          ((equal menu-item "about")
@@ -183,7 +199,8 @@
     (:scroll)
     (:resize
      (destructuring-bind ((w h)) args
-       (gui-window:window-resize w h lisp-window)))
+       (gui-window:window-resize w h lisp-window)
+       (when *pong-game* (resize *pong-game* w h))))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))))
@@ -196,13 +213,14 @@
            (gui-window:all-windows)))
 
 ;;; === main ===================================================================
+
 (defun main ()
-    (setf gui-window:*client-fn-menu-bar*      'pong::menu-bar
-          gui-window:*client-fn-draw-objects*  'pong::draw-window
-          gui-events:*client-fn-process-event* 'pong::process-event
-          gui-window:*initial-window-width*    600
-          gui-window:*initial-window-height*   400
-          gui-window:*initial-title*           "Pong")
+  (setf gui-window:*client-fn-menu-bar*      'pong::menu-bar
+        gui-window:*client-fn-draw-objects*  'pong::draw-window
+        gui-events:*client-fn-process-event* 'pong::process-event
+        gui-window:*initial-window-width*    600
+        gui-window:*initial-window-height*   400
+        gui-window:*initial-title*           "Pong")
 
   (gui-window:window (make-instance 'pong-window)))
 
