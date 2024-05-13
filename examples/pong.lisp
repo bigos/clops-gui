@@ -119,22 +119,37 @@
     (cairo:show-text (format nil "~A" my-text))))
 
 (defmethod draw-window ((window tutorial-window))
-       (cairo:set-source-rgb  1 1 1)
+  (cairo:set-source-rgb  1 1 1)
   (cairo:paint)
 
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
-  (let ((my-text "Tutorial will go here"))
+  (let ((my-text "Keyboard Shortcuts"))
     (multiple-value-bind  (xb yb width height)
         (cairo:text-extents my-text)
       (declare (ignore xb yb width height)))
     (cairo:set-source-rgb 0 0 0)
     (cairo:move-to 20 20)
-    (cairo:show-text (format nil "~A" my-text))))
+    (cairo:show-text (format nil "~A" my-text)))
+
+  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
+  (cairo:set-font-size 10)
+
+  (loop for line in (list "r - Restart"
+                              "t - show Tutorial")
+        for ln = 0 then (1+ ln)
+        do
+
+           (let ((line-text line))
+             (multiple-value-bind  (xb yb width height)
+                 (cairo:text-extents line-text)
+               (declare (ignore xb yb width height)))
+             (cairo:set-source-rgb 0 0 0)
+             (cairo:move-to 20 (+ 50 (* ln 20)))
+             (cairo:show-text (format nil "~A" line-text)))))
 
 ;;; === events =================================================================
-
 
 (defmethod process-event ((lisp-window pong-window) event &rest args)
     (unless (member event '(:timeout :motion))
@@ -212,16 +227,50 @@
              (gui-window:redraw-canvas lwin))
            (gui-window:all-windows)))
 
+(defmethod process-event ((lisp-window tutorial-window) event &rest args)
+  (unless (member event '(:timeout :motion))
+    (format t "~&going to process ~A ~A  "
+            event
+            (case event
+              ((:focus-enter :focus-leave)
+               (gui-window:window-hkey lisp-window))
+              (:key-pressed
+               (destructuring-bind ((letter name code mods)) args
+                 (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
+              (T args))))
+  (case event
+    (:timeout
+     ;; do nothing yet
+     )
+    ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
+     (destructuring-bind ((x y)) args
+       (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) (cons x y)
+             (gui-window:current-motion    gui-window:*lisp-app*) lisp-window)))
+    (:motion-leave
+     (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
+           (gui-window:current-motion gui-window:*lisp-app*) nil))
+    (:focus-enter)
+    (:focus-leave)
+    (:pressed)
+    (:released)
+    (:scroll)
+    (:resize)
+    (:key-pressed
+     (destructuring-bind ((entered key-name key-code mods)) args
+       (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))))
+    (otherwise
+     (warn "not handled event ~S ~S" event args))))
+
 ;;; === main ===================================================================
 
 (defun main ()
-  (setf gui-window:*client-fn-menu-bar*      'pong::menu-bar
-        gui-window:*client-fn-draw-objects*  'pong::draw-window
-        gui-events:*client-fn-process-event* 'pong::process-event
-        gui-window:*initial-window-width*    600
-        gui-window:*initial-window-height*   400
-        gui-window:*initial-title*           "Pong")
+    (setf gui-window:*client-fn-menu-bar*      'pong::menu-bar
+          gui-window:*client-fn-draw-objects*  'pong::draw-window
+          gui-events:*client-fn-process-event* 'pong::process-event
+          gui-window:*initial-window-width*    600
+          gui-window:*initial-window-height*   400
+          gui-window:*initial-title*           "Pong")
 
   (gui-window:window (make-instance 'pong-window)))
 
-(main)
+;; (main)
