@@ -276,7 +276,7 @@
       (gtk4:widget-add-controller canvas scroll-controller)
       (gtk4:connect scroll-controller "scroll"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-scroll
-                                                                       (append (list lisp-window))
+                                                                       lisp-window
                                                                        args))))
 
     (let ((gesture-click-controller (gtk4:make-gesture-click))
