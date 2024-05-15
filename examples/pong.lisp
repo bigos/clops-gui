@@ -66,26 +66,28 @@
 
 ;;; === methods ================================================================
 (defmethod initialize-instance :after ((pong-game pong-game) &rest initargs &key)
+  (declare (ignore initargs))
   (warn "running after initialize instance")
-  (when nil
-    '(let* ((top-line  30)
-           (left-line 30)
-           (right-line  (- gui-window:*initial-window-width*  30))
-           (bottom-line (- gui-window:*initial-window-height* 30)))
-      ((player-human    :a :std (make-instance 'player-human))
-       (player-computer :a :std (make-instance 'player-computer))
-       (ball            :a :std (make-instance 'ball :coordinates (make-instance 'coordinates
-                                                                                 :x 50
-                                                                                 :y 50)
-                                                     :radius 5))
 
-       (game-area       :a :std (make-instance 'game-area :top-left (make-instance 'coordinates
-                                                                                   :x left-line
-                                                                                   :y top-line)
-                                                          :bottom-right (make-instance 'coordinates
-                                                                                       :x right-line
-                                                                                       :y bottom-line)))
-       (pong-window)))))
+  (let* ((top-line  30)
+         (left-line 30)
+         (right-line  (- gui-window:*initial-window-width*  30))
+         (bottom-line (- gui-window:*initial-window-height* (* 2 30))))
+    (setf
+     (player-human pong-game)    (make-instance 'player-human)
+     (player-computer pong-game) (make-instance 'player-computer)
+     (ball pong-game)            (make-instance 'ball
+                                                :coordinates (make-instance 'coordinates
+                                                                            :x 50
+                                                                            :y 50)
+                                                :radius 5)
+     (game-area pong-game)       (make-instance 'game-area
+                                                :top-left (make-instance 'coordinates
+                                                                         :x left-line
+                                                                         :y top-line)
+                                                :bottom-right (make-instance 'coordinates
+                                                                             :x right-line
+                                                                             :y bottom-line)))))
 
 (defmethod start-game ((game pong-game))
   (warn "starting pong"))
@@ -93,42 +95,50 @@
 (defmethod resize ((game pong-game) w h)
   (warn "resizing pong ~S" game))
 
+(defmethod width ((game-area game-area))
+  (- (~> game-area bottom-right x)
+     (~> game-area top-left     x)))
+
+(defmethod height ((game-area game-area))
+  (- (~> game-area bottom-right y)
+     (~> game-area top-left     y)))
+
 ;;; === menu declaration =======================================================
 
 (defun menu-bar (app lisp-window)
-     (let ((menu (gio:make-menu)))
-       (gui-menu:build-menu
-        menu
+  (let ((menu (gio:make-menu)))
+    (gui-menu:build-menu
+     menu
 
-        (gui-menu:prepare-submenu
-         "File"
-         (gui-menu:prepare-section
-          nil
-          (gui-menu:build-items
-           (gui-menu:prepare-item-simple lisp-window app menu "Restart" "restart")))
-         (gui-menu:prepare-section
-          nil
-          (gui-menu:build-items
-           (gui-menu:prepare-item-simple lisp-window app menu "Quit" "quit")))
-         ;; end of prepare-submenu File
-         )
+     (gui-menu:prepare-submenu
+      "File"
+      (gui-menu:prepare-section
+       nil
+       (gui-menu:build-items
+        (gui-menu:prepare-item-simple lisp-window app menu "Restart" "restart")))
+      (gui-menu:prepare-section
+       nil
+       (gui-menu:build-items
+        (gui-menu:prepare-item-simple lisp-window app menu "Quit" "quit")))
+      ;; end of prepare-submenu File
+      )
 
-        (gui-menu:prepare-submenu
-         "Help"
-         (gui-menu:prepare-section
-          nil
-          (gui-menu:build-items
-           (gui-menu:prepare-item-simple lisp-window app menu "Tutorial" "tutorial")))
-         (gui-menu:prepare-section
-          nil
-          (gui-menu:build-items
-           (gui-menu:prepare-item-simple lisp-window app menu "About" "about")))
-         ;; end of prepare-submenu Help
-         )
-        ;; end of build-menu
-        )
+     (gui-menu:prepare-submenu
+      "Help"
+      (gui-menu:prepare-section
+       nil
+       (gui-menu:build-items
+        (gui-menu:prepare-item-simple lisp-window app menu "Tutorial" "tutorial")))
+      (gui-menu:prepare-section
+       nil
+       (gui-menu:build-items
+        (gui-menu:prepare-item-simple lisp-window app menu "About" "about")))
+      ;; end of prepare-submenu Help
+      )
+     ;; end of build-menu
+     )
 
-       (values menu)))
+    (values menu)))
 
 ;;; === drawing ================================================================
 
@@ -145,7 +155,16 @@
       (declare (ignore xb yb width height)))
     (cairo:set-source-rgb 0 0 0)
     (cairo:move-to 20 20)
-    (cairo:show-text (format nil "~A" my-text))))
+    (cairo:show-text (format nil "~A" my-text)))
+
+  (when *pong-game*
+    (gui-window:set-rgba "#FF000088")
+    (cairo:rectangle
+     (~> *pong-game* game-area top-left x)
+     (~> *pong-game* game-area top-left y)
+     (~> *pong-game* game-area width)
+     (~> *pong-game* game-area height))
+    (cairo:fill-path)))
 
 (defmethod draw-window ((window tutorial-window))
   (cairo:set-source-rgb  1 1 1)
