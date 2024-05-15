@@ -58,26 +58,35 @@
    (y)))
 
 (defclass/std pong-game ()
-  (let* ((top-line  30)
-         (left-line 30)
-         (right-line  (- gui-window:*initial-window-width*  30))
-         (bottom-line (- gui-window:*initial-window-height* 30)))
-    ((player-human    :a :std (make-instance 'player-human))
-     (player-computer :a :std (make-instance 'player-computer))
-     (ball            :a :std (make-instance 'ball :coordinates (make-instance 'coordinates
-                                                                               :x 50
-                                                                               :y 50)
-                                                   :radius 5))
-
-     (game-area       :a :std (make-instance 'game-area :top-left (make-instance 'coordinates
-                                                                                 :x left-line
-                                                                                 :y top-line)
-                                                        :bottom-right (make-instance 'coordinates
-                                                                                     :x right-line
-                                                                                     :y bottom-line)))
-     (pong-window))))
+  ((player-human    :a :std (make-instance 'player-human))
+   (player-computer :a :std (make-instance 'player-computer))
+   (ball            :a :std (make-instance 'ball))
+   (game-area       :a :std (make-instance 'game-area))
+   (pong-window)))
 
 ;;; === methods ================================================================
+(defmethod initialize-instance :after ((pong-game pong-game) &rest initargs &key)
+  (warn "running after initialize instance")
+  (when nil
+    '(let* ((top-line  30)
+           (left-line 30)
+           (right-line  (- gui-window:*initial-window-width*  30))
+           (bottom-line (- gui-window:*initial-window-height* 30)))
+      ((player-human    :a :std (make-instance 'player-human))
+       (player-computer :a :std (make-instance 'player-computer))
+       (ball            :a :std (make-instance 'ball :coordinates (make-instance 'coordinates
+                                                                                 :x 50
+                                                                                 :y 50)
+                                                     :radius 5))
+
+       (game-area       :a :std (make-instance 'game-area :top-left (make-instance 'coordinates
+                                                                                   :x left-line
+                                                                                   :y top-line)
+                                                          :bottom-right (make-instance 'coordinates
+                                                                                       :x right-line
+                                                                                       :y bottom-line)))
+       (pong-window)))))
+
 (defmethod start-game ((game pong-game))
   (warn "starting pong"))
 
