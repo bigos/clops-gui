@@ -46,7 +46,8 @@
   (()))
 
 (defclass/std ball ()
-  (()))
+  ((coordinates)
+   (radius)))
 
 (defclass/std game-area ()
   ((top-left)
@@ -57,11 +58,24 @@
    (y)))
 
 (defclass/std pong-game ()
-  ((player-human    :a :std (make-instance 'player-human))
-   (player-computer :a :std (make-instance 'player-computer))
-   (ball            :a :std (make-instance 'ball))
-   (game-area       :a :std (make-instance 'game-area))
-   (pong-window)))
+  (let* ((top-line  30)
+         (left-line 30)
+         (right-line  (- gui-window:*initial-window-width*  30))
+         (bottom-line (- gui-window:*initial-window-height* 30)))
+    ((player-human    :a :std (make-instance 'player-human))
+     (player-computer :a :std (make-instance 'player-computer))
+     (ball            :a :std (make-instance 'ball :coordinates (make-instance 'coordinates
+                                                                               :x 50
+                                                                               :y 50)
+                                                   :radius 5))
+
+     (game-area       :a :std (make-instance 'game-area :top-left (make-instance 'coordinates
+                                                                                 :x left-line
+                                                                                 :y top-line)
+                                                        :bottom-right (make-instance 'coordinates
+                                                                                     :x right-line
+                                                                                     :y bottom-line)))
+     (pong-window))))
 
 ;;; === methods ================================================================
 (defmethod start-game ((game pong-game))
@@ -275,7 +289,9 @@
 
 ;;; --- enent helpers ----------------------------------------------------------
 (defmethod restart-helper ((pong-window pong-window))
-  (setf *pong-game* (make-instance 'pong-game :pong-window pong-window)))
+  (warn "setting *pong-game* and staring game")
+  (setf *pong-game* (make-instance 'pong-game :pong-window pong-window))
+  (start-game *pong-game*))
 
 (defun show-tutorial-helper ()
   (gui-window:window-creation-from-menu
