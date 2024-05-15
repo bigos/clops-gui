@@ -103,42 +103,53 @@
   (- (~> game-area bottom-right y)
      (~> game-area top-left     y)))
 
+;;; --- rendering -------------------------------
+
+(defmethod render ((game-area game-area))
+  (gui-window:set-rgba "#FF000088")
+  (cairo:rectangle
+   (~> game-area top-left x)
+   (~> game-area top-left y)
+   (~> game-area width)
+   (~> game-area height))
+  (cairo:fill-path))
+
 ;;; === menu declaration =======================================================
 
 (defun menu-bar (app lisp-window)
-  (let ((menu (gio:make-menu)))
-    (gui-menu:build-menu
-     menu
+    (let ((menu (gio:make-menu)))
+      (gui-menu:build-menu
+       menu
 
-     (gui-menu:prepare-submenu
-      "File"
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "Restart" "restart")))
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "Quit" "quit")))
-      ;; end of prepare-submenu File
-      )
+       (gui-menu:prepare-submenu
+        "File"
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple lisp-window app menu "Restart" "restart")))
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple lisp-window app menu "Quit" "quit")))
+        ;; end of prepare-submenu File
+        )
 
-     (gui-menu:prepare-submenu
-      "Help"
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "Tutorial" "tutorial")))
-      (gui-menu:prepare-section
-       nil
-       (gui-menu:build-items
-        (gui-menu:prepare-item-simple lisp-window app menu "About" "about")))
-      ;; end of prepare-submenu Help
-      )
-     ;; end of build-menu
-     )
+       (gui-menu:prepare-submenu
+        "Help"
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple lisp-window app menu "Tutorial" "tutorial")))
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple lisp-window app menu "About" "about")))
+        ;; end of prepare-submenu Help
+        )
+       ;; end of build-menu
+       )
 
-    (values menu)))
+      (values menu)))
 
 ;;; === drawing ================================================================
 
@@ -158,13 +169,7 @@
     (cairo:show-text (format nil "~A" my-text)))
 
   (when *pong-game*
-    (gui-window:set-rgba "#FF000088")
-    (cairo:rectangle
-     (~> *pong-game* game-area top-left x)
-     (~> *pong-game* game-area top-left y)
-     (~> *pong-game* game-area width)
-     (~> *pong-game* game-area height))
-    (cairo:fill-path)))
+    (~> *pong-game* game-area render)))
 
 (defmethod draw-window ((window tutorial-window))
   (cairo:set-source-rgb  1 1 1)
