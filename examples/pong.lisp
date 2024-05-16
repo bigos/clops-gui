@@ -8,11 +8,15 @@
 
 ;;; === package ================================================================
 (defpackage #:pong
-    (:use #:cl)
+  (:use #:cl)
   (:import-from :serapeum
    :~>)
   (:import-from :defclass-std
-   :defclass/std))
+   :defclass/std)
+  (:import-from :gui-box
+   :coordinates
+   :x
+   :y))
 
 (in-package #:pong)
 
@@ -53,9 +57,6 @@
   ((top-left)
    (bottom-right)))
 
-(defclass/std coordinates ()
-  ((x)
-   (y)))
 
 (defclass/std pong-game ()
   ((player-human    :a :std (make-instance 'player-human))

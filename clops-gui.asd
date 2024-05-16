@@ -11,5 +11,6 @@
                 ((:file "packages")
                  (:file "gui-events")
                  (:file "gui-menu")
-                 (:file "gui-window"))))
+                 (:file "gui-window")
+                 (:file "gui-box"))))
   :description "GUI for clops in separate system")
