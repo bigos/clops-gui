@@ -105,14 +105,16 @@
 
 ;;; --- rendering -------------------------------
 (defmethod render ((ball ball))
-  (gui-window:set-rgba "red")
-
-  (cairo:rectangle
-   (~> ball coordinates x (- _ (~> ball radius)))
-   (~> ball coordinates y (- _ (~> ball radius)))
-   (~> ball radius (* 2 _))
-   (~> ball radius (* 2 _)))
-  (cairo:fill-path))
+  (cairo:set-line-width 0.9)
+  (cairo:arc (~> ball coordinates x)
+             (~> ball coordinates y)
+             (~> ball radius)
+             0
+             (* 2 PI))
+  (gui-window:set-rgba "blue")          ;fill
+  (cairo:fill-preserve)
+  (gui-window:set-rgba "red")           ;outline
+  (cairo:stroke))
 
 (defmethod render ((game-area game-area))
   (gui-window:set-rgba "#FFFF0088")
