@@ -115,6 +115,20 @@
   (cairo:fill-path))
 
 (defmethod render ((pong-game pong-game))
+  (cairo:set-source-rgb  1 1 1)
+  (cairo:paint)
+
+  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
+  (cairo:set-font-size 20)
+
+  (let ((my-text "Pong will go here"))
+    (multiple-value-bind  (xb yb width height)
+        (cairo:text-extents my-text)
+      (declare (ignore xb yb width height)))
+    (cairo:set-source-rgb 0 0 0)
+    (cairo:move-to 20 20)
+    (cairo:show-text (format nil "~A" my-text)))
+
   (warn "render pong game")
   (render (game-area pong-game)))
 
@@ -162,22 +176,22 @@
 ;;; === drawing ================================================================
 
 (defmethod draw-window ((window pong-window))
-       (cairo:set-source-rgb  1 1 1)
-  (cairo:paint)
+  (if *pong-game*
+      (~> *pong-game* render)
+      (progn
+        (cairo:set-source-rgb  1 1 1)
+        (cairo:paint)
 
-  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
-  (cairo:set-font-size 20)
+        (cairo:select-font-face "Ubuntu Mono" :normal :bold)
+        (cairo:set-font-size 20)
 
-  (let ((my-text "Pong will go here"))
-    (multiple-value-bind  (xb yb width height)
-        (cairo:text-extents my-text)
-      (declare (ignore xb yb width height)))
-    (cairo:set-source-rgb 0 0 0)
-    (cairo:move-to 20 20)
-    (cairo:show-text (format nil "~A" my-text)))
-
-  (when *pong-game*
-    (~> *pong-game* render)))
+        (let ((my-text "Press r to start"))
+          (multiple-value-bind  (xb yb width height)
+              (cairo:text-extents my-text)
+            (declare (ignore xb yb width height)))
+          (cairo:set-source-rgb 0 0 0)
+          (cairo:move-to 20 20)
+          (cairo:show-text (format nil "~A" my-text))))))
 
 (defmethod draw-window ((window tutorial-window))
   (cairo:set-source-rgb  1 1 1)
