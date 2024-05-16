@@ -57,7 +57,6 @@
   ((top-left)
    (bottom-right)))
 
-
 (defclass/std pong-game ()
   ((player-human    :a :std (make-instance 'player-human))
    (player-computer :a :std (make-instance 'player-computer))
@@ -105,9 +104,18 @@
      (~> game-area top-left     y)))
 
 ;;; --- rendering -------------------------------
+(defmethod render ((ball ball))
+  (gui-window:set-rgba "red")
+
+  (cairo:rectangle
+   (~> ball coordinates x (- _ (~> ball radius)))
+   (~> ball coordinates y (- _ (~> ball radius)))
+   (~> ball radius (* 2 _))
+   (~> ball radius (* 2 _)))
+  (cairo:fill-path))
 
 (defmethod render ((game-area game-area))
-  (gui-window:set-rgba "#FF000088")
+  (gui-window:set-rgba "#FFFF0088")
   (cairo:rectangle
    (~> game-area top-left x)
    (~> game-area top-left y)
@@ -131,7 +139,8 @@
     (cairo:show-text (format nil "~A" my-text)))
 
   (warn "render pong game")
-  (render (game-area pong-game)))
+  (render (game-area pong-game))
+  (render (ball pong-game)))
 
 (defmethod render ((anything T))
   (warn "@@@ handling weird render @@@ ~S" (list (type-of anything) anything))
