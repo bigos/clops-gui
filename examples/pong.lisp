@@ -16,7 +16,8 @@
   (:import-from :gui-box
    :coordinates
    :x
-   :y))
+   :y
+   :top-left))
 
 (in-package #:pong)
 
@@ -129,20 +130,29 @@
   (cairo:set-source-rgb  1 1 1)
   (cairo:paint)
 
-  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
-  (cairo:set-font-size 20)
-
-  (let ((my-text "Pong will go here"))
-    (multiple-value-bind  (xb yb width height)
-        (cairo:text-extents my-text)
-      (declare (ignore xb yb width height)))
-    (cairo:set-source-rgb 0 0 0)
-    (cairo:move-to 20 20)
-    (cairo:show-text (format nil "~A" my-text)))
+  (render (make-instance 'gui-box:text-box
+                         :top-left (make-instance 'coordinates :x 20 :y 20)
+                         :width 50
+                         :height 20
+                         :text "Pong will go here"))
 
   (warn "render pong game")
   (render (game-area pong-game))
   (render (ball pong-game)))
+
+(defmethod render ((text-box gui-box:text-box))
+  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
+  (cairo:set-font-size 20)
+
+  (let ((my-text (gui-box::text text-box)))
+    (multiple-value-bind  (xb yb width height)
+        (cairo:text-extents my-text)
+      (declare (ignore xb yb width height)))
+    (cairo:set-source-rgb 0 0 0)
+    (cairo:move-to (~> text-box top-left x)
+                   (~> text-box top-left y))
+    (cairo:show-text (format nil "~A" my-text)))
+  )
 
 (defmethod render ((anything T))
   (warn "@@@ handling weird render @@@ ~S" (list (type-of anything) anything))

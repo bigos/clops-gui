@@ -77,6 +77,7 @@
   (:export
    ;; classes
    :box
+   :text-box
    :coordinates
    ;; add more
    ))

@@ -7,4 +7,9 @@
    (y)))
 
 (defclass/std box ()
-  (()))
+  ((top-left)
+   (width)
+   (height)))
+
+(defclass/std text-box (box)
+  ((text)))
