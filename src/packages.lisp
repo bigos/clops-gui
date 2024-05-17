@@ -79,5 +79,9 @@
    :box
    :text-box
    :coordinates
+   :x
+   :y
+   :text
+   :top-left
    ;; add more
    ))

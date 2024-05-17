@@ -12,13 +12,7 @@
   (:import-from :serapeum
    :~>)
   (:import-from :defclass-std
-   :defclass/std)
-  (:import-from :gui-box
-   :coordinates
-   :x
-   :y
-   :top-left
-   :text))
+   :defclass/std))
 
 (in-package #:pong)
 
@@ -79,15 +73,15 @@
      (player-human pong-game)    (make-instance 'player-human)
      (player-computer pong-game) (make-instance 'player-computer)
      (ball pong-game)            (make-instance 'ball
-                                                :coordinates (make-instance 'coordinates
+                                                :coordinates (make-instance 'gui-box:coordinates
                                                                             :x 50
                                                                             :y 50)
                                                 :radius 5)
      (game-area pong-game)       (make-instance 'game-area
-                                                :top-left (make-instance 'coordinates
+                                                :top-left (make-instance 'gui-box:coordinates
                                                                          :x left-line
                                                                          :y top-line)
-                                                :bottom-right (make-instance 'coordinates
+                                                :bottom-right (make-instance 'gui-box:coordinates
                                                                              :x right-line
                                                                              :y bottom-line)))))
 
@@ -98,18 +92,18 @@
   (warn "resizing pong ~S" game))
 
 (defmethod width ((game-area game-area))
-  (- (~> game-area bottom-right x)
-     (~> game-area top-left     x)))
+  (- (~> game-area bottom-right gui-box:x)
+     (~> game-area top-left     gui-box:x)))
 
 (defmethod height ((game-area game-area))
-  (- (~> game-area bottom-right y)
-     (~> game-area top-left     y)))
+  (- (~> game-area bottom-right gui-box:y)
+     (~> game-area top-left     gui-box:y)))
 
 ;;; --- rendering -------------------------------
 (defmethod render ((ball ball))
   (cairo:set-line-width 0.9)
-  (cairo:arc (~> ball coordinates x)
-             (~> ball coordinates y)
+  (cairo:arc (~> ball coordinates gui-box:x)
+             (~> ball coordinates gui-box:y)
              (~> ball radius)
              0
              (* 2 PI))
@@ -121,8 +115,8 @@
 (defmethod render ((game-area game-area))
   (gui-window:set-rgba "#FFFF0088")
   (cairo:rectangle
-   (~> game-area top-left x)
-   (~> game-area top-left y)
+   (~> game-area top-left gui-box:x)
+   (~> game-area top-left gui-box:y)
    (~> game-area width)
    (~> game-area height))
   (cairo:fill-path))
@@ -132,7 +126,7 @@
   (cairo:paint)
 
   (render (make-instance 'gui-box:text-box
-                         :top-left (make-instance 'coordinates :x 20 :y 20)
+                         :top-left (make-instance 'gui-box:coordinates :x 20 :y 20)
                          :width 50
                          :height 20
                          :text "Pong will go here"))
@@ -145,13 +139,13 @@
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
-  (let ((my-text (text text-box)))
+  (let ((my-text (gui-box:text text-box)))
     (multiple-value-bind  (xb yb width height)
         (cairo:text-extents my-text)
       (declare (ignore xb yb width height)))
     (cairo:set-source-rgb 0 0 0)
-    (cairo:move-to (~> text-box top-left x)
-                   (~> text-box top-left y))
+    (cairo:move-to (~> text-box gui-box:top-left gui-box:x)
+                   (~> text-box gui-box:top-left gui-box:y))
     (cairo:show-text (format nil "~A" my-text)))
   )
 
