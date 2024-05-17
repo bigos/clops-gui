@@ -17,7 +17,8 @@
    :coordinates
    :x
    :y
-   :top-left))
+   :top-left
+   :text))
 
 (in-package #:pong)
 
@@ -144,7 +145,7 @@
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
-  (let ((my-text (gui-box::text text-box)))
+  (let ((my-text (text text-box)))
     (multiple-value-bind  (xb yb width height)
         (cairo:text-extents my-text)
       (declare (ignore xb yb width height)))
