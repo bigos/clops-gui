@@ -136,6 +136,14 @@
   (render (ball pong-game)))
 
 (defmethod render ((text-box gui-box:text-box))
+  (gui-window:set-rgba "#FFFF0088")
+  (cairo:rectangle
+   (~> text-box gui-box:top-left gui-box:x)
+   (~> text-box gui-box:top-left gui-box:y)
+   (~> text-box gui-box:width)
+   (~> text-box gui-box:height))
+  (cairo:fill-path)
+
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
