@@ -83,5 +83,7 @@
    :y
    :text
    :top-left
+   :width
+   :height
    ;; add more
    ))

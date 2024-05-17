@@ -136,25 +136,33 @@
   (render (ball pong-game)))
 
 (defmethod render ((text-box gui-box:text-box))
-  (gui-window:set-rgba "#FFFF0088")
-  (cairo:rectangle
-   (~> text-box gui-box:top-left gui-box:x)
-   (~> text-box gui-box:top-left gui-box:y)
-   (~> text-box gui-box:width)
-   (~> text-box gui-box:height))
-  (cairo:fill-path)
-
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
   (let ((my-text (gui-box:text text-box)))
     (multiple-value-bind  (xb yb width height)
         (cairo:text-extents my-text)
-      (declare (ignore xb yb width height)))
-    (cairo:set-source-rgb 0 0 0)
-    (cairo:move-to (~> text-box gui-box:top-left gui-box:x)
-                   (~> text-box gui-box:top-left gui-box:y))
-    (cairo:show-text (format nil "~A" my-text)))
+      (declare (ignore xb ;; yb
+                       ;; width height
+                       ))
+
+      (gui-window:set-rgba "#66FFAA90")
+      (cairo:rectangle
+       (~> text-box gui-box:top-left gui-box:x)
+       (~> text-box gui-box:top-left gui-box:y (+ _ yb))
+       ;; (~> text-box gui-box:width)
+       ;; (~> text-box gui-box:height)
+       width
+       height)
+
+
+      (cairo:fill-path)
+
+
+      (cairo:set-source-rgb 0 0 0)
+      (cairo:move-to (~> text-box gui-box:top-left gui-box:x)
+                     (~> text-box gui-box:top-left gui-box:y))
+      (cairo:show-text (format nil "~A" my-text))))
   )
 
 (defmethod render ((anything T))
