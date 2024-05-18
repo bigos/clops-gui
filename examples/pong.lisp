@@ -17,6 +17,25 @@
 (in-package #:pong)
 
 (defparameter *pong-game* nil)
+;;; ======================= experiment =========================================
+(defun experiment ()
+  (warn "starting experiment")
+  (setf
+   gui-window:*client-fn-draw-objects*  'pong::draw-window
+   gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
+  (assert (zerop (hash-table-count (gui-window:all-windows))))
+
+  (let ((lisp-window (make-instance 'pong-window)))
+    (gui-window::window-creation-from-simulation :testing lisp-window)
+    (assert (eq 1 (hash-table-count (gui-window:all-windows))))
+    (process-event lisp-window :resize (list 600 200 ))
+    (process-event lisp-window :timeout)
+    (process-event lisp-window :motion-enter (list 50 50 ))
+
+    (process-event lisp-window :key-pressed (list "" "Escape" 9  nil))
+    (process-event lisp-window :key-pressed (list "" "F1" 67     nil))
+    (process-event lisp-window :key-pressed (list "r" "r" 10     nil))
+    (process-event lisp-window :key-pressed (list " " "space" 65 nil))))
 
 ;;; === defgenerics ============================================================
 
@@ -390,9 +409,9 @@
 ;;; === main ===================================================================
 
 (defun main ()
-  (setf gui-window:*client-fn-menu-bar*      'pong::menu-bar
-        gui-window:*client-fn-draw-objects*  'pong::draw-window
+  (setf gui-window:*client-fn-draw-objects*  'pong::draw-window
         gui-events:*client-fn-process-event* 'pong::process-event
+        gui-window:*client-fn-menu-bar*      'pong::menu-bar
         gui-window:*initial-window-width*    600
         gui-window:*initial-window-height*   400
         gui-window:*initial-title*           "Pong")
