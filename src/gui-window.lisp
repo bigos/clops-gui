@@ -66,6 +66,10 @@
 
     ;; #########################################################################
     (setf  cairo:*context* (cairo:create-context surface))
+
+    (when (null *client-fn-draw-objects*)
+      (error "You forgot to declare drawing function in *client-fn-draw-objects* "))
+
     ;; call actual drawing
     (funcall *client-fn-draw-objects* window)
     ;; #########################################################################
