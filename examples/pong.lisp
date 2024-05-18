@@ -17,17 +17,23 @@
 (in-package #:pong)
 
 (defparameter *pong-game* nil)
+
 ;;; ======================= experiment =========================================
-(defun experiment ()
-  (warn "starting experiment")
+(defun experiment-first-window ()
   (setf
    gui-window:*client-fn-draw-objects*  'pong::draw-window
    gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
-  (assert (zerop (hash-table-count (gui-window:all-windows))))
 
+  (assert (zerop (hash-table-count (gui-window:all-windows))))
   (let ((lisp-window (make-instance 'pong-window)))
     (gui-window::window-creation-from-simulation :testing lisp-window)
     (assert (eq 1 (hash-table-count (gui-window:all-windows))))
+    lisp-window))
+
+(defun experiment ()
+  (warn "starting experiment")
+
+  (let ((lisp-window (experiment-first-window)))
     (process-event lisp-window :resize (list 600 200 ))
     (process-event lisp-window :timeout)
     (process-event lisp-window :motion-enter (list 50 50 ))
