@@ -150,13 +150,14 @@
   (cairo:set-source-rgb  1 1 1)
   (cairo:paint)
 
-  (render (make-instance 'gui-box:text-box
-                         :top-left (make-instance 'gui-box:coordinates :x 20 :y 20)
-                         :width 50
-                         :height 20
-                         :text "Pong will go here"))
+  (let ((tb (make-instance 'gui-box:text-box
+                           :top-left (make-instance 'gui-box:coordinates :x 20 :y 20)
+                           :width 50
+                           :height 20
+                           :text "Pong will go here")))
+    (~> pong-game pong-window (add-child _ tb))
+    (render tb))
 
-  (warn "render pong game")
   (render (game-area pong-game))
   (render (ball pong-game)))
 
