@@ -156,6 +156,7 @@
                            :height 20
                            :text "Pong will go here")))
     (~> pong-game pong-window (gui-window:add-child _ tb))
+    (warn "going to render tb ~S ~S" tb (~> tb gui-box::parent))
     (render tb))
 
   (render (game-area pong-game))

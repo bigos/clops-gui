@@ -155,7 +155,7 @@
 
 ;;; ============================ window child widgets ==========================
 (defmethod add-child ((lisp-window lisp-window) (box T))
-  (setf (parent box) lisp-window) ; box needs to respond to parent
+  (setf (gui-box::parent4 box) lisp-window) ; box needs to respond to parent
   (pushnew box (children lisp-window)))
 
 ;; =========================== dialogs =========================================
