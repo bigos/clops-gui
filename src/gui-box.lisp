@@ -31,7 +31,5 @@
   (when (equal (~> gui-window:*lisp-app* gui-window:current-motion)
                (root-window box))
     (let ((mouse-at (~> gui-window:*lisp-app* gui-window:mouse-coordinates)))
-      (warn "current coordinates ~S ~S"
-            (and (<= (x (top-left box)) (car mouse-at) (+ (x (top-left box)) (width  box)) )
-                 (<= (y (top-left box)) (cdr mouse-at) (+ (y (top-left box)) (height box))))
-            mouse-at))))
+      (and (<= (x (top-left box)) (car mouse-at) (+ (x (top-left box)) (width  box)))
+           (<= (y (top-left box)) (cdr mouse-at) (+ (y (top-left box)) (height box)))))))

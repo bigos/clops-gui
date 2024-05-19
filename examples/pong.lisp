@@ -178,17 +178,25 @@
                        ;; width height
                        ))
 
-      (gui-window:set-rgba "#66FFAA90")
-      (cairo:rectangle
-       (~> text-box gui-box:top-left gui-box:x)
-       (~> text-box gui-box:top-left gui-box:y (+ _ yb))
-       ;; (~> text-box gui-box:width)
-       ;; (~> text-box gui-box:height)
-       width
-       height)
+      (progn
+        (gui-window:set-rgba "#66FFAA90")
+        (cairo:rectangle
+         (~> text-box gui-box:top-left gui-box:x)
+         (~> text-box gui-box:top-left gui-box:y (+ _ yb))
+         width
+         height)
+        (cairo:fill-path))
 
-
-      (cairo:fill-path)
+      (progn
+        (gui-window:set-rgba (if (gui-box::mouse-overp text-box)
+                               "#88000090"
+                               "#00008890"))
+        (cairo:rectangle
+         (~> text-box gui-box:top-left gui-box:x)
+         (~> text-box gui-box:top-left gui-box:y)
+         (~> text-box gui-box:width)
+         (~> text-box gui-box:height))
+        (cairo:fill-path))
 
 
       (cairo:set-source-rgb 0 0 0)
