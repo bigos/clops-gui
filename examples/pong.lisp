@@ -151,15 +151,16 @@
   (cairo:paint)
 
   (let ((tb (make-instance 'gui-box:text-box
-                           :top-left (make-instance 'gui-box:coordinates :x 20 :y 20)
+                           :top-left (make-instance 'gui-box:coordinates :x 20 :y 2)
                            :width 50
                            :height 20
                            :text "Pong will go here")))
     (~> pong-game pong-window (gui-window:add-child _ tb))
-    (warn "going to render tb ~S ~S ~S"
-          tb
-          (~> tb gui-box::root-window gui-window:dimensions)
-          (gui-window:current-motion gui-window:*lisp-app*))
+    (when nil
+      (warn "going to render tb ~S ~S ~S"
+            tb
+            (~> tb gui-box::root-window gui-window:dimensions)
+            (gui-window:current-motion gui-window:*lisp-app*)))
     (~> tb gui-box::mouse-overp)
 
     (render tb))
@@ -178,11 +179,15 @@
       (declare (ignore xb yb
                        ;; width height
                        ))
+      (setf (~> text-box gui-box:width)  width
+            (~> text-box gui-box:height) height)
 
       (progn
         (gui-window:set-rgba (if (gui-box::mouse-overp text-box)
-                                 "#88000090"
-                                 "#00008840"))
+                                 (if (zerop (~> gui-window:*lisp-app* gui-window:mouse-button))
+                                     "#ff000088"
+                                     "green")
+                                 "#0000ff88"))
         (cairo:rectangle
          (~> text-box gui-box:top-left gui-box:x)
          (~> text-box gui-box:top-left gui-box:y)
@@ -194,9 +199,9 @@
       (cairo:set-source-rgb 0 0 0)
       (cairo:move-to (~> text-box gui-box:top-left gui-box:x)
                      (+ height
+                        (- 0 3)
                         (~> text-box gui-box:top-left gui-box:y)))
-      (cairo:show-text (format nil "~A" my-text))))
-  )
+      (cairo:show-text (format nil "~A" my-text)))))
 
 (defmethod render ((anything T))
   (warn "@@@ handling weird render @@@ ~S" (list (type-of anything) anything))
@@ -346,8 +351,15 @@
            (gui-window:current-motion gui-window:*lisp-app*) nil))
     (:focus-enter)
     (:focus-leave)
-    (:pressed)
-    (:released)
+    (:pressed
+     ;; TODO find better way of finding mouse buttons state
+     (destructuring-bind ((button x y)) args
+       (incf (gui-window:mouse-button gui-window:*lisp-app*) (expt 2 button)))
+     (warn "button after press ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
+    (:released
+     (destructuring-bind ((button x y)) args
+       (decf (gui-window:mouse-button gui-window:*lisp-app*) (expt 2 button)))
+     (warn "button after release ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
     (:scroll)
     (:resize
      (destructuring-bind ((w h)) args
@@ -358,6 +370,8 @@
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
        (cond
 
+         ((equalp entered "a")
+          (break "exammine ~S" gui-window:*lisp-app*))
          ((equalp entered "r")
           (restart-helper lisp-window))
          ((equalp entered "t")

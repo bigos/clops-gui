@@ -89,6 +89,7 @@
    (current-motion)
    (current-focus) ; it is not reliable for the last created window
    (mouse-coordinates)
+   (mouse-button :std 0)
    ))
 
 (defclass/std lisp-window ()

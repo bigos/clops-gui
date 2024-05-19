@@ -31,6 +31,7 @@
    :dimensions
    :gir-window
    :lisp-window
+   :mouse-button
    :mouse-coordinates
    :new-window-for-app
    :present-about-dialog
