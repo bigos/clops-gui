@@ -171,26 +171,18 @@
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
+  (cairo:move-to 0 0)
   (let ((my-text (gui-box:text text-box)))
     (multiple-value-bind  (xb yb width height)
         (cairo:text-extents my-text)
-      (declare (ignore xb ;; yb
+      (declare (ignore xb yb
                        ;; width height
                        ))
 
       (progn
-        (gui-window:set-rgba "#66FFAA90")
-        (cairo:rectangle
-         (~> text-box gui-box:top-left gui-box:x)
-         (~> text-box gui-box:top-left gui-box:y (+ _ yb))
-         width
-         height)
-        (cairo:fill-path))
-
-      (progn
         (gui-window:set-rgba (if (gui-box::mouse-overp text-box)
-                               "#88000090"
-                               "#00008890"))
+                                 "#88000090"
+                                 "#00008840"))
         (cairo:rectangle
          (~> text-box gui-box:top-left gui-box:x)
          (~> text-box gui-box:top-left gui-box:y)
@@ -201,7 +193,8 @@
 
       (cairo:set-source-rgb 0 0 0)
       (cairo:move-to (~> text-box gui-box:top-left gui-box:x)
-                     (~> text-box gui-box:top-left gui-box:y))
+                     (+ height
+                        (~> text-box gui-box:top-left gui-box:y)))
       (cairo:show-text (format nil "~A" my-text))))
   )
 
