@@ -21,6 +21,7 @@
    :*initial-window-height*
    :*lisp-app*
    :*client-fn-menu-bar*
+   :add-child
    :all-windows
    :close-all-windows-and-quit
    :current-motion

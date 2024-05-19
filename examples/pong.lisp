@@ -155,7 +155,7 @@
                            :width 50
                            :height 20
                            :text "Pong will go here")))
-    (~> pong-game pong-window (add-child _ tb))
+    (~> pong-game pong-window (gui-window:add-child _ tb))
     (render tb))
 
   (render (game-area pong-game))
