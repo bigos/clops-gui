@@ -154,7 +154,7 @@
       (warn "strange, window not removed ~S" window)))
 
 ;;; ============================ window child widgets ==========================
-(defmethod add-child ((lisp-window lisp-window) (box gui-box:box))
+(defmethod add-child ((lisp-window lisp-window) (box gui-box::box))
   (setf (parent box) lisp-window)
   (pushnew box (children lisp-window)))
 
