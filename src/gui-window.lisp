@@ -94,7 +94,8 @@
 (defclass/std lisp-window ()
   ((gir-window  :type (or gir::object-instance keyword)
                 :documentation "Either gir window or symbol used in test drawing")
-   (dimensions :documentation "Cons with width and height or resized window")))
+   (dimensions :documentation "Cons with width and height or resized window")
+   (children)))
 
 ;;; ====== all windows =========================================================
 (defun all-windows ()
@@ -151,6 +152,11 @@
   (if (remhash (window-hkey window) (windows app))
       (warn "success, window removed ~S" window)
       (warn "strange, window not removed ~S" window)))
+
+;;; ============================ window child widgets ==========================
+(defmethod add-child ((lisp-window lisp-window) (box gui-box:box))
+  (setf (parent box) lisp-window)
+  (pushnew box (children lisp-window)))
 
 ;; =========================== dialogs =========================================
 (defun present-about-dialog (data)

@@ -7,7 +7,9 @@
    (y)))
 
 (defclass/std box ()
-  ((top-left)
+  ((parent)
+   (children)
+   (top-left)
    (width)
    (height)))
 
