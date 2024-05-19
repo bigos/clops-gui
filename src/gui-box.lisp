@@ -15,3 +15,8 @@
 
 (defclass/std text-box (box)
   ((text)))
+
+;;; === methods ================================================================
+(defmethod add-child ((parent-box box) (child-box box))
+  (setf (parent child-box) parent-box)
+  (pushnew child-box (children parent-box)))
