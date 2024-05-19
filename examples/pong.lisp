@@ -156,7 +156,12 @@
                            :height 20
                            :text "Pong will go here")))
     (~> pong-game pong-window (gui-window:add-child _ tb))
-    (warn "going to render tb ~S ~S" tb (~> tb gui-box::parent))
+    (warn "going to render tb ~S ~S ~S"
+          tb
+          (~> tb gui-box::root-window gui-window:dimensions)
+          (gui-window:current-motion gui-window:*lisp-app*))
+    (~> tb gui-box::mouse-overp)
+
     (render tb))
 
   (render (game-area pong-game))
