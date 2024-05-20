@@ -354,10 +354,12 @@
     (:pressed
      ;; TODO find better way of finding mouse buttons state
      (destructuring-bind ((button x y)) args
+       (declare (ignore x y))
        (incf (gui-window:mouse-button gui-window:*lisp-app*) (expt 2 button)))
      (warn "button after press ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
     (:released
      (destructuring-bind ((button x y)) args
+       (declare (ignore x y))
        (decf (gui-window:mouse-button gui-window:*lisp-app*) (expt 2 button)))
      (warn "button after release ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
     (:scroll)
