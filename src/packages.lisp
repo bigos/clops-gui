@@ -88,5 +88,7 @@
    :width
    :height
    :parent
+   :root-window
+   :mouse-overp
    ;; add more
    ))
