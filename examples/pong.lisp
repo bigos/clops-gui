@@ -53,14 +53,14 @@
   (()))
 
 (defclass/std player ()
-  (()))
+  ((pad-height)
+   (pad-y)))
 
 (defclass/std player-human (player)
   (()))
 
 (defclass/std player-computer (player)
-  ((pad-height)
-   (pad-y)))
+  (()))
 
 (defclass/std slider ()
   (()))
@@ -347,6 +347,7 @@
     (:menu-radio (warn "not processed event ~S ~S" event args))
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y)) args
+       (warn "motioning ~S ~S" x y)
        (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) (cons x y)
              (gui-window:current-motion    gui-window:*lisp-app*) lisp-window)))
     (:motion-leave
