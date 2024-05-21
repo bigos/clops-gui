@@ -59,7 +59,8 @@
   (()))
 
 (defclass/std player-computer (player)
-  (()))
+  ((pad-height)
+   (pad-y)))
 
 (defclass/std slider ()
   (()))
@@ -95,8 +96,10 @@
          (right-line  (- gui-window:*initial-window-width*  30))
          (bottom-line (- gui-window:*initial-window-height* (* 2 30))))
     (setf
-     (player-human pong-game)    (make-instance 'player-human)
-     (player-computer pong-game) (make-instance 'player-computer)
+     (player-human pong-game)    (make-instance 'player-human
+                                                :pad-height 50)
+     (player-computer pong-game) (make-instance 'player-computer
+                                                :pad-height 50)
      (ball pong-game)            (make-instance 'ball
                                                 :coordinates (make-instance 'gui-box:coordinates
                                                                             :x 50
