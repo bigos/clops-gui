@@ -179,6 +179,30 @@
   (warn "implement render player human"))
 
 (defmethod render ((player-human player-computer))
+  (gui-window:set-rgba "green")
+
+  (let ((block-width 25))
+    (cairo:rectangle
+     (~> *pong-game* game-area bottom-right gui-box:x)
+     (+ (~> *pong-game* game-area top-left gui-box:y)
+        (-
+         (~> player-human pad-y )
+         (/ (pad-height player-human) 2))
+        )
+     block-width
+     (~> player-human pad-height)))
+  (cairo:fill-path)
+
+  (gui-window:set-rgba "orange")
+  (let ((block-width 30))
+    (cairo:rectangle
+     (+ (~> *pong-game* game-area bottom-right gui-box:x) (/ block-width 2))
+     (+ (~> *pong-game* game-area top-left gui-box:y)
+        (- (~> player-human pad-y ) 2))
+     (/ block-width 2)
+     4))
+  (cairo:fill-path)
+
   (warn "implement render player computer"))
 
 (defmethod render ((pong-game pong-game))
