@@ -84,7 +84,8 @@
    (player-computer :a :std (make-instance 'player-computer))
    (ball            :a :std (make-instance 'ball))
    (game-area       :a :std (make-instance 'game-area))
-   (pong-window)))
+   (pong-window)
+   (state :std :initial :documentation "Game state is: init, playing or won")))
 
 ;;; === methods ================================================================
 (defmethod initialize-instance :after ((pong-game pong-game) &rest initargs &key)
@@ -131,6 +132,10 @@
 
 (defmethod mouse-set-human-pad-y ((pong-game pong-game) py)
   (setf (~> pong-game player-human pad-y) (- py (~> pong-game game-area top-left gui-box:y ))))
+
+(defmethod move ((ball ball) xd yd)
+  (incf (~> ball coordinates gui-box:x) xd)
+  (incf (~> ball coordinates gui-box:y) yd))
 
 ;;; --- rendering -------------------------------
 (defmethod render ((ball ball))
@@ -224,8 +229,22 @@
             (~> tb gui-box::root-window gui-window:dimensions)
             (gui-window:current-motion gui-window:*lisp-app*)))
     (~> tb gui-box::mouse-overp)
-
     (render tb))
+
+  (let ((tb (make-instance 'gui-box:text-box
+                           :top-left (make-instance 'gui-box:coordinates :x 200 :y 5)
+                           :width 50
+                           :height 20
+                           :text (format nil "~A" (state pong-game)))))
+    (~> pong-game pong-window (gui-window:add-child _ tb))
+    (when nil
+      (warn "going to render tb ~S ~S ~S"
+            tb
+            (~> tb gui-box::root-window gui-window:dimensions)
+            (gui-window:current-motion gui-window:*lisp-app*)))
+    (~> tb gui-box::mouse-overp)
+    (render tb))
+
 
   (render (game-area pong-game))
   (render (ball pong-game))
@@ -376,8 +395,8 @@
 
   (case event
     (:timeout
-     ;; do nothing yet
-     )
+     (when (and *pong-game* (eql :playing (state *pong-game*)))
+       (~> *pong-game* ball (move _ 5.1 0.5))))
     (:menu-simple
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
@@ -444,6 +463,8 @@
           (break "exammine ~S" gui-window:*lisp-app*))
          ((equalp entered "r")
           (restart-helper lisp-window))
+         ((equalp entered "p")
+          (start-playing-helper lisp-window))
          ((equalp entered "t")
           (show-tutorial-helper))
          (t (warn "undandled key press ~S" args)))))
@@ -497,6 +518,10 @@
   (warn "setting *pong-game* and staring game")
   (setf *pong-game* (make-instance 'pong-game :pong-window pong-window))
   (start-game *pong-game*))
+
+(defmethod start-playing-helper ((pong-window pong-window))
+  (warn "setting *pong-game* and staring game")
+  (setf (state *pong-game*) :playing))
 
 (defun show-tutorial-helper ()
   (gui-window:window-creation-from-menu
