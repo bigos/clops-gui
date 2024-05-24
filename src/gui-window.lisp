@@ -59,7 +59,7 @@
   )
 
 (defun simulate-draw-func (window)
-  (let ((surface (cairo:create-image-surface :argb32
+  (let* ((surface (cairo:create-image-surface :argb32
                                               ;; use defaults if dimensions are nil
                                               (or (car (dimensions window)) 150)
                                               (or (cdr (dimensions window)) 100))))
@@ -229,27 +229,27 @@
                     (declare (ignore e))
                     (setf (current-focus *lisp-app*) window)
                     (apply #'gui-events:de-key-pressed
-                           (cons lisp-window
-                                 (funcall #'translate-key-args args)))))
+                           (append (list lisp-window)
+                                   (funcall #'translate-key-args args)))))
 
     (gtk4:connect key-controller "key-released"
                   (lambda (e &rest args)
                     (declare (ignore e))
                     (apply #'gui-events:de-key-released
-                           (cons lisp-window
-                                 (funcall #'translate-key-args args)))))
+                           (append (list lisp-window)
+                                   (funcall #'translate-key-args args)))))
     ;; for some reason enter and leave are not reliable and I need to add window as in key-pressed to some events
     (gtk4:connect focus-controller "enter"
                   (lambda (e &rest args)
                     (declare (ignore e args))
                     (setf (current-focus *lisp-app*) window)
-                    (apply #'gui-events:de-focus-enter lisp-window)))
+                    (apply #'gui-events:de-focus-enter (list lisp-window))))
 
     (gtk4:connect focus-controller "leave"
                   (lambda (e &rest args)
                     (declare (ignore e args))
                     (setf (current-focus *lisp-app*) nil)
-                    (apply #'gui-events:de-focus-leave lisp-window))))
+                    (apply #'gui-events:de-focus-leave (list lisp-window)))))
 
   (glib:timeout-add 1000
                     (lambda (&rest args)
@@ -272,7 +272,8 @@
       (gtk4:connect motion-controller "motion"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion
                                                                        (cons lisp-window
-                                                                             args))))
+                                                                             args
+                                                                             (list)))))
       (gtk4:connect motion-controller "enter"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion-enter
                                                                        (cons lisp-window
@@ -292,10 +293,11 @@
     (let ((gesture-click-controller (gtk4:make-gesture-click))
           (click-fn (lambda (event args click-de-fn)
                       (let ((current-button (gtk4:gesture-single-current-button event)))
-                        (apply click-de-fn (list lisp-window
-                                                 current-button
-                                                 (nth 1 args)
-                                                 (nth 2 args)))))))
+                        (apply click-de-fn
+                               lisp-window
+                               current-button
+                               (nth 1 args)
+                               (nth 2 args))))))
       ;; make gesture click listen to other mouse buttons as well
       (setf (gtk4:gesture-single-button gesture-click-controller) 0)
       (gtk4:widget-add-controller canvas gesture-click-controller)
