@@ -292,11 +292,10 @@
     (let ((gesture-click-controller (gtk4:make-gesture-click))
           (click-fn (lambda (event args click-de-fn)
                       (let ((current-button (gtk4:gesture-single-current-button event)))
-                        (apply click-de-fn
-                               lisp-window
-                               current-button
-                               (nth 1 args)
-                               (nth 2 args))))))
+                        (apply click-de-fn (list lisp-window
+                                                 current-button
+                                                 (nth 1 args)
+                                                 (nth 2 args)))))))
       ;; make gesture click listen to other mouse buttons as well
       (setf (gtk4:gesture-single-button gesture-click-controller) 0)
       (gtk4:widget-add-controller canvas gesture-click-controller)
