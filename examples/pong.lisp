@@ -134,6 +134,7 @@
   (setf (~> pong-game player-human pad-y) (- py (~> pong-game game-area top-left gui-box:y ))))
 
 (defmethod move ((ball ball) xd yd)
+  ;; TODO add checking for bouncing
   (incf (~> ball coordinates gui-box:x) xd)
   (incf (~> ball coordinates gui-box:y) yd))
 
