@@ -57,10 +57,10 @@
    (pad-y)))
 
 (defclass/std player-human (player)
-  (()))
+  ((name)))
 
 (defclass/std player-computer (player)
-  (()))
+  ((model)))
 
 (defclass/std slider ()
   (()))
@@ -128,6 +128,9 @@
 (defmethod height ((game-area game-area))
   (- (~> game-area bottom-right gui-box:y)
      (~> game-area top-left     gui-box:y)))
+
+(defmethod mouse-set-pad-y ((player-human player-human) y)
+  (setf (pad-y player-human) y))
 
 ;;; --- rendering -------------------------------
 (defmethod render ((ball ball))
@@ -408,7 +411,8 @@
      (destructuring-bind ((x y)) args
        (warn "motioning ~S ~S" x y)
        (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) (cons x y)
-             (gui-window:current-motion    gui-window:*lisp-app*) lisp-window)))
+             (gui-window:current-motion    gui-window:*lisp-app*) lisp-window)
+       (~> *pong-game* player-human (mouse-set-pad-y _ y))))
     (:motion-leave
      (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
            (gui-window:current-motion gui-window:*lisp-app*) nil))
