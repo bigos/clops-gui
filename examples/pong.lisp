@@ -97,9 +97,11 @@
          (bottom-line (- gui-window:*initial-window-height* (* 2 30))))
     (setf
      (player-human pong-game)    (make-instance 'player-human
-                                                :pad-height 50)
+                                                :pad-height 100
+                                                :pad-y 150)
      (player-computer pong-game) (make-instance 'player-computer
-                                                :pad-height 50)
+                                                :pad-height 100
+                                                :pad-y 120)
      (ball pong-game)            (make-instance 'ball
                                                 :coordinates (make-instance 'gui-box:coordinates
                                                                             :x 50
@@ -149,6 +151,60 @@
    (~> game-area height))
   (cairo:fill-path))
 
+(defmethod render ((player-human player-human))
+  (gui-window:set-rgba "blue")
+
+  (let ((block-width 25))
+    (cairo:rectangle
+     (- (~> *pong-game* game-area top-left gui-box:x) block-width)
+     (+ (~> *pong-game* game-area top-left gui-box:y)
+        (-
+         (~> player-human pad-y )
+         (/ (pad-height player-human) 2))
+        )
+     block-width
+     (~> player-human pad-height)))
+  (cairo:fill-path)
+
+  (gui-window:set-rgba "red")
+  (let ((block-width 30))
+    (cairo:rectangle
+     (- (~> *pong-game* game-area top-left gui-box:x) block-width)
+     (+ (~> *pong-game* game-area top-left gui-box:y)
+        (- (~> player-human pad-y ) 2))
+     (/ block-width 2)
+     4))
+  (cairo:fill-path)
+
+  (warn "implement render player human"))
+
+(defmethod render ((player-human player-computer))
+  (gui-window:set-rgba "green")
+
+  (let ((block-width 25))
+    (cairo:rectangle
+     (~> *pong-game* game-area bottom-right gui-box:x)
+     (+ (~> *pong-game* game-area top-left gui-box:y)
+        (-
+         (~> player-human pad-y )
+         (/ (pad-height player-human) 2))
+        )
+     block-width
+     (~> player-human pad-height)))
+  (cairo:fill-path)
+
+  (gui-window:set-rgba "orange")
+  (let ((block-width 30))
+    (cairo:rectangle
+     (+ (~> *pong-game* game-area bottom-right gui-box:x) (/ block-width 2))
+     (+ (~> *pong-game* game-area top-left gui-box:y)
+        (- (~> player-human pad-y ) 2))
+     (/ block-width 2)
+     4))
+  (cairo:fill-path)
+
+  (warn "implement render player computer"))
+
 (defmethod render ((pong-game pong-game))
   (cairo:set-source-rgb  1 1 1)
   (cairo:paint)
@@ -169,7 +225,10 @@
     (render tb))
 
   (render (game-area pong-game))
-  (render (ball pong-game)))
+  (render (ball pong-game))
+
+  (render (player-human    pong-game))
+  (render (player-computer pong-game)))
 
 (defmethod render ((text-box gui-box:text-box))
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
