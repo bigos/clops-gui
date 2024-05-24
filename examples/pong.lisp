@@ -129,8 +129,8 @@
   (- (~> game-area bottom-right gui-box:y)
      (~> game-area top-left     gui-box:y)))
 
-(defmethod mouse-set-pad-y ((player-human player-human) y)
-  (setf (pad-y player-human) y))
+(defmethod mouse-set-human-pad-y ((pong-game pong-game) py)
+  (setf (~> pong-game player-human pad-y) (- py (~> pong-game game-area top-left gui-box:y ))))
 
 ;;; --- rendering -------------------------------
 (defmethod render ((ball ball))
@@ -412,7 +412,8 @@
        (warn "motioning ~S ~S" x y)
        (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) (cons x y)
              (gui-window:current-motion    gui-window:*lisp-app*) lisp-window)
-       (~> *pong-game* player-human (mouse-set-pad-y _ y))))
+       (when *pong-game*
+         (mouse-set-human-pad-y *pong-game* y))))
     (:motion-leave
      (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
            (gui-window:current-motion gui-window:*lisp-app*) nil))
