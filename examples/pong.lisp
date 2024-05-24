@@ -396,7 +396,7 @@
   (case event
     (:timeout
      (when (and *pong-game* (eql :playing (state *pong-game*)))
-       (~> *pong-game* ball (move _ 5.1 0.5))))
+       (~> *pong-game* ball (move _ 2.1 0.5))))
     (:menu-simple
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
@@ -537,6 +537,7 @@
         gui-window:*client-fn-menu-bar*      'pong::menu-bar
         gui-window:*initial-window-width*    600
         gui-window:*initial-window-height*   400
+        gui-window:*timeout-period*          (/ 1000 200)
         gui-window:*initial-title*           "Pong")
 
   (gui-window:window (make-instance 'pong-window)))

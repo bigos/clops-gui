@@ -6,6 +6,7 @@
 (defparameter *initial-window-width* 400)
 (defparameter *initial-window-height* 200)
 (defparameter *initial-title* "change me")
+(defparameter *timeout-period* 1000)
 (defparameter *lisp-app* nil)
 
 ;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -251,7 +252,7 @@
                     (setf (current-focus *lisp-app*) nil)
                     (apply #'gui-events:de-focus-leave (list lisp-window)))))
 
-  (glib:timeout-add 1000
+  (glib:timeout-add *timeout-period*
                     (lambda (&rest args)
                       (declare (ignore args))
                       (funcall #'gui-events:de-timeout lisp-window)

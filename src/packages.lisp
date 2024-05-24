@@ -19,6 +19,7 @@
    *initial-title*
    *initial-window-width*
    *initial-window-height*
+   *timeout-period*
    *lisp-app*
    *client-fn-menu-bar*
    add-child
