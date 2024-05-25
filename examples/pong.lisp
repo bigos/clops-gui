@@ -142,14 +142,19 @@
         (py     (~> pong-game player-computer pad-y))
         (state1 (make-random-state)))
     (let ((rrr (random 15 state1)))
-      (setf (~> pong-game player-computer pad-y) (cond ((> ball-y py)
-                                                        (+ py rrr))
-                                                       ((< ball-y py)
-                                                        (- py rrr))
-                                                       ((eql ball-y py)
-                                                        (if (oddp rrr)
-                                                            (- py (random 5 state1))
-                                                            (+ py (random 5 state1)))))))))
+
+      (when (null py) (break "checking py ~S" py))
+
+      (setf (~> pong-game player-computer pad-y) (or
+                                                  (cond ((> ball-y py)
+                                                         (+ py rrr))
+                                                        ((< ball-y py)
+                                                         (- py rrr))
+                                                        ((eql ball-y py)
+                                                         (if (oddp rrr)
+                                                             (- py rrr)
+                                                             (+ py rrr))))
+                                                  ball-y)))))
 
 (defun posme (n)
   (if (> n 0)
@@ -162,7 +167,7 @@
 
 (defmethod move ((ball ball))
   (let ((radius (radius ball))
-        (ga (*pong-game* game-area)))
+        (ga (~> *pong-game* game-area)))
     (let ((x (~> ball coordinates gui-box:x))
           (y (~> ball coordinates gui-box:y))
           (wr (- (~> ga bottom-right gui-box:x) radius))
@@ -436,7 +441,8 @@
   (case event
     (:timeout
      (when (and *pong-game* (eql :playing (state *pong-game*)))
-       (~> *pong-game* ball move)))
+       (~> *pong-game* ball move)
+       (~> *pong-game* mouse-set-computer-pad-y )))
     (:menu-simple
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
