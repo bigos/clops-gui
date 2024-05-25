@@ -137,24 +137,29 @@
 (defmethod mouse-set-human-pad-y ((pong-game pong-game) py)
   (setf (~> pong-game player-human pad-y) (- py (~> pong-game game-area top-left gui-box:y ))))
 
-(defmethod mouse-set-computer-pad-y ((pong-game pong-game))
-  (let ((ball-y (~> pong-game ball coordinates gui-box:y))
-        (py     (~> pong-game player-computer pad-y))
-        (state1 (make-random-state)))
-    (let ((rrr (random 15 state1)))
+(let ((timer-count 0))
+  (defmethod mouse-set-computer-pad-y ((pong-game pong-game))
+    (incf timer-count)
+    (when (> timer-count 25) ;affects probability of computer losing
+      (setf timer-count 0)
 
-      (when (null py) (break "checking py ~S" py))
+      (let ((ball-y (~> pong-game ball coordinates gui-box:y))
+            (py     (~> pong-game player-computer pad-y))
+            (state1 (make-random-state)))
+        (let ((rrr (random 18 state1))) ;affects probability of computer losing
 
-      (setf (~> pong-game player-computer pad-y) (or
-                                                  (cond ((> ball-y py)
-                                                         (+ py rrr))
-                                                        ((< ball-y py)
-                                                         (- py rrr))
-                                                        ((eql ball-y py)
-                                                         (if (oddp rrr)
-                                                             (- py rrr)
-                                                             (+ py rrr))))
-                                                  ball-y)))))
+          (when (null py) (break "checking py ~S" py))
+
+          (setf (~> pong-game player-computer pad-y) (or
+                                                      (cond ((> ball-y py)
+                                                             (+ py rrr))
+                                                            ((< ball-y py)
+                                                             (- py rrr))
+                                                            ((eql ball-y py)
+                                                             (if (oddp rrr)
+                                                                 (- py rrr)
+                                                                 (+ py rrr))))
+                                                      ball-y)))))))
 
 (defun posme (n)
   (if (> n 0)
