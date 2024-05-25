@@ -138,7 +138,7 @@
   (setf (~> pong-game player-human pad-y) (- py (~> pong-game game-area top-left gui-box:y ))))
 
 (let ((timer-count 0))
-  (defmethod mouse-set-computer-pad-y ((pong-game pong-game))
+  (defmethod algor-set-computer-pad-y ((pong-game pong-game))
     (incf timer-count)
     (when (> timer-count 25) ;affects probability of computer losing
       (setf timer-count 0)
@@ -172,17 +172,32 @@
 
 (defmethod move ((ball ball))
   (let ((radius (radius ball))
-        (ga (~> *pong-game* game-area)))
+        (ga (~> *pong-game* game-area))
+        (humpy (~> *pong-game* player-human pad-y))
+        (humph (~> *pong-game* player-human pad-height))
+        (compy (~> *pong-game* player-computer pad-y))
+        (comph (~> *pong-game* player-computer pad-height))
+        (half-pad (/ humph 2)))
     (let ((x (~> ball coordinates gui-box:x))
           (y (~> ball coordinates gui-box:y))
           (wr (- (~> ga bottom-right gui-box:x) radius))
           (wl (+ (~> ga top-left     gui-box:x) radius))
           (wt (+ (~> ga top-left     gui-box:y) radius))
           (wb (- (~> ga bottom-right gui-box:y) radius)))
-      (cond ((>= x wr)
+      (cond ((and (>= x wr)
+                  (>= (+ compy half-pad)
+                      y
+                      (- compy half-pad)))
              (setf (xd ball) (negme (xd ball))))
-            ((<= x wl)
+            ((and (>= x (+ wr 10)))
+             (setf (~> pong-game state) :won))
+            ((and (<= x wl)
+                  (>= (+ humpy half-pad)
+                      y
+                      (- humpy half-pad)))
              (setf (xd ball) (posme (xd ball))))
+            ((and (<= x (- wl 10)))
+             (setf (~> pong-game state) :won))
             ((<= y wt)
              (setf (yd ball) (posme (yd ball))))
             ((>= y wb)
@@ -238,7 +253,7 @@
      4))
   (cairo:fill-path))
 
-(defmethod render ((player-human player-computer))
+(defmethod render ((player-computer player-computer))
   (gui-window:set-rgba "green")
 
   (let ((block-width 25))
@@ -246,11 +261,11 @@
      (~> *pong-game* game-area bottom-right gui-box:x)
      (+ (~> *pong-game* game-area top-left gui-box:y)
         (-
-         (~> player-human pad-y )
-         (/ (pad-height player-human) 2))
+         (~> player-computer pad-y )
+         (/ (pad-height player-computer) 2))
         )
      block-width
-     (~> player-human pad-height)))
+     (~> player-computer pad-height)))
   (cairo:fill-path)
 
   (gui-window:set-rgba "orange")
@@ -258,7 +273,7 @@
     (cairo:rectangle
      (+ (~> *pong-game* game-area bottom-right gui-box:x) (/ block-width 2))
      (+ (~> *pong-game* game-area top-left gui-box:y)
-        (- (~> player-human pad-y ) 2))
+        (- (~> player-computer pad-y ) 2))
      (/ block-width 2)
      4))
   (cairo:fill-path))
@@ -447,7 +462,7 @@
     (:timeout
      (when (and *pong-game* (eql :playing (state *pong-game*)))
        (~> *pong-game* ball move)
-       (~> *pong-game* mouse-set-computer-pad-y )))
+       (~> *pong-game* algor-set-computer-pad-y )))
     (:menu-simple
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
