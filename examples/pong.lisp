@@ -161,7 +161,7 @@
           ((>= y 200)
            (warn "bounce up")
            (setf (yd ball) (negme (yd ball))))
-          (t (error "should not end here")))
+          (t (warn "not bouncing")))
     (warn "ball vectors ~S ~S -- ~S ~S" x y (xd ball) (yd ball)))
   (incf (~> ball coordinates gui-box:x) (xd ball))
   (incf (~> ball coordinates gui-box:y) (yd ball)))
