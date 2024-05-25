@@ -140,7 +140,7 @@
 (defun posme (n)
   (if (> n 0)
       n
-      (abs m)))
+      (abs n)))
 (defun negme (n)
   (if (< n 0)
       n
