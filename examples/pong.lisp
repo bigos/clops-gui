@@ -73,7 +73,9 @@
 
 (defclass/std ball ()
   ((coordinates)
-   (radius)))
+   (radius)
+   (xd :std 0)
+   (yd :std 0)))
 
 (defclass/std game-area ()
   ((top-left)
@@ -107,7 +109,9 @@
                                                 :coordinates (make-instance 'gui-box:coordinates
                                                                             :x 50
                                                                             :y 50)
-                                                :radius 5)
+                                                :radius 5
+                                                :xd 2.1
+                                                :yd 0.5)
      (game-area pong-game)       (make-instance 'game-area
                                                 :top-left (make-instance 'gui-box:coordinates
                                                                          :x left-line
@@ -133,10 +137,34 @@
 (defmethod mouse-set-human-pad-y ((pong-game pong-game) py)
   (setf (~> pong-game player-human pad-y) (- py (~> pong-game game-area top-left gui-box:y ))))
 
-(defmethod move ((ball ball) xd yd)
-  ;; TODO add checking for bouncing
-  (incf (~> ball coordinates gui-box:x) xd)
-  (incf (~> ball coordinates gui-box:y) yd))
+(defun posme (n)
+  (if (> n 0)
+      n
+      (abs m)))
+(defun negme (n)
+  (if (< n 0)
+      n
+      (- 0 n)))
+
+(defmethod move ((ball ball))
+  (let ((x (~> ball coordinates gui-box:x))
+        (y (~> ball coordinates gui-box:y)))
+    (cond ((>= x 500)
+           (warn "bounce left")
+           (setf (xd ball) (negme (xd ball))))
+          ((<= x 50)
+           (warn "bounce right")
+           (setf (xd ball) (posme (xd ball))))
+          ((<= y 50)
+           (warn "bounce down")
+           (setf (yd ball) (posme (yd ball))))
+          ((>= y 200)
+           (warn "bounce up")
+           (setf (yd ball) (negme (yd ball))))
+          (t (error "should not end here")))
+    (warn "ball vectors ~S ~S -- ~S ~S" x y (xd ball) (yd ball)))
+  (incf (~> ball coordinates gui-box:x) (xd ball))
+  (incf (~> ball coordinates gui-box:y) (yd ball)))
 
 ;;; --- rendering -------------------------------
 (defmethod render ((ball ball))
@@ -183,9 +211,7 @@
         (- (~> player-human pad-y ) 2))
      (/ block-width 2)
      4))
-  (cairo:fill-path)
-
-  (warn "implement render player human"))
+  (cairo:fill-path))
 
 (defmethod render ((player-human player-computer))
   (gui-window:set-rgba "green")
@@ -210,9 +236,7 @@
         (- (~> player-human pad-y ) 2))
      (/ block-width 2)
      4))
-  (cairo:fill-path)
-
-  (warn "implement render player computer"))
+  (cairo:fill-path))
 
 (defmethod render ((pong-game pong-game))
   (cairo:set-source-rgb  1 1 1)
@@ -397,7 +421,7 @@
   (case event
     (:timeout
      (when (and *pong-game* (eql :playing (state *pong-game*)))
-       (~> *pong-game* ball (move _ 2.1 0.5))))
+       (~> *pong-game* ball move)))
     (:menu-simple
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
