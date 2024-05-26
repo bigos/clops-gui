@@ -16,11 +16,11 @@
                     (declare (ignore event))
                     (gio:action-change-state action parameter)
 
-                    (apply 'gui-events:de-menu-radio (list
-                                                      lisp-window
-                                                      action-name
-                                                      (glib:variant-string
-                                                       (gio:action-state action))))))
+                    (apply 'gui-events:de-menu-radio
+                           lisp-window
+                           action-name
+                           (glib:variant-string
+                            (gio:action-state action)))))
     (gobj:object-unref action)))
 
 (defun prepare-item-radio (lisp-window app menu label action-name string)
@@ -52,9 +52,9 @@
                                                                T
                                                                nil)))
                    (apply 'gui-events:de-menu-bool
-                          (list lisp-window
-                                action-name
-                                (glib:variant-hash (gio:action-state action))))))
+                          lisp-window
+                          action-name
+                          (glib:variant-hash (gio:action-state action)))))
     (gobj:object-unref action))
 
   (gio:make-menu-item :model menu
@@ -71,7 +71,7 @@
                   (lambda (event parameter)
                     (declare (ignore event parameter))
 
-                    (apply 'gui-events:de-menu-simple (list lisp-window action-name))))
+                    (apply 'gui-events:de-menu-simple lisp-window action-name)))
     (gobj:object-unref action))
 
   (gio:make-menu-item :model menu
@@ -98,7 +98,7 @@
                                   (format nil "~A"
                                           (gir:gir-class-of i)))
         do (cond
-             ((equalp item-class-string "#O<MenuItem>")
+             ((equal item-class-string "#O<MenuItem>")
               (gio:menu-append-item submenu i))
              ((and (null item-class-string)
                    (consp i)
