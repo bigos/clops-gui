@@ -1,3 +1,4 @@
+(declaim (optimize (speed 0) (safety 2) (debug 3)))
 ;;; ============================ package gui-window ============================
 (in-package #:gui-window)
 
@@ -272,32 +273,35 @@
 
       (gtk4:connect motion-controller "motion"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion
-                                                                       lisp-window
-                                                                       args)))
+                                                                       (cons
+                                                                        lisp-window
+                                                                        args))))
       (gtk4:connect motion-controller "enter"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion-enter
-                                                                       lisp-window
-                                                                       args)))
+                                                                       (cons
+                                                                        lisp-window
+                                                                        args))))
       (gtk4:connect motion-controller "leave"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion-leave
-                                                                       lisp-window
-                                                                       args))))
+                                                                       (cons
+                                                                        lisp-window
+                                                                        args)))))
 
     (let ((scroll-controller (gtk4:make-event-controller-scroll :flags gtk4:+event-controller-scroll-flags-vertical+)))
       (gtk4:widget-add-controller canvas scroll-controller)
       (gtk4:connect scroll-controller "scroll"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-scroll
-                                                                       lisp-window
-                                                                       args))))
+                                                                       (cons
+                                                                        lisp-window
+                                                                        args)))))
 
     (let ((gesture-click-controller (gtk4:make-gesture-click))
           (click-fn (lambda (event args click-de-fn)
                       (let ((current-button (gtk4:gesture-single-current-button event)))
-                        (apply click-de-fn
-                               lisp-window
-                               current-button
-                               (nth 1 args)
-                               (nth 2 args))))))
+                        (apply click-de-fn (list lisp-window
+                                                 current-button
+                                                 (nth 1 args)
+                                                 (nth 2 args)))))))
       ;; make gesture click listen to other mouse buttons as well
       (setf (gtk4:gesture-single-button gesture-click-controller) 0)
       (gtk4:widget-add-controller canvas gesture-click-controller)
