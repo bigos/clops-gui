@@ -182,6 +182,7 @@
           (wl (+ (~> ga top-left     gui-box:x) radius))
           (wt (+ (~> ga top-left     gui-box:y) radius))
           (wb (- (~> ga bottom-right gui-box:y) radius)))
+
       (cond ((and (>= x wr)
                   (>= (+ compy half-pad)
                       y
@@ -203,12 +204,12 @@
                 (- humpy half-pad)
                 50
                 (* 2 half-pad))
-               (cairo:fill-path)))
+               (cairo:fill-path)
 
-            (break "inspect losing, absolute or relative coordinates ~s" (list x y
-                                                                               :zzz (list  (+ humpy half-pad)
-                                                                                           y
-                                                                                           (- humpy half-pad) )))
+               (break "inspect losing, absolute or relative coordinates ~s" (list x y
+                                                                                  :zzz (list  (+ humpy half-pad)
+                                                                                              y
+                                                                                              (- humpy half-pad) ))))
              (setf (~> *pong-game* state) :won))
             ((<= y wt)
              (setf (yd ball) (posme (yd ball))))
