@@ -60,7 +60,7 @@
   )
 
 (defun simulate-draw-func (window)
-  (let* ((surface (cairo:create-image-surface :argb32
+  (let ((surface (cairo:create-image-surface :argb32
                                               ;; use defaults if dimensions are nil
                                               (or (car (dimensions window)) 150)
                                               (or (cdr (dimensions window)) 100))))
