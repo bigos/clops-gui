@@ -175,6 +175,7 @@
         (ga (~> *pong-game* game-area))
         (humpy (~> *pong-game* player-human pad-y))
         (compy (~> *pong-game* player-computer pad-y))
+        (offset (~> *pong-game* game-area top-left gui-box:y))
         (half-pad (/ (~> *pong-game* player-human pad-height) 2)))
     (let ((x (~> ball coordinates gui-box:x))
           (y (~> ball coordinates gui-box:y))
@@ -191,20 +192,14 @@
             ((and (>= x (+ wr 10)))
              (setf (~> *pong-game* state) :won))
             ((and (<= x wl)
-                  (>= (+ humpy half-pad)
+                  (>= (+ (+ humpy half-pad) offset)
                       y
-                      (- humpy half-pad)))
+                      (+ (- humpy half-pad) offset)))
              (setf (xd ball) (posme (xd ball))))
             ((and (<= x (- wl 10)))
 
              (progn
-               (gui-window:set-rgba "pink")
-               (cairo:rectangle
-                x
-                (- humpy half-pad)
-                50
-                (* 2 half-pad))
-               (cairo:fill-path)
+
 
                (break "inspect losing, absolute or relative coordinates ~s" (list x y :aaay humpy
                                                                                   :zzz (list  (+ humpy half-pad)
@@ -427,8 +422,8 @@
           (cairo:show-text (format nil "~A" my-text))))))
 
 (defmethod draw-window ((window tutorial-window))
-  ;; (cairo:set-source-rgb  1 1 1)
-  ;; (cairo:paint)
+  (cairo:set-source-rgb  1 1 1)
+  (cairo:paint)
 
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
