@@ -303,9 +303,9 @@
       (gtk4:widget-add-controller canvas gesture-click-controller)
 
       (gtk4:connect gesture-click-controller "pressed"
-                    (lambda (event &rest args) (apply click-fn event args #'gui-events:de-pressed)))
+                    (lambda (event &rest args) (apply click-fn (list event args #'gui-events:de-pressed))))
       (gtk4:connect gesture-click-controller "released"
-                    (lambda (event &rest args) (apply click-fn event args #'gui-events:de-released))))
+                    (lambda (event &rest args) (apply click-fn (list event args #'gui-events:de-released)))))
 
 
     ;; for some reason resize signal does not work without  notify
