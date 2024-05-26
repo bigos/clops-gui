@@ -172,12 +172,10 @@
 
 (defmethod move ((ball ball))
   (let ((radius (radius ball))
-        (ga (~> *pong-game* game-area))
-        (humpy (~> *pong-game* player-human pad-y))
-        (humph (~> *pong-game* player-human pad-height))
-        (compy (~> *pong-game* player-computer pad-y))
-        (comph (~> *pong-game* player-computer pad-height))
-        (half-pad (/ humph 2)))
+         (ga (~> *pong-game* game-area))
+         (humpy (~> *pong-game* player-human pad-y))
+         (compy (~> *pong-game* player-computer pad-y))
+         (half-pad (/ (~> *pong-game* player-human pad-height) 2)))
     (let ((x (~> ball coordinates gui-box:x))
           (y (~> ball coordinates gui-box:y))
           (wr (- (~> ga bottom-right gui-box:x) radius))
@@ -190,14 +188,18 @@
                       (- compy half-pad)))
              (setf (xd ball) (negme (xd ball))))
             ((and (>= x (+ wr 10)))
-             (setf (~> pong-game state) :won))
+             (setf (~> *pong-game* state) :won))
             ((and (<= x wl)
                   (>= (+ humpy half-pad)
                       y
                       (- humpy half-pad)))
              (setf (xd ball) (posme (xd ball))))
             ((and (<= x (- wl 10)))
-             (setf (~> pong-game state) :won))
+             (break "inspect losing ~s" (list x y
+                                                  :zzz (list  (+ humpy half-pad)
+                                                              y
+                                                              (- humpy half-pad) )))
+             (setf (~> *pong-game* state) :won))
             ((<= y wt)
              (setf (yd ball) (posme (yd ball))))
             ((>= y wb)
@@ -603,7 +605,7 @@
         gui-window:*client-fn-menu-bar*      'pong::menu-bar
         gui-window:*initial-window-width*    600
         gui-window:*initial-window-height*   400
-        gui-window:*timeout-period*          (/ 1000 200)
+        gui-window:*timeout-period*          (/ 1000 100)
         gui-window:*initial-title*           "Pong")
 
   (gui-window:window (make-instance 'pong-window)))
