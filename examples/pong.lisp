@@ -185,9 +185,9 @@
           (wb (- (~> ga bottom-right gui-box:y) radius)))
 
       (cond ((and (>= x wr)
-                  (>= (+ compy half-pad)
+                  (>= (+ (+ compy half-pad) offset)
                       y
-                      (- compy half-pad)))
+                      (+ (- compy half-pad) offset)))
              (setf (xd ball) (negme (xd ball))))
             ((and (>= x (+ wr 10)))
              (setf (~> *pong-game* state) :won))
