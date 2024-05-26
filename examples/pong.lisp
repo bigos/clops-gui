@@ -206,7 +206,7 @@
                 (* 2 half-pad))
                (cairo:fill-path)
 
-               (break "inspect losing, absolute or relative coordinates ~s" (list x y
+               (break "inspect losing, absolute or relative coordinates ~s" (list x y :aaay humpy
                                                                                   :zzz (list  (+ humpy half-pad)
                                                                                               y
                                                                                               (- humpy half-pad) ))))
