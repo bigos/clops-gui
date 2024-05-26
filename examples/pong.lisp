@@ -427,8 +427,8 @@
           (cairo:show-text (format nil "~A" my-text))))))
 
 (defmethod draw-window ((window tutorial-window))
-  (cairo:set-source-rgb  1 1 1)
-  (cairo:paint)
+  ;; (cairo:set-source-rgb  1 1 1)
+  ;; (cairo:paint)
 
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
