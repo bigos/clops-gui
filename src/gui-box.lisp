@@ -28,7 +28,7 @@
       (root-window box)))
 
 (defmethod mouse-overp ((box box))
-  (when (equal (~> gui-window:*lisp-app* gui-window:current-motion)
+  (when (eql (~> gui-window:*lisp-app* gui-window:current-motion)
                (root-window box))
     (let ((mouse-at (~> gui-window:*lisp-app* gui-window:mouse-coordinates)))
       (and (<= (x (top-left box)) (car mouse-at) (+ (x (top-left box)) (width  box)))
