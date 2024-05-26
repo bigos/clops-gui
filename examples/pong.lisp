@@ -481,9 +481,9 @@
           (gui-window:present-about-dialog
            (list
             :authors (list "Jacek Podkanski")
-            :website "https://github.com/bigos"
+            :website "https://github.com/bigos/clops-gui/blob/master/examples/pong.lisp"
             :program-name "Pong"
-            :comments "Nothing to say yet"
+            :comments "Pong example written for cl-gtk4"
             :license "Public Domain"
             :system-information (format nil "~A" (uiop/os:implementation-identifier))
             :logo-icon-name "application-x-addon")))
