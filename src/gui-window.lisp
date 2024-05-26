@@ -356,11 +356,11 @@
 
 (defun window-activation-and-connection (lisp-app gtk4-app window-title window-menu-fn lisp-window)
   (if gtk4-app
-      (let* ((new-gtk4-window (new-window-for-app gtk4-app window-title window-menu-fn lisp-window)))
+      (let ((new-gtk4-window (new-window-for-app gtk4-app window-title window-menu-fn lisp-window)))
         (setf (gir-window lisp-window) new-gtk4-window
               (gethash (window-hkey new-gtk4-window) (windows lisp-app)) lisp-window))
       ;; we still need better way of creating simulated windows
-      (let* ((new-sim-window window-title))
+      (let ((new-sim-window window-title))
         (setf (gir-window lisp-window) window-title
               (gethash (window-hkey new-sim-window) (windows lisp-app)) lisp-window))))
 
