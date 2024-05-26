@@ -283,10 +283,15 @@
   (cairo:paint)
 
   (let ((tb (make-instance 'gui-box:text-box
-                           :top-left (make-instance 'gui-box:coordinates :x 20 :y 2)
+                           :top-left (make-instance 'gui-box:coordinates
+                                                    :x (~> pong-game game-area top-left gui-box:x)
+                                                    :y 4)
                            :width 50
                            :height 20
-                           :text "Pong will go here")))
+                           :text (ecase (~> pong-game state)
+                                   (:initial  "Press p key to start")
+                                   (:playing  "Move mouse to control left pad")
+                                   (:won      "Press r key to restart")))))
     (~> pong-game pong-window (gui-window:add-child _ tb))
     (when nil
       (warn "going to render tb ~S ~S ~S"
@@ -297,7 +302,7 @@
     (render tb))
 
   (let ((tb (make-instance 'gui-box:text-box
-                           :top-left (make-instance 'gui-box:coordinates :x 200 :y 5)
+                           :top-left (make-instance 'gui-box:coordinates :x 360 :y 5)
                            :width 50
                            :height 20
                            :text (format nil "~A" (state pong-game)))))
