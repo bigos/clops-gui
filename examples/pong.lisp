@@ -172,10 +172,10 @@
 
 (defmethod move ((ball ball))
   (let ((radius (radius ball))
-         (ga (~> *pong-game* game-area))
-         (humpy (~> *pong-game* player-human pad-y))
-         (compy (~> *pong-game* player-computer pad-y))
-         (half-pad (/ (~> *pong-game* player-human pad-height) 2)))
+        (ga (~> *pong-game* game-area))
+        (humpy (~> *pong-game* player-human pad-y))
+        (compy (~> *pong-game* player-computer pad-y))
+        (half-pad (/ (~> *pong-game* player-human pad-height) 2)))
     (let ((x (~> ball coordinates gui-box:x))
           (y (~> ball coordinates gui-box:y))
           (wr (- (~> ga bottom-right gui-box:x) radius))
@@ -195,10 +195,10 @@
                       (- humpy half-pad)))
              (setf (xd ball) (posme (xd ball))))
             ((and (<= x (- wl 10)))
-             (break "inspect losing ~s" (list x y
-                                                  :zzz (list  (+ humpy half-pad)
-                                                              y
-                                                              (- humpy half-pad) )))
+             (break "inspect losing, absolute or relative coordinates ~s" (list x y
+                                                                                :zzz (list  (+ humpy half-pad)
+                                                                                            y
+                                                                                            (- humpy half-pad) )))
              (setf (~> *pong-game* state) :won))
             ((<= y wt)
              (setf (yd ball) (posme (yd ball))))
