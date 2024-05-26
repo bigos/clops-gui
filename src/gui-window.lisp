@@ -272,17 +272,16 @@
 
       (gtk4:connect motion-controller "motion"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion
-                                                                       (append (list lisp-window)
-                                                                               args
-                                                                               (list)))))
+                                                                       lisp-window
+                                                                       args)))
       (gtk4:connect motion-controller "enter"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion-enter
-                                                                       (append (list lisp-window)
-                                                                               args))))
+                                                                       lisp-window
+                                                                       args)))
       (gtk4:connect motion-controller "leave"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion-leave
-                                                                       (append (list lisp-window)
-                                                                               args)))))
+                                                                       lisp-window
+                                                                       args))))
 
     (let ((scroll-controller (gtk4:make-event-controller-scroll :flags gtk4:+event-controller-scroll-flags-vertical+)))
       (gtk4:widget-add-controller canvas scroll-controller)
@@ -294,18 +293,19 @@
     (let ((gesture-click-controller (gtk4:make-gesture-click))
           (click-fn (lambda (event args click-de-fn)
                       (let ((current-button (gtk4:gesture-single-current-button event)))
-                        (apply click-de-fn (list lisp-window
-                                                 current-button
-                                                 (nth 1 args)
-                                                 (nth 2 args)))))))
+                        (apply click-de-fn
+                               lisp-window
+                               current-button
+                               (nth 1 args)
+                               (nth 2 args))))))
       ;; make gesture click listen to other mouse buttons as well
       (setf (gtk4:gesture-single-button gesture-click-controller) 0)
       (gtk4:widget-add-controller canvas gesture-click-controller)
 
       (gtk4:connect gesture-click-controller "pressed"
-                    (lambda (event &rest args) (apply click-fn (list event args #'gui-events:de-pressed))))
+                    (lambda (event &rest args) (apply click-fn event args #'gui-events:de-pressed)))
       (gtk4:connect gesture-click-controller "released"
-                    (lambda (event &rest args) (apply click-fn (list event args #'gui-events:de-released)))))
+                    (lambda (event &rest args) (apply click-fn event args #'gui-events:de-released))))
 
 
     ;; for some reason resize signal does not work without  notify
@@ -356,11 +356,11 @@
 
 (defun window-activation-and-connection (lisp-app gtk4-app window-title window-menu-fn lisp-window)
   (if gtk4-app
-      (let* ((new-gtk4-window (new-window-for-app gtk4-app window-title window-menu-fn lisp-window)))
+      (let ((new-gtk4-window (new-window-for-app gtk4-app window-title window-menu-fn lisp-window)))
         (setf (gir-window lisp-window) new-gtk4-window
               (gethash (window-hkey new-gtk4-window) (windows lisp-app)) lisp-window))
       ;; we still need better way of creating simulated windows
-      (let* ((new-sim-window window-title))
+      (let ((new-sim-window window-title))
         (setf (gir-window lisp-window) window-title
               (gethash (window-hkey new-sim-window) (windows lisp-app)) lisp-window))))
 
