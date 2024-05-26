@@ -197,14 +197,6 @@
                       (+ (- humpy half-pad) offset)))
              (setf (xd ball) (posme (xd ball))))
             ((and (<= x (- wl 10)))
-
-             (progn
-
-
-               (break "inspect losing, absolute or relative coordinates ~s" (list x y :aaay humpy
-                                                                                  :zzz (list  (+ humpy half-pad)
-                                                                                              y
-                                                                                              (- humpy half-pad) ))))
              (setf (~> *pong-game* state) :won))
             ((<= y wt)
              (setf (yd ball) (posme (yd ball))))
