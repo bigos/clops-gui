@@ -98,7 +98,6 @@
              (gui-window:redraw-canvas lwin))
            (gui-window:all-windows)))
 
-
 ;;; === main ===================================================================
 (defun main ()
   (setf gui-window:*client-fn-menu-bar*      'counter::menu-bar
