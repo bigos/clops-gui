@@ -63,7 +63,7 @@
 
 
 (defmethod inc ((model model))
-  (incf (counted mode)))
+  (incf (counted model)))
 
 (defmethod dec ((model model))
   (decf (counted model)))
@@ -72,7 +72,7 @@
   (setf (counted model) 0))
 
 (defmethod render ((box gui-box:text-box))
-  (gui-window:set-rgba (if (gui-box::mouse-overp box)
+  (gui-window:set-rgba (if (gui-box:mouse-overp box)
                            (if (zerop (~> gui-window:*lisp-app* gui-window:mouse-button))
                                "yellow"
                                "red")
@@ -194,8 +194,8 @@
      (destructuring-bind ((button x y)) args
        (declare (ignore x y))
        (incf (gui-window:mouse-button gui-window:*lisp-app*) (expt 2 button))
-       (loop for c in (gui-window::children lisp-window)
-             do (if (gui-box::mouse-overp c)
+       (loop for c in (gui-window:children lisp-window)
+             do (if (gui-box:mouse-overp c)
                     (press-box c))))
      (warn "button after press ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
     (:released

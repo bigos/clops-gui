@@ -24,6 +24,7 @@
    *client-fn-menu-bar*
    add-child
    all-windows
+   children
    close-all-windows-and-quit
    current-motion
    current-focus
