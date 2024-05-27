@@ -160,6 +160,21 @@
   (setf (gui-box:parent box) lisp-window) ; box needs to respond to parent
   (pushnew box (children lisp-window)))
 
+;;; ======================== window mouse handling =============================
+(defmethod mouse-motion-enter (x y)
+  (setf (mouse-coordinates *lisp-app*) (cons x y)
+        (current-motion    *lisp-app*) window))
+
+(defmethod mouse-motion-leave ()
+  (setf (mouse-coordinates *lisp-app*) nil
+        (current-motion    *lisp-app*) nil))
+
+(defmethod mouse-button-pressed (button)
+  (incf (mouse-button *lisp-app*) (expt 2 button)))
+
+(defmethod mouse-button-released ()
+  (setf (mouse-button *lisp-app*) 0))
+
 ;; =========================== dialogs =========================================
 (defun present-about-dialog (data)
   (let ((dialog (about-dialog data)))

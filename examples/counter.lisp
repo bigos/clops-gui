@@ -161,39 +161,38 @@
      ;; do nothing yet
      )
     (:menu-simple
-          (destructuring-bind ((menu-item)) args
-            (warn "menu item ~s" menu-item)
-            (cond
-              ((equal menu-item "quit")
-               (gui-window:close-all-windows-and-quit))
+               (destructuring-bind ((menu-item)) args
+                 (warn "menu item ~s" menu-item)
+                 (cond
+                   ((equal menu-item "quit")
+                    (gui-window:close-all-windows-and-quit))
 
-              ((equal menu-item "about")
-               (gui-window:present-about-dialog
-                (list
-                 :authors (list "Jacek Podkanski")
-                 :website "https://github.com/bigos"
-                 :program-name "Counter"
-                 :comments "Nothing to say yet"
-                 :license "Public Domain"
-                 :system-information (format nil "~A" (uiop/os:implementation-identifier))
-                 :logo-icon-name "application-x-addon")))
-              (T
-               (warn "not processed event ~S ~S" event args)))))
+                   ((equal menu-item "about")
+                    (gui-window:present-about-dialog
+                     (list
+                      :authors (list "Jacek Podkanski")
+                      :website "https://github.com/bigos"
+                      :program-name "Counter"
+                      :comments "Nothing to say yet"
+                      :license "Public Domain"
+                      :system-information (format nil "~A" (uiop/os:implementation-identifier))
+                      :logo-icon-name "application-x-addon")))
+                   (T
+                    (warn "not processed event ~S ~S" event args)))))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))))
     ((:motion :motion-enter)
      (destructuring-bind ((x y)) args
-       (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) (cons x y)
-             (gui-window:current-motion    gui-window:*lisp-app*) lisp-window)))
+       (gui-window::mouse-motion-enter x y)))
     (:motion-leave
-     (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
-           (gui-window:current-motion gui-window:*lisp-app*) nil))
+     (gui-window::mouse-motion-leave))
     (:pressed
      ;; TODO find better way of finding mouse buttons state
      (destructuring-bind ((button x y)) args
        (declare (ignore x y))
-       (incf (gui-window:mouse-button gui-window:*lisp-app*) (expt 2 button))
+       (gui-window:mouse-button-pressed button)
+
        (loop for c in (gui-window:children lisp-window)
              do (if (gui-box:mouse-overp c)
                     (press-box c))))
@@ -201,7 +200,7 @@
     (:released
      (destructuring-bind ((button x y)) args
        (declare (ignore button x y))
-       (setf (gui-window:mouse-button gui-window:*lisp-app*) 0))
+       (gui-window:mouse-button-released))
      (warn "button after release ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
     (:resize
      (destructuring-bind ((w h)) args
