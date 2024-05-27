@@ -161,7 +161,7 @@
   (pushnew box (children lisp-window)))
 
 ;;; ======================== window mouse handling =============================
-(defmethod mouse-motion-enter (x y)
+(defmethod mouse-motion-enter ((window lisp-window)  x y)
   (setf (mouse-coordinates *lisp-app*) (cons x y)
         (current-motion    *lisp-app*) window))
 

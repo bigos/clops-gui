@@ -34,7 +34,11 @@
    gir-window
    lisp-window
    mouse-button
+   mouse-button-pressed
+   mouse-button-released
    mouse-coordinates
+   mouse-motion-enter
+   mouse-motion-leave
    new-window-for-app
    present-about-dialog
    redraw-canvas
