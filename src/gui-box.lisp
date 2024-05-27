@@ -21,11 +21,11 @@
   (setf (parent child-box) parent-box)
   (pushnew child-box (children parent-box)))
 
-
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
       (parent box)
-      (root-window box)))
+      (when box
+        (root-window box))))
 
 (defmethod mouse-overp ((box box))
   (when (equal (~> gui-window:*lisp-app* gui-window:current-motion)

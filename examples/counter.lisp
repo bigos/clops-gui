@@ -16,17 +16,51 @@
 
 (in-package #:counter)
 
-(defparameter *model* nil)
+(defparameter *model*  nil)
+(defparameter *window* nil)
 
 (defclass/std model ()
   ((counted)))
 
-(defun init-model ()
-  (setf *model* (make-instance 'model)))
+(defclass/std counter-window (gui-window:lisp-window)
+  ((button-plus)
+   (label-counted)
+   (button-minus)
+   (button-reset)))
 
 (defmethod initialize-instance :after ((model model) &rest initargs &key)
   (declare (ignore initargs))
   (setf (counted model) 0))
+
+(defmethod initialize-instance :after ((window counter-window) &rest initargs &key)
+  (declare (ignore initargs))
+  (with-accessors ((button-plus button-plus)
+                   (label-counted label-counted)
+                   (button-minus button-minus)
+                   (button-reset button-reset))
+      window
+    (progn
+      (setf button-plus    (make-instance 'gui-box:text-box
+                                          :top-left (make-instance 'gui-box:coordinates :x 20 :y 100)
+                                          :width 50 :height 20 :text "+"))
+      (gui-window:add-child window button-plus)
+
+      (setf label-counted  (make-instance 'gui-box:text-box
+                                          :top-left (make-instance 'gui-box:coordinates :x 100 :y 100)
+                                          :width 50 :height 20 :text (counted *model*)))
+      (gui-window:add-child window label-counted)
+
+      (setf button-minus   (make-instance 'gui-box:text-box
+                                          :top-left (make-instance 'gui-box:coordinates :x 180 :y 100)
+                                          :width 50 :height 20 :text "-"))
+      (gui-window:add-child window button-minus)
+
+      (setf button-reset   (make-instance 'gui-box:text-box
+                                          :top-left (make-instance 'gui-box:coordinates :x 260 :y 100)
+                                          :width 50 :height 20 :text "Reset"))
+      (gui-window:add-child window button-reset))))
+
+
 
 (defmethod inc ((model model))
   (incf (counted mode)))
@@ -38,7 +72,11 @@
   (setf (counted model) 0))
 
 (defmethod render ((box gui-box:text-box))
-  (gui-window:set-rgba "green")
+  (gui-window:set-rgba (if (gui-box::mouse-overp box)
+                           (if (zerop (~> gui-window:*lisp-app* gui-window:mouse-button))
+                               "yellow"
+                               "red")
+                           "green"))
   (cairo:rectangle
    (~> box gui-box:top-left gui-box:x)
    (~> box gui-box:top-left gui-box:y)
@@ -100,53 +138,71 @@
     (cairo:move-to 20 20)
     (cairo:show-text (format nil "~A" my-text)))
 
-  (let ((button-plus   (make-instance 'gui-box:text-box
-                                      :top-left (make-instance 'gui-box:coordinates :x 20 :y 100) :width 50 :height 20 :text "+"))
-        (label-counted (make-instance 'gui-box:text-box
-                                      :top-left (make-instance 'gui-box:coordinates :x 100 :y 100) :width 50 :height 20 :text (counted *model*)))
-        (button-minus  (make-instance 'gui-box:text-box
-                                      :top-left (make-instance 'gui-box:coordinates :x 180 :y 100) :width 50 :height 20 :text "-"))
-        (button-reset  (make-instance 'gui-box:text-box
-                                      :top-left (make-instance 'gui-box:coordinates :x 260 :y 100) :width 50 :height 20 :text "Reset")))
-    (render button-plus)
-    (render button-minus)
-    (render button-reset)
-    (render label-counted)))
+  (render (button-plus window))
+  (render (button-minus window))
+  (render (button-reset window))
+  (render (label-counted window)))
 
 ;;; === events =================================================================
+(defmethod press-box ((box gui-box:text-box))
+  (cond ((equal (gui-box:text box) "+")
+         (incf (counted *model*)))
+        ((equal (gui-box:text box) "-")
+         (decf (counted *model*)))
+        ((equal (gui-box:text box) "Reset")
+         (setf (counted *model*) 0))))
+
 (defmethod process-event ((lisp-window gui-window:lisp-window) event &rest args)
   (case event
     (:timeout
      ;; do nothing yet
      )
     (:menu-simple
-     (destructuring-bind ((menu-item)) args
-       (warn "menu item ~s" menu-item)
-       (cond
-         ((equal menu-item "quit")
-          (gui-window:close-all-windows-and-quit))
+          (destructuring-bind ((menu-item)) args
+            (warn "menu item ~s" menu-item)
+            (cond
+              ((equal menu-item "quit")
+               (gui-window:close-all-windows-and-quit))
 
-         ((equal menu-item "about")
-          (gui-window:present-about-dialog
-           (list
-            :authors (list "Jacek Podkanski")
-            :website "https://github.com/bigos"
-            :program-name "Counter"
-            :comments "Nothing to say yet"
-            :license "Public Domain"
-            :system-information (format nil "~A" (uiop/os:implementation-identifier))
-            :logo-icon-name "application-x-addon")))
-         (T
-          (warn "not processed event ~S ~S" event args)))))
+              ((equal menu-item "about")
+               (gui-window:present-about-dialog
+                (list
+                 :authors (list "Jacek Podkanski")
+                 :website "https://github.com/bigos"
+                 :program-name "Counter"
+                 :comments "Nothing to say yet"
+                 :license "Public Domain"
+                 :system-information (format nil "~A" (uiop/os:implementation-identifier))
+                 :logo-icon-name "application-x-addon")))
+              (T
+               (warn "not processed event ~S ~S" event args)))))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))))
     ((:motion :motion-enter)
      (destructuring-bind ((x y)) args
-       (warn "implement mouse motion handling")))
+       (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) (cons x y)
+             (gui-window:current-motion    gui-window:*lisp-app*) lisp-window)))
+    (:motion-leave
+     (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
+           (gui-window:current-motion gui-window:*lisp-app*) nil))
     (:pressed
+     ;; TODO find better way of finding mouse buttons state
      (destructuring-bind ((button x y)) args
-       (warn "implement button press handling")))
+       (declare (ignore x y))
+       (incf (gui-window:mouse-button gui-window:*lisp-app*) (expt 2 button))
+       (loop for c in (gui-window:children lisp-window)
+             do (if (gui-box::mouse-overp c)
+                    (press-box c))))
+     (warn "button after press ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
+    (:released
+     (destructuring-bind ((button x y)) args
+       (declare (ignore button x y))
+       (setf (gui-window:mouse-button gui-window:*lisp-app*) 0))
+     (warn "button after release ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
+    (:resize
+     (destructuring-bind ((w h)) args
+       (gui-window:window-resize w h lisp-window)))
     (otherwise
      (warn "not handled event ~S ~S" event args)))
 
@@ -156,8 +212,13 @@
            (gui-window:all-windows)))
 
 ;;; === main ===================================================================
+(defun init ()
+  (setf
+   *model*  (make-instance 'model)
+   *window* (make-instance 'counter-window)))
+
 (defun main ()
-  (init-model)
+  (init)
 
   (setf gui-window:*client-fn-menu-bar*      'counter::menu-bar
         gui-window:*client-fn-draw-objects*  'counter::draw-window
@@ -166,6 +227,6 @@
         gui-window:*initial-window-height*   400
         gui-window:*initial-title*           "Counter")
 
-  (gui-window:window (make-instance 'gui-window:lisp-window)))
+  (gui-window:window *window*))
 
 (main)
