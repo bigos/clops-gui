@@ -309,7 +309,6 @@
     (~> tb gui-box::mouse-overp)
     (render tb))
 
-
   (render (game-area pong-game))
   (render (ball pong-game))
 
