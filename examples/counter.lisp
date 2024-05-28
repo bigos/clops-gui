@@ -60,8 +60,6 @@
                                           :width 50 :height 20 :text "Reset"))
       (gui-window:add-child window button-reset))))
 
-
-
 (defmethod inc ((model model))
   (incf (counted model)))
 
