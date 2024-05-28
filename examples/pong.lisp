@@ -320,14 +320,14 @@
   (cairo:set-font-size 20)
 
   (cairo:move-to 0 0)
-  (let ((my-text (gui-box:text text-box)))
+  (let ((my-text (format nil "~A"  (gui-box:text text-box))))
     (multiple-value-bind  (xb yb width height)
         (cairo:text-extents my-text)
       (declare (ignore xb yb
                        ;; width height
                        ))
-      (setf (~> text-box gui-box:width)  width
-            (~> text-box gui-box:height) height)
+      (setf (~> text-box gui-box:width)  (+ 2 width)
+            (~> text-box gui-box:height) (+ 2 height))
 
       (progn
         (gui-window:set-rgba (if (gui-box::mouse-overp text-box)
@@ -346,9 +346,9 @@
       (cairo:set-source-rgb 0 0 0)
       (cairo:move-to (~> text-box gui-box:top-left gui-box:x)
                      (+ height
-                        (- 0 3)
+                        0
                         (~> text-box gui-box:top-left gui-box:y)))
-      (cairo:show-text (format nil "~A" my-text)))))
+      (cairo:show-text my-text))))
 
 (defmethod render ((anything T))
   (warn "@@@ handling weird render @@@ ~S" (list (type-of anything) anything))
