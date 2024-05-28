@@ -97,10 +97,15 @@
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
-  (cairo:move-to (~> box gui-box:top-left gui-box:x)
-                 (~> box gui-box:top-left gui-box:y))
-  (gui-window:set-rgba "black")
-  (cairo:show-text (format nil "~A" (~> box gui-box:text))))
+  (let ((my-text (format nil "~A" (~> box gui-box:text))))
+    (multiple-value-bind (xb yb width height)
+        (cairo:text-extents my-text)
+     ; (declare (ignore xb yb))
+      (cairo:move-to (~> box gui-box:top-left gui-box:x)
+                     ;; so the height is useless here because I can not line up the -
+                     (~> box gui-box:top-left gui-box:y (+ _ 15))))
+    (gui-window:set-rgba "black")
+    (cairo:show-text my-text)))
 
 ;;; === menu declaration =======================================================
 (defun menu-bar (app lisp-window)
