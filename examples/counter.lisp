@@ -84,11 +84,11 @@
 
   (let ((my-text (format nil "~A" (~> box gui-box:text))))
     (multiple-value-bind (xb yb width height)
-        (cairo:text-extents my-text)
+        (cairo:text-extents "X")
      ; (declare (ignore xb yb))
       (cairo:move-to (~> box gui-box:top-left gui-box:x)
                      ;; so the height is useless here because I can not line up the -
-                     (~> box gui-box:top-left gui-box:y (+ _ 15))))
+                     (~> box gui-box:top-left gui-box:y (+ _ height 2))))
     (gui-window:set-rgba "black")
     (cairo:show-text my-text)))
 
