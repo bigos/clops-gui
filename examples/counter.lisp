@@ -92,6 +92,17 @@
     (gui-window:set-rgba "black")
     (cairo:show-text my-text)))
 
+(defmethod press-box ((box gui-box:text-box))
+  (warn "pressing box ~S" (gui-box:text box))
+  (cond ((equal (gui-box:text box) "+")
+         (incf (counted *model*)))
+        ((equal (gui-box:text box) "-")
+         (decf (counted *model*)))
+        ((equal (gui-box:text box) "Reset")
+         (setf (counted *model*) 0)))
+  (warn "now we have ~S" (counted *model*))
+  (setf (~> *window* label-counted gui-box:text) (counted *model*)))
+
 ;;; === menu declaration =======================================================
 (defun menu-bar (app lisp-window)
   (let ((menu (gio:make-menu)))
@@ -144,17 +155,6 @@
   (render (label-counted window)))
 
 ;;; === events =================================================================
-(defmethod press-box ((box gui-box:text-box))
-  (warn "pressing box ~S" (gui-box:text box))
-  (cond ((equal (gui-box:text box) "+")
-         (incf (counted *model*)))
-        ((equal (gui-box:text box) "-")
-         (decf (counted *model*)))
-        ((equal (gui-box:text box) "Reset")
-         (setf (counted *model*) 0)))
-  (warn "now we have ~S" (counted *model*))
-  (setf (~> *window* label-counted gui-box:text) (counted *model*)))
-
 (defmethod process-event ((lisp-window gui-window:lisp-window) event &rest args)
   (case event
     (:timeout
