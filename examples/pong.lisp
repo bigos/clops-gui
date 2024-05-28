@@ -65,12 +65,6 @@
 (defclass/std slider ()
   (()))
 
-(defclass/std slider-human (slider)
-  (()))
-
-(defclass/std slider-computer (slider)
-  (()))
-
 (defclass/std ball ()
   ((coordinates)
    (radius)
