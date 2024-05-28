@@ -71,21 +71,8 @@
 (defmethod reset ((model model))
   (setf (counted model) 0))
 
-(defmethod box-mouse ((box gui-box:text-box))
-  (if (gui-box:mouse-overp box)
-      (if (zerop (~> gui-window:*lisp-app* gui-window:mouse-button))
-          :mouse-over
-          :mouse-pressed)
-      :mouse-out))
-
-(defmethod box-color ((box gui-box:text-box))
-  (case (box-mouse box)
-    (:mouse-out "lime")
-    (:mouse-over "yellow")
-    (:mouse-pressed "red")))
-
 (defmethod render ((box gui-box:text-box))
-  (gui-window:set-rgba (box-color box))
+  (gui-window:set-rgba (gui-box:box-color box))
 
   (cairo:rectangle
    (~> box gui-box:top-left gui-box:x)

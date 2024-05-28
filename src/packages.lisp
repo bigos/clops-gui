@@ -85,6 +85,7 @@
   (:export
    ;; classes
    box
+   box-color
    text-box
    coordinates
    x

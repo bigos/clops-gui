@@ -330,11 +330,8 @@
             (~> text-box gui-box:height) (+ 2 height))
 
       (progn
-        (gui-window:set-rgba (if (gui-box::mouse-overp text-box)
-                                 (if (zerop (~> gui-window:*lisp-app* gui-window:mouse-button))
-                                     "#ff000088"
-                                     "green")
-                                 "#0000ff88"))
+        (gui-window:set-rgba (gui-box:box-color text-box))
+
         (cairo:rectangle
          (~> text-box gui-box:top-left gui-box:x)
          (~> text-box gui-box:top-left gui-box:y)
@@ -346,7 +343,6 @@
       (cairo:set-source-rgb 0 0 0)
       (cairo:move-to (~> text-box gui-box:top-left gui-box:x)
                      (+ height
-                        0
                         (~> text-box gui-box:top-left gui-box:y)))
       (cairo:show-text my-text))))
 

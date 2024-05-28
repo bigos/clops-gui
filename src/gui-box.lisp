@@ -33,3 +33,16 @@
     (let ((mouse-at (~> gui-window:*lisp-app* gui-window:mouse-coordinates)))
       (and (<= (x (top-left box)) (car mouse-at) (+ (x (top-left box)) (width  box)))
            (<= (y (top-left box)) (cdr mouse-at) (+ (y (top-left box)) (height box)))))))
+
+(defmethod box-mouse ((box box))
+  (if (mouse-overp box)
+      (if (zerop (~> gui-window:*lisp-app* gui-window:mouse-button))
+          :mouse-over
+          :mouse-pressed)
+      :mouse-out))
+
+(defmethod box-color ((box box))
+  (case (box-mouse box)
+    (:mouse-out "lime")
+    (:mouse-over "yellow")
+    (:mouse-pressed "red")))
