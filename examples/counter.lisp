@@ -175,7 +175,11 @@
                       :program-name "Counter"
                       :comments "Nothing to say yet"
                       :license "Public Domain"
-                      :system-information (format nil "~A" (uiop/os:implementation-identifier))
+                      :system-information (format nil "~A~%Gtk4 ~A.~A.~A"
+                                                  (uiop/os:implementation-identifier)
+                                                  gtk4:+major-version+
+                                                  gtk4:+minor-version+
+                                                  gtk4:+micro-version+)
                       :logo-icon-name "application-x-addon")))
                    (T
                     (warn "not processed event ~S ~S" event args)))))
