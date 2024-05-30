@@ -54,12 +54,9 @@
                                          :top-left (make-instance 'gui-box:coordinates :x 260 :y 100)
                                          :width 50 :height 20 :text "Reset")))
         (gui-window:add-child window button-plus)
-        (loop for b in (list button-plus
-                             label-counted
-                             button-minus
-                             button-reset)
-              do (warn "adding box for ~S ~S" window b)
-                 (gui-window:add-child window b))))))
+        (gui-window:add-child window label-counted)
+        (gui-window:add-child window button-minus)
+        (gui-window:add-child window button-reset)))))
 
 (defmethod render ((box gui-box:text-box))
   (gui-window:set-rgba (gui-box:box-color box))
