@@ -56,7 +56,8 @@
                            label-counted
                            button-minus
                            button-reset)
-            do (gui-window:add-child window b)))))
+            do (warn "adding box for ~S ~S" window b)
+               (gui-window:add-child window b)))))
 
 (defmethod render ((box gui-box:text-box))
   (gui-window:set-rgba (gui-box:box-color box))
@@ -80,6 +81,8 @@
                      (~> box gui-box:top-left gui-box:y (+ _ height 2))))
     (gui-window:set-rgba "black")
     (cairo:show-text my-text)))
+(defmethod render ((box t))
+  (warn "nil box rendering"))
 
 (defmethod press-box ((box gui-box:text-box))
   (warn "pressing box ~S" (gui-box:text box))
