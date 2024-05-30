@@ -60,15 +60,6 @@
                                           :width 50 :height 20 :text "Reset"))
       (gui-window:add-child window button-reset))))
 
-(defmethod inc ((model model))
-  (incf (counted model)))
-
-(defmethod dec ((model model))
-  (decf (counted model)))
-
-(defmethod reset ((model model))
-  (setf (counted model) 0))
-
 (defmethod render ((box gui-box:text-box))
   (gui-window:set-rgba (gui-box:box-color box))
 
