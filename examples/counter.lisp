@@ -39,24 +39,25 @@
                    (button-minus button-minus)
                    (button-reset button-reset))
       window
-    (progn
-      (let
-          ((button-plus   (make-instance 'gui-box:text-box
-                                         :top-left (make-instance 'gui-box:coordinates :x 20 :y 100)
-                                         :width 50 :height 20 :text "+"))
-           (label-counted (make-instance 'gui-box:text-box
-                                         :top-left (make-instance 'gui-box:coordinates :x 100 :y 100)
-                                         :width 50 :height 20 :text (counted *model*)))
-           (button-minus  (make-instance 'gui-box:text-box
-                                         :top-left (make-instance 'gui-box:coordinates :x 180 :y 100)
-                                         :width 50 :height 20 :text "-"))
-           (button-reset  (make-instance 'gui-box:text-box
-                                         :top-left (make-instance 'gui-box:coordinates :x 260 :y 100)
-                                         :width 50 :height 20 :text "Reset")))
-        (gui-window:add-child window button-plus)
-        (gui-window:add-child window label-counted)
-        (gui-window:add-child window button-minus)
-        (gui-window:add-child window button-reset)))))
+
+    (setf
+     button-plus   (make-instance 'gui-box:text-box
+                                  :top-left (make-instance 'gui-box:coordinates :x 20 :y 100)
+                                  :width 50 :height 20 :text "+")
+     label-counted (make-instance 'gui-box:text-box
+                                  :top-left (make-instance 'gui-box:coordinates :x 100 :y 100)
+                                  :width 50 :height 20 :text (counted *model*))
+     button-minus  (make-instance 'gui-box:text-box
+                                  :top-left (make-instance 'gui-box:coordinates :x 180 :y 100)
+                                  :width 50 :height 20 :text "-")
+     button-reset  (make-instance 'gui-box:text-box
+                                  :top-left (make-instance 'gui-box:coordinates :x 260 :y 100)
+                                  :width 50 :height 20 :text "Reset"))
+    (loop for c in (list button-plus
+                         label-counted
+                         button-minus
+                         button-reset)
+          do (gui-window:add-child window c))))
 
 (defmethod render ((box gui-box:text-box))
   (gui-window:set-rgba (gui-box:box-color box))
