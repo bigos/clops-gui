@@ -189,13 +189,11 @@
 
        (loop for c in (gui-window:children lisp-window)
              do (if (gui-box:mouse-overp c)
-                    (press-box c))))
-     (warn "button after press ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
+                    (press-box c)))))
     (:released
      (destructuring-bind ((button x y)) args
        (declare (ignore button x y))
-       (gui-window:mouse-button-released))
-     (warn "button after release ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
+       (gui-window:mouse-button-released)))
     (:resize
      (destructuring-bind ((w h)) args
        (gui-window:window-resize w h lisp-window)))
