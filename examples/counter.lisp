@@ -39,25 +39,27 @@
                    (button-minus button-minus)
                    (button-reset button-reset))
       window
-    (let
-        ((button-plus   (make-instance 'gui-box:text-box
-                                             :top-left (make-instance 'gui-box:coordinates :x 20 :y 100)
-                                             :width 50 :height 20 :text "+"))
-         (label-counted (make-instance 'gui-box:text-box
-                                             :top-left (make-instance 'gui-box:coordinates :x 100 :y 100)
-                                             :width 50 :height 20 :text (counted *model*)))
-         (button-minus  (make-instance 'gui-box:text-box
-                                             :top-left (make-instance 'gui-box:coordinates :x 180 :y 100)
-                                             :width 50 :height 20 :text "-"))
-         (button-reset  (make-instance 'gui-box:text-box
-                                             :top-left (make-instance 'gui-box:coordinates :x 260 :y 100)
-                                             :width 50 :height 20 :text "Reset")))
-      (loop for b in (list button-plus
-                           label-counted
-                           button-minus
-                           button-reset)
-            do (warn "adding box for ~S ~S" window b)
-               (gui-window:add-child window b)))))
+    (progn
+      (let
+          ((button-plus   (make-instance 'gui-box:text-box
+                                         :top-left (make-instance 'gui-box:coordinates :x 20 :y 100)
+                                         :width 50 :height 20 :text "+"))
+           (label-counted (make-instance 'gui-box:text-box
+                                         :top-left (make-instance 'gui-box:coordinates :x 100 :y 100)
+                                         :width 50 :height 20 :text (counted *model*)))
+           (button-minus  (make-instance 'gui-box:text-box
+                                         :top-left (make-instance 'gui-box:coordinates :x 180 :y 100)
+                                         :width 50 :height 20 :text "-"))
+           (button-reset  (make-instance 'gui-box:text-box
+                                         :top-left (make-instance 'gui-box:coordinates :x 260 :y 100)
+                                         :width 50 :height 20 :text "Reset")))
+        (gui-window:add-child window button-plus)
+        (loop for b in (list button-plus
+                             label-counted
+                             button-minus
+                             button-reset)
+              do (warn "adding box for ~S ~S" window b)
+                 (gui-window:add-child window b))))))
 
 (defmethod render ((box gui-box:text-box))
   (gui-window:set-rgba (gui-box:box-color box))
@@ -82,7 +84,7 @@
     (gui-window:set-rgba "black")
     (cairo:show-text my-text)))
 (defmethod render ((box t))
-  (warn "nil box rendering"))
+  (warn "nil box rendering ~S" box))
 
 (defmethod press-box ((box gui-box:text-box))
   (warn "pressing box ~S" (gui-box:text box))
