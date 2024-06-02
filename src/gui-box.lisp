@@ -18,7 +18,7 @@
 
 ;;; === methods ================================================================
 (defmethod add-child ((parent-box box) (child-box box))
-  (setf (parent child-box) parent-box)
+  (setf (parent child-box) parent-box) ; that may interfere with the envisioned relative coordinates
   (pushnew child-box (children parent-box)))
 
 (defmethod root-window ((box box))
