@@ -12,8 +12,10 @@
 
 (defpackage #:gui-window
   (:use #:cl)
+  (:import-from :serapeum
+                ~>)
   (:import-from :defclass-std
-   defclass/std)
+                defclass/std)
   (:export
    *client-fn-draw-objects*
    *initial-title*
@@ -55,9 +57,9 @@
 (defpackage #:gui-events
   (:use #:cl)
   (:import-from :serapeum
-   ~>)
+                ~>)
   (:import-from :defclass-std
-   defclass/std)
+                defclass/std)
   (:export
    *client-fn-process-event*
    de-focus-enter
@@ -79,9 +81,9 @@
 (defpackage #:gui-box
   (:use #:cl)
   (:import-from :serapeum
-   ~>)
+                ~>)
   (:import-from :defclass-std
-   defclass/std)
+                defclass/std)
   (:export
    ;; classes
    box

@@ -156,11 +156,13 @@
       (warn "strange, window not removed ~S" window)))
 
 ;;; ============================ window child widgets ==========================
-(defmethod add-child ((lisp-window lisp-window) (box T)) ; weird box should be gui-box:box
+(defmethod add-child ((lisp-window lisp-window) (box gui-box:box))
+  (warn "trying the root child")
   (setf
    (~> box gui-box:parent) lisp-window
-   (~> box gui-box:top-left absolute-x) (~> box gui-box:top-left x)
-   (~> box gui-box:top-left absolute-y) (~> box gui-box:top-left y))
+   (~> box gui-box:top-left gui-box::absolute-x) (~> box gui-box:top-left gui-box:x)
+   (~> box gui-box:top-left gui-box::absolute-y) (~> box gui-box:top-left gui-box:y))
+  (warn "set the absolute x y in the root box")
   (pushnew box (children lisp-window)))
 
 ;;; ======================== window mouse handling =============================
