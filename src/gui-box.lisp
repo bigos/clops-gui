@@ -20,8 +20,19 @@
 
 ;;; === methods ================================================================
 (defmethod add-child ((parent-box box) (child-box box))
-  (setf (parent child-box) parent-box) ; that may interfere with the envisioned relative coordinates
+  (setf
+   (parent child-box) parent-box)
+  (recalculate-absolute child-box)
   (pushnew child-box (children parent-box)))
+
+(defmethod move ((box box) xd yd)
+  (setf (~> box top-left x) (+ (~> box top-left x) xd)
+        (~> box top-left y) (+ (~> box top-left y) yd))
+  (recalculate-absolute box))
+
+(defmethod recalculate-absolute ((box box))
+  (setf (~> box top-left absolute-x) (+ (~> box parent top-left absolute-x) (~> box top-left x))
+        (~> box top-left absolute-y) (+ (~> box parent top-left absolute-y) (~> box top-left y))))
 
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)

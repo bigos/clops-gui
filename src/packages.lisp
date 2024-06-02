@@ -95,6 +95,7 @@
    width
    height
    parent
+   parent-boxes
    root-window
    mouse-overp
    ;; add more

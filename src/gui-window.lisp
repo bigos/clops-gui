@@ -157,7 +157,10 @@
 
 ;;; ============================ window child widgets ==========================
 (defmethod add-child ((lisp-window lisp-window) (box T)) ; weird box should be gui-box:box
-  (setf (gui-box:parent box) lisp-window) ; box needs to respond to parent
+  (setf
+   (~> box gui-box:parent) lisp-window
+   (~> box gui-box:top-left absolute-x) (~> box gui-box:top-left x)
+   (~> box gui-box:top-left absolute-y) (~> box gui-box:top-left y))
   (pushnew box (children lisp-window)))
 
 ;;; ======================== window mouse handling =============================
@@ -208,7 +211,7 @@
       (loop for pos from 0 below (glib:glist-length app-windows)
             collect (glib:glist-nth app-windows pos)))))
 
-;; ============================= key event translation =========================
+;; =#.============================ key event translation =========================
 (defun translate-key-args (args)
   (destructuring-bind (keyval keycode keymods) args
     (list
