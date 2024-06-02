@@ -4,7 +4,9 @@
 
 (defclass/std coordinates ()
   ((x)
-   (y)))
+   (y)
+   (absolute-x)
+   (absolute-y)))
 
 (defclass/std box ()
   ((parent)
@@ -26,6 +28,11 @@
       (parent box)
       (when box
         (root-window box))))
+
+(defmethod parent-boxes ((box box))
+  (loop for po = box then (gui-box:parent po)
+        until (typep po 'gui-window:lisp-window)
+        collect po))
 
 (defmethod mouse-overp ((box box))
   (when (equal (~> gui-window:*lisp-app* gui-window:current-motion)
