@@ -12,6 +12,7 @@
   ((parent)
    (children)
    (top-left)
+   (bottom-right)
    (width)
    (height)))
 
@@ -32,12 +33,16 @@
 
 (defmethod recalculate-absolute-root ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
-      (setf (~> box top-left absolute-x) (~> box top-left x)
-            (~> box top-left absolute-y) (~> box top-left y))))
+      (setf (~> box top-left      absolute-x) (~> box top-left x)
+            (~> box top-left      absolute-y) (~> box top-left y)
+            (~> box bottom-right  absolute-x) (~> box top-left x) (+ _ (~> box width))
+            (~> box bottom-right  absolute-y) (~> box top-left y) (+ _ (~> box height)))))
 
 (defmethod recalculate-absolute ((box box))
-  (setf (~> box top-left absolute-x) (+ (or (~> box parent top-left absolute-x) 0) (~> box top-left x))
-        (~> box top-left absolute-y) (+ (or (~> box parent top-left absolute-y) 0) (~> box top-left y))))
+  (setf (~> box top-left absolute-x)     (~> box parent top-left absolute-x     (+ _ (~> box top-left x)))
+        (~> box top-left absolute-y)     (~> box parent top-left absolute-y     (+ _ (~> box top-left y)))
+        (~> box bottom-right absolute-x) (~> box parent bottom-right absolute-x (+ _ (~> box width)))
+        (~> box bottom-right absolute-y) (~> box parent bottom-right absolute-y (+ _ (~> box height)))))
 
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
