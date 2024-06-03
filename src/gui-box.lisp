@@ -30,6 +30,11 @@
         (~> box top-left y) (+ (~> box top-left y) yd))
   (recalculate-absolute box))
 
+(defmethod recalculate-absolute-root ((bot box))
+  (if (typep (parent box) 'gui-window:lisp-window)
+      (setf (~> box top-left absolute-x) (~> box top-left x)
+            (~> box top-left absolute-y) (~> box top-left y))))
+
 (defmethod recalculate-absolute ((box box))
   (setf (~> box top-left absolute-x) (+ (or (~> box parent top-left absolute-x) 0) (~> box top-left x))
         (~> box top-left absolute-y) (+ (or (~> box parent top-left absolute-y) 0) (~> box top-left y))))
