@@ -1,3 +1,5 @@
+(declaim (optimize (speed 0) (safety 2) (debug 3)))
+
 (in-package #:gui-box)
 
 ;;; === classes ================================================================
@@ -32,34 +34,49 @@
   (recalculate-absolute box))
 
 (defmethod recalculate-absolute-root ((box box))
-  (when (typep (parent box) 'gui-window:lisp-window)
-    (setf (~> box top-left      absolute-x) (~> box top-left x)
-          (~> box top-left      absolute-y) (~> box top-left y))
-    (setf (~> box bottom-right  absolute-x) (+ (~> box top-left x) (~> box width))
-          (~> box bottom-right  absolute-y) (+ (~> box top-left y) (~> box height)))))
+  (when (and (typep (parent box) 'gui-window:lisp-window))
+    ;; top left absolutes same as x y
+    (setf (~> box top-left absolute-x) (~> box top-left x)
+          (~> box top-left absolute-y) (~> box top-left y))
+    ;; bottom right absolutes same as x+width y+height
+    (let ((cax (~> box top-left x (+ _ (~> box width))))
+          (cay (~> box top-left y (+ _ (~> box height)))))
+      (setf (~> box bottom-right) (make-instance 'coordinates
+                                                 :x cax
+                                                 :absolute-x cax
+                                                 :y cay
+                                                 :absolute-y cay)))))
 
 (defmethod recalculate-absolute ((box box))
-  (let ((parent-top-left-absolute-x     nil)
-        (parent-top-left-absolute-y     nil)
-        ;; (parent-bottom-right-absolute-x nil)
-        ;; (parent-bottom-right-absolute-y nil)
-        )
-    (step
-     (if (typep (parent box) 'gui-window:lisp-window)
-         (recalculate-absolute-root box)
+  (if (typep (parent box) 'gui-window:lisp-window)
+      (recalculate-absolute-root box)
 
-         (progn
-           (when (or (null (~> box parent top-left absolute-x))
-                     (null (~> box parent top-left absolute-y)))
-             (recalculate-absolute (parent box)))
+      (step
+       (let
+           ((parent-top-left-absolute-x nil)
+            (parent-top-left-absolute-y nil))
 
-           (setf parent-top-left-absolute-x (~> box parent top-left absolute-x)
-                 parent-top-left-absolute-y (~> box parent top-left absolute-y))
+         (when (or (null (~> box parent top-left absolute-x))
+                   (null (~> box parent top-left absolute-y)))
+           (recalculate-absolute (parent box)))
+         (setf parent-top-left-absolute-x (~> box parent top-left absolute-x)
+               parent-top-left-absolute-y (~> box parent top-left absolute-y))
 
-           (setf (~> box top-left absolute-x)     (+ parent-top-left-absolute-x    (~> box top-left x))
-                 (~> box top-left absolute-y)     (+ parent-top-left-absolute-y    (~> box top-left y)))
-           (setf (~> box bottom-right absolute-x) (~> box top-left absolute-x (+ _ (~>  box width)))
-                 (~> box bottom-right absolute-y) (~> box top-left absolute-y (+ _ (~>  box height)))))))))
+         (setf (~> box top-left absolute-x) (+ parent-top-left-absolute-x (~> box top-left x))
+               (~> box top-left absolute-y) (+ parent-top-left-absolute-y (~> box top-left y)))
+
+         (let ((bw (~> box width))
+               (bh (~> box height)))
+           (if (null (~> box bottom-right))
+               (setf (~> box bottom-right) (make-instance 'coordinates
+                                                          :x          (~> box top-left x          (+ _ bw))
+                                                          :absolute-x (~> box top-left absolute-x (+ _ bw))
+                                                          :y          (~> box top-left y          (+ _ bh))
+                                                          :absolute-y (~> box top-left absolute-y (+ _ bh))))
+               (setf (~> box bottom-right x)          (~> box top-left x          (+ _ bw))
+                     (~> box bottom-right absolute-x) (~> box top-left absolute-x (+ _ bw))
+                     (~> box bottom-right y)          (~> box top-left y          (+ _ bh))
+                     (~> box bottom-right absolute-y) (~> box top-left absolute-y (+ _ bh)))))))))
 
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
