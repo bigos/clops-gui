@@ -85,21 +85,24 @@
   (:import-from :defclass-std
                 defclass/std)
   (:export
-   ;; classes
+   absolute-x
+   absolute-y
+   add-child
    box
    box-color
-   text-box
+   children
    coordinates
-   x
-   y
-   text
-   top-left
-   width
    height
+   mouse-overp
    parent
    parent-boxes
-   root-window
    recalculate-absolute-root
-   mouse-overp
+   root-window
+   text
+   text-box
+   top-left
+   width
+   x
+   y
    ;; add more
    ))

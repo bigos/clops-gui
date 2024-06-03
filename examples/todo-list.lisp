@@ -7,14 +7,14 @@
 (ql:quickload '(:clops-gui) :silent nil)
 
 ;;; === package ================================================================
-(defpackage #:to-do-list
+(defpackage #:todo-list
   (:use #:cl)
   (:import-from :serapeum
                 :~>)
   (:import-from :defclass-std
                 :defclass/std))
 
-(in-package #:to-do-list)
+(in-package #:todo-list)
 
 ;;; === utilities ==============================================================
 (defun make-coordinates (x y)
