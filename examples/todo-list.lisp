@@ -93,8 +93,8 @@
                                    :height 30
                                    :text "Search"))
 
-  (gui-box::add-child box (text-field box))
-  (gui-box::add-child box (button box)))
+  (gui-box:add-child box (text-field box))
+  (gui-box:add-child box (button box)))
 
 (defmethod render ((search-box search-box))
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
@@ -105,15 +105,15 @@
         (cairo:text-extents "X")
       (declare (ignore xb yb width))
 
-      (cairo:move-to    (~> search-box gui-box:top-left gui-box::absolute-x)
-                        (+ (~> search-box gui-box:top-left gui-box::absolute-y) height)))
+      (cairo:move-to    (~> search-box gui-box:top-left gui-box:absolute-x)
+                        (+ (~> search-box gui-box:top-left gui-box:absolute-y) height)))
     (gui-window:set-rgba "red")
     (cairo:show-text my-text))
 
   (gui-window:set-rgba "#ff110040")
   (cairo:rectangle
-   (~> search-box gui-box:top-left gui-box::absolute-x)
-   (~> search-box gui-box:top-left gui-box::absolute-y)
+   (~> search-box gui-box:top-left gui-box:absolute-x)
+   (~> search-box gui-box:top-left gui-box:absolute-y)
    (~> search-box gui-box:width)
    (~> search-box gui-box:height))
   (cairo:fill-path))
@@ -123,26 +123,26 @@
 (defmethod render ((box gui-box:box))
   (gui-window:set-rgba "#ffff0040")
   (cairo:rectangle
-   (~> box gui-box:top-left gui-box::absolute-x)
-   (~> box gui-box:top-left gui-box::absolute-y)
+   (~> box gui-box:top-left gui-box:absolute-x)
+   (~> box gui-box:top-left gui-box:absolute-y)
    (~> box gui-box:width)
    (~> box gui-box:height))
   (cairo:fill-path))
 
 
 (defmethod render :after ((box gui-box:box) )
-  (loop for b in (gui-box::children box) do (render b)))
+  (loop for b in (gui-box:children box) do (render b)))
 
 ;;; === experiment ==============================================================
 (defun experiment-first-window ()
   (setf
-   gui-window:*client-fn-draw-objects*  'to-do-list::draw-window
-   gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
+   gui-window:*client-fn-draw-objects*  'to-do-list:draw-window
+   gui-window:*lisp-app* (make-instance 'gui-window:lisp-app))
 
   (assert (zerop (hash-table-count (gui-window:all-windows))))
 
   (let ((lisp-window (make-instance 'todo-window)))
-    (gui-window::window-creation-from-simulation :testing lisp-window)
+    (gui-window:window-creation-from-simulation :testing lisp-window)
     (assert (eq 1 (hash-table-count (gui-window:all-windows))))
     lisp-window))
 
