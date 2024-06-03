@@ -136,8 +136,8 @@
 ;;; === experiment ==============================================================
 (defun experiment-first-window ()
   (setf
-   gui-window:*client-fn-draw-objects*  'todo-list:draw-window
-   gui-window:*lisp-app* (make-instance 'gui-window:lisp-app))
+   gui-window:*client-fn-draw-objects*  'todo-list::draw-window
+   gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
 
   (assert (zerop (hash-table-count (gui-window:all-windows))))
 
@@ -279,8 +279,8 @@
   (init)
 
   (setf gui-window:*client-fn-menu-bar*      nil
-        gui-window:*client-fn-draw-objects*  'to-do-list::draw-window
-        gui-events:*client-fn-process-event* 'to-do-list::process-event
+        gui-window:*client-fn-draw-objects*  'todo-list::draw-window
+        gui-events:*client-fn-process-event* 'todo-list::process-event
         gui-window:*initial-window-width*    600
         gui-window:*initial-window-height*   400
         gui-window:*initial-title*           "To-Do List")
