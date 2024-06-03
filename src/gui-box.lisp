@@ -59,8 +59,8 @@
   (when (equal (~> gui-window:*lisp-app* gui-window:current-motion)
                (root-window box))
     (let ((mouse-at (~> gui-window:*lisp-app* gui-window:mouse-coordinates)))
-      (and (<= (x (top-left box)) (car mouse-at) (+ (x (top-left box)) (width  box)))
-           (<= (y (top-left box)) (cdr mouse-at) (+ (y (top-left box)) (height box)))))))
+      (and (<= (~> box top-left absolute-x) (car mouse-at) (~> box bottom-right absolute-x))
+           (<= (~> box top-left absolute-y) (cdr mouse-at) (~> box bottom-right absolute-y))))))
 
 (defmethod box-mouse ((box box))
   (if (mouse-overp box)
