@@ -200,7 +200,7 @@
 
 ;;; ============================================================================
 (defmethod draw-window ((window todo-window))
-  (cairo:set-source-rgb  0.1 0.1 0.1)
+  (let ((cv 0.13)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
