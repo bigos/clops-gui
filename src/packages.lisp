@@ -48,6 +48,7 @@
    simulate-draw-func
    window
    window-creation-from-menu
+   window-creation-from-simulation
    window-get
    window-hkey
    window-resize
