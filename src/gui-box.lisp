@@ -34,49 +34,51 @@
   (recalculate-absolute box))
 
 (defmethod recalculate-absolute-root ((box box))
-  (when (and (typep (parent box) 'gui-window:lisp-window))
-    ;; top left absolutes same as x y
-    (setf (~> box top-left absolute-x) (~> box top-left x)
-          (~> box top-left absolute-y) (~> box top-left y))
-    ;; bottom right absolutes same as x+width y+height
-    (let ((cax (~> box top-left x (+ _ (~> box width))))
-          (cay (~> box top-left y (+ _ (~> box height)))))
-      (setf (~> box bottom-right) (make-instance 'coordinates
-                                                 :x cax
-                                                 :absolute-x cax
-                                                 :y cay
-                                                 :absolute-y cay)))))
+  (if (and (typep (parent box) 'gui-window:lisp-window))
+      (progn
+        ;; top left absolutes same as x y
+        (setf (~> box top-left absolute-x) (~> box top-left x)
+              (~> box top-left absolute-y) (~> box top-left y))
+        ;; bottom right absolutes same as x+width y+height
+        (let ((cax (~> box top-left x (+ _ (~> box width))))
+              (cay (~> box top-left y (+ _ (~> box height)))))
+          (setf (~> box bottom-right) (make-instance 'coordinates
+                                                     :x          (~> box top-left x          (+ _ (~> box width)))
+                                                     :absolute-x (~> box top-left absolute-x (+ _ (~> box width)))
+                                                     :y          (~> box top-left y          (+ _ (~> box height)))
+                                                     :absolute-y (~> box top-left absolute-y (+ _ (~> box height)))))))
+      (error "It should not be invoked unless the parent is a lisp-window")))
 
 (defmethod recalculate-absolute ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
       (recalculate-absolute-root box)
 
-      (step
-       (let
-           ((parent-top-left-absolute-x nil)
-            (parent-top-left-absolute-y nil))
 
-         (when (or (null (~> box parent top-left absolute-x))
-                   (null (~> box parent top-left absolute-y)))
-           (recalculate-absolute (parent box)))
-         (setf parent-top-left-absolute-x (~> box parent top-left absolute-x)
-               parent-top-left-absolute-y (~> box parent top-left absolute-y))
+      (let
+          ((parent-top-left-absolute-x nil)
+           (parent-top-left-absolute-y nil))
 
-         (setf (~> box top-left absolute-x) (+ parent-top-left-absolute-x (~> box top-left x))
-               (~> box top-left absolute-y) (+ parent-top-left-absolute-y (~> box top-left y)))
+        (when (or (null (~> box parent top-left absolute-x))
+                  (null (~> box parent top-left absolute-y)))
+          (recalculate-absolute (parent box)))
+        (setf parent-top-left-absolute-x (~> box parent top-left absolute-x)
+              parent-top-left-absolute-y (~> box parent top-left absolute-y))
 
-         (let ((bw (~> box width))
-               (bh (~> box height)))
-           (if (null (~> box bottom-right))
-               (setf (~> box bottom-right) (make-instance 'coordinates
-                                                          :x          (~> box top-left x          (+ _ bw))
-                                                          :absolute-x (~> box top-left absolute-x (+ _ bw))
-                                                          :y          (~> box top-left y          (+ _ bh))
-                                                          :absolute-y (~> box top-left absolute-y (+ _ bh))))
-               (setf (~> box bottom-right x)          (~> box top-left x          (+ _ bw))
-                     (~> box bottom-right absolute-x) (~> box top-left absolute-x (+ _ bw))
-                     (~> box bottom-right y)          (~> box top-left y          (+ _ bh))
-                     (~> box bottom-right absolute-y) (~> box top-left absolute-y (+ _ bh)))))))))
+        (setf (~> box top-left absolute-x) (+ parent-top-left-absolute-x (~> box top-left x))
+              (~> box top-left absolute-y) (+ parent-top-left-absolute-y (~> box top-left y)))
+
+        (let ((bw (~> box width))
+              (bh (~> box height)))
+          (if (null (~> box bottom-right))
+              (setf (~> box bottom-right) (make-instance 'coordinates
+                                                         :x          (~> box top-left x          (+ _ bw))
+                                                         :absolute-x (~> box top-left absolute-x (+ _ bw))
+                                                         :y          (~> box top-left y          (+ _ bh))
+                                                         :absolute-y (~> box top-left absolute-y (+ _ bh))))
+              (setf (~> box bottom-right x)          (~> box top-left x          (+ _ bw))
+                    (~> box bottom-right absolute-x) (~> box top-left absolute-x (+ _ bw))
+                    (~> box bottom-right y)          (~> box top-left y          (+ _ bh))
+                    (~> box bottom-right absolute-y) (~> box top-left absolute-y (+ _ bh))))))))
 
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)

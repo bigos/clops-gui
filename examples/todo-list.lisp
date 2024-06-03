@@ -83,12 +83,12 @@
   (setf
    (text-field box) (make-instance 'gui-box:text-box
                                    :parent box
-                                   :top-left (make-coordinates 30 30)
+                                   :top-left (make-coordinates 10 10)
                                    :width 200
                                    :height 30)
    (button box)     (make-instance 'gui-box:text-box
                                    :parent box
-                                   :top-left (make-coordinates 300 30)
+                                   :top-left (make-coordinates 280 10)
                                    :width 110
                                    :height 30
                                    :text "Search"))
@@ -110,7 +110,7 @@
     (gui-window:set-rgba "red")
     (cairo:show-text my-text))
 
-  (gui-window:set-rgba "#ff110040")
+  (gui-window:set-rgba "#55667740")
   (cairo:rectangle
    (~> search-box gui-box:top-left gui-box:absolute-x)
    (~> search-box gui-box:top-left gui-box:absolute-y)
