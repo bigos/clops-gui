@@ -1,20 +1,20 @@
 (declaim (optimize (speed 0) (safety 2) (debug 3)))
 
-;; (load "~/Programming/Lisp/lispy-experiments/to-do-list.lisp")
+;; (load "~/Programming/Lisp/clops-gui/examples/todo-list.lisp")
 
 ;;; === load ===================================================================
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
 (ql:quickload '(:clops-gui) :silent nil)
 
 ;;; === package ================================================================
-(defpackage #:to-do-list
+(defpackage #:todo-list
   (:use #:cl)
   (:import-from :serapeum
                 :~>)
   (:import-from :defclass-std
                 :defclass/std))
 
-(in-package #:to-do-list)
+(in-package #:todo-list)
 
 ;;; === utilities ==============================================================
 (defun make-coordinates (x y)
@@ -136,7 +136,7 @@
 ;;; === experiment ==============================================================
 (defun experiment-first-window ()
   (setf
-   gui-window:*client-fn-draw-objects*  'to-do-list::draw-window
+   gui-window:*client-fn-draw-objects*  'todo-list::draw-window
    gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
 
   (assert (zerop (hash-table-count (gui-window:all-windows))))
@@ -279,8 +279,8 @@
   (init)
 
   (setf gui-window:*client-fn-menu-bar*      nil
-        gui-window:*client-fn-draw-objects*  'to-do-list::draw-window
-        gui-events:*client-fn-process-event* 'to-do-list::process-event
+        gui-window:*client-fn-draw-objects*  'todo-list::draw-window
+        gui-events:*client-fn-process-event* 'todo-list::process-event
         gui-window:*initial-window-width*    600
         gui-window:*initial-window-height*   400
         gui-window:*initial-title*           "To-Do List")
