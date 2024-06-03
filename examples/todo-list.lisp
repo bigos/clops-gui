@@ -34,7 +34,8 @@
 
 (defclass/std search-box (gui-box:box)
   ((text-field)
-   (button)))
+   (button)
+   (inner-button)))
 
 (defclass/std todo-box   (gui-box:box) (()))
 (defclass/std action-box (gui-box:box) (()))
@@ -91,10 +92,16 @@
                                    :top-left (make-coordinates 280 10)
                                    :width 110
                                    :height 30
-                                   :text "Search"))
+                                   :text "Search")
+   (inner-button box) (make-instance 'gui-box:box
+                                     :parent (button box)
+                                     :top-left (make-coordinates 5 5)
+                                     :width 20
+                                     :height 20))
 
   (gui-box:add-child box (text-field box))
-  (gui-box:add-child box (button box)))
+  (gui-box:add-child box (button box))
+  (gui-box:add-child (button box) (inner-button box)))
 
 (defmethod render ((search-box search-box))
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
