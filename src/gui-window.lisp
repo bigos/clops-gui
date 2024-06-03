@@ -157,7 +157,7 @@
 
 ;;; ============================ window child widgets ==========================
 (defmethod add-child ((lisp-window lisp-window) (box gui-box:box))
-  (recalculate-absolute-root box)
+  (gui-box:recalculate-absolute-root box)
   (pushnew box (children lisp-window)))
 
 ;;; ======================== window mouse handling =============================

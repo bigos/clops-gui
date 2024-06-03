@@ -99,6 +99,7 @@
    parent
    parent-boxes
    root-window
+   recalculate-absolute-root
    mouse-overp
    ;; add more
    ))
