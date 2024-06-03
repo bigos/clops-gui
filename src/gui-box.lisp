@@ -32,17 +32,34 @@
   (recalculate-absolute box))
 
 (defmethod recalculate-absolute-root ((box box))
-  (if (typep (parent box) 'gui-window:lisp-window)
-      (setf (~> box top-left      absolute-x) (~> box top-left x)
-            (~> box top-left      absolute-y) (~> box top-left y)
-            (~> box bottom-right  absolute-x) (~> box top-left x) (+ _ (~> box width))
-            (~> box bottom-right  absolute-y) (~> box top-left y) (+ _ (~> box height)))))
+  (when (typep (parent box) 'gui-window:lisp-window)
+    (setf (~> box top-left      absolute-x) (~> box top-left x)
+          (~> box top-left      absolute-y) (~> box top-left y))
+    (setf (~> box bottom-right  absolute-x) (+ (~> box top-left x) (~> box width))
+          (~> box bottom-right  absolute-y) (+ (~> box top-left y) (~> box height)))))
 
 (defmethod recalculate-absolute ((box box))
-  (setf (~> box top-left absolute-x)     (~> box parent top-left absolute-x     (+ _ (~> box top-left x)))
-        (~> box top-left absolute-y)     (~> box parent top-left absolute-y     (+ _ (~> box top-left y)))
-        (~> box bottom-right absolute-x) (~> box parent bottom-right absolute-x (+ _ (~> box width)))
-        (~> box bottom-right absolute-y) (~> box parent bottom-right absolute-y (+ _ (~> box height)))))
+  (let ((parent-top-left-absolute-x     nil)
+        (parent-top-left-absolute-y     nil)
+        ;; (parent-bottom-right-absolute-x nil)
+        ;; (parent-bottom-right-absolute-y nil)
+        )
+    (step
+     (if (typep (parent box) 'gui-window:lisp-window)
+         (recalculate-absolute-root box)
+
+         (progn
+           (when (or (null (~> box parent top-left absolute-x))
+                     (null (~> box parent top-left absolute-y)))
+             (recalculate-absolute (parent box)))
+
+           (setf parent-top-left-absolute-x (~> box parent top-left absolute-x)
+                 parent-top-left-absolute-y (~> box parent top-left absolute-y))
+
+           (setf (~> box top-left absolute-x)     (+ parent-top-left-absolute-x    (~> box top-left x))
+                 (~> box top-left absolute-y)     (+ parent-top-left-absolute-y    (~> box top-left y)))
+           (setf (~> box bottom-right absolute-x) (~> box top-left absolute-x (+ _ (~>  box width)))
+                 (~> box bottom-right absolute-y) (~> box top-left absolute-y (+ _ (~>  box height)))))))))
 
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
