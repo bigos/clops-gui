@@ -53,20 +53,22 @@
   (if (typep (parent box) 'gui-window:lisp-window)
       (recalculate-absolute-root box)
 
+      (progn
+        (let
+            ((parent-top-left-absolute-x (~> box parent top-left absolute-x))
+             (parent-top-left-absolute-y (~> box parent top-left absolute-y)))
 
-      (let
-          ((parent-top-left-absolute-x nil)
-           (parent-top-left-absolute-y nil))
+          (when (or (null parent-top-left-absolute-x)
+                    (null parent-top-left-absolute-y))
+            (recalculate-absolute (parent box))
+            (setf parent-top-left-absolute-x (~> box parent top-left absolute-x)
+                  parent-top-left-absolute-y (~> box parent top-left absolute-y)))
 
-        (when (or (null (~> box parent top-left absolute-x))
-                  (null (~> box parent top-left absolute-y)))
-          (recalculate-absolute (parent box)))
-        (setf parent-top-left-absolute-x (~> box parent top-left absolute-x)
-              parent-top-left-absolute-y (~> box parent top-left absolute-y))
+          ;; top left
+          (setf (~> box top-left absolute-x) (+ parent-top-left-absolute-x (~> box top-left x))
+                (~> box top-left absolute-y) (+ parent-top-left-absolute-y (~> box top-left y))))
 
-        (setf (~> box top-left absolute-x) (+ parent-top-left-absolute-x (~> box top-left x))
-              (~> box top-left absolute-y) (+ parent-top-left-absolute-y (~> box top-left y)))
-
+        ;; bottom right
         (let ((bw (~> box width))
               (bh (~> box height)))
           (if (null (~> box bottom-right))
