@@ -58,6 +58,7 @@
             ((parent-top-left-absolute-x (~> box parent top-left absolute-x))
              (parent-top-left-absolute-y (~> box parent top-left absolute-y)))
 
+          ;; ensure parent top left present
           (when (or (null parent-top-left-absolute-x)
                     (null parent-top-left-absolute-y))
             (recalculate-absolute (parent box))
