@@ -96,8 +96,9 @@
 (defclass/std lisp-window ()
   ((gir-window  :type (or gir::object-instance keyword)
                 :documentation "Either gir window or symbol used in test drawing")
-   (dimensions :documentation "Cons with width and height or resized window")
-   (children)))
+   (dimensions  :documentation "Cons with width and height or resized window")
+   (children)   :documentation "List of widgets whose parent is the window"
+   (all-widgets :std (make-hash-table)):documentation "All generations of widgets that eventually lead to the window. May be useful in finding current widget"))
 
 ;;; ====== all windows =========================================================
 (defun all-windows ()
@@ -158,6 +159,7 @@
 ;;; ============================ window child widgets ==========================
 (defmethod add-child ((lisp-window lisp-window) (box gui-box:box))
   (gui-box:recalculate-absolute-root box)
+  (setf (gethash (sxhash box) (all-widgets lisp-window)) box)
   (pushnew box (children lisp-window)))
 
 ;;; ======================== window mouse handling =============================
