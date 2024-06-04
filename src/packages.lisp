@@ -26,6 +26,7 @@
    *client-fn-menu-bar*
    add-child
    all-windows
+   all-widgets
    children
    close-all-windows-and-quit
    current-motion
