@@ -71,16 +71,16 @@
         ;; bottom right
         (let ((bw (~> box width))
               (bh (~> box height)))
-          (if (null (~> box bottom-right))
+          (if (typep (~> box bottom-right) 'coordinates)
+              (setf (~> box bottom-right x)          (~> box top-left x          (+ _ bw))
+                    (~> box bottom-right absolute-x) (~> box top-left absolute-x (+ _ bw))
+                    (~> box bottom-right y)          (~> box top-left y          (+ _ bh))
+                    (~> box bottom-right absolute-y) (~> box top-left absolute-y (+ _ bh)))
               (setf (~> box bottom-right) (make-instance 'coordinates
                                                          :x          (~> box top-left x          (+ _ bw))
                                                          :absolute-x (~> box top-left absolute-x (+ _ bw))
                                                          :y          (~> box top-left y          (+ _ bh))
-                                                         :absolute-y (~> box top-left absolute-y (+ _ bh))))
-              (setf (~> box bottom-right x)          (~> box top-left x          (+ _ bw))
-                    (~> box bottom-right absolute-x) (~> box top-left absolute-x (+ _ bw))
-                    (~> box bottom-right y)          (~> box top-left y          (+ _ bh))
-                    (~> box bottom-right absolute-y) (~> box top-left absolute-y (+ _ bh))))))))
+                                                         :absolute-y (~> box top-left absolute-y (+ _ bh)))))))))
 
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
