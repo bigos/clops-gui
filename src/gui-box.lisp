@@ -25,7 +25,7 @@
 (defmethod add-child ((parent-box box) (child-box box))
   (setf
    (parent child-box) parent-box
-   (gethash (sxhash child-box) (all-widgets (root-window child-box))) child-box)
+   (gethash (sxhash child-box) (gui-window:: all-widgets(root-window child-box))) child-box)
 
   (recalculate-absolute child-box)
   (pushnew child-box (children parent-box)))
@@ -88,8 +88,7 @@
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
       (parent box)
-      (when box
-        (root-window box))))
+      (root-window (parent box))))
 
 (defmethod parent-boxes ((box box))
   (loop for po = box then (gui-box:parent po)
