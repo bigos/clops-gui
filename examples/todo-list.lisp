@@ -17,6 +17,26 @@
 (in-package #:todo-list)
 
 ;;; === utilities ==============================================================
+(defun slot-values (obj)
+  (loop for the-slot in (mapcar
+                         #'sb-mop:slot-definition-name
+                         (sb-mop:class-slots (class-of obj)))
+        collect (if (slot-boundp obj the-slot)
+                    (cons the-slot
+                          (slot-value obj the-slot))
+                    the-slot)))
+
+(defmethod print-object ((object gui-box:coordinates) stream)
+  (print-unreadable-object (object stream :identity t :type t)
+    (format stream "rel: ~S, abs: ~S"
+            (list (gui-box:x object) (gui-box:y object))
+            (list (gui-box:absolute-x object) (gui-box:absolute-y object)))))
+
+(defmethod print-object ((object gui-box:box) stream)
+  (print-unreadable-object (object stream :identity t :type t)
+    (format stream "obj: ~S"
+            (slot-values object))))
+
 (defun make-coordinates (x y)
   (make-instance 'gui-box:coordinates :x x :y y))
 
