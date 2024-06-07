@@ -271,7 +271,15 @@
            (gui-window:current-motion gui-window:*lisp-app*) nil))
     (:focus-enter)
     (:focus-leave)
-    (:pressed)
+    (:pressed
+     (destructuring-bind ((button x y)) args
+       (declare (ignore button))
+
+       (format t "processing mouse at ~S ~S" x y)
+
+     ))
+
+
     (:released)
     (:scroll)
     (:resize
