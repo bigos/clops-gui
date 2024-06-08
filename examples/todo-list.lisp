@@ -276,11 +276,14 @@
        (declare (ignore button))
 
        (format t "~&processing mouse at ~S ~S" x y)
-       (loop for w being the hash-value  in (gui-window:all-widgets lisp-window)
+       (loop
+         for w being the hash-value  in (gui-window:all-widgets lisp-window)
+             for mos = (gui-box::mouse-over-score w)
+             for minmos = 10000 then (min minmos mos)
              do
                 (if (gui-box:mouse-overp w)
-                    (format t "over ~S ~S~%" w (gui-box::mouse-over-score w))
-                    (format t "~S ~S~%" w (gui-box::mouse-over-score w))))))
+                    (format t "over ~S ~S ~S~%" w mos minmos)
+                    (format t "~S ~S ~S~%"      w mos minmos)))))
 
 
     (:released)
