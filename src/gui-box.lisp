@@ -85,13 +85,6 @@
                                                          :y          (~> box top-left y          (+ _ bh))
                                                          :absolute-y (~> box top-left absolute-y (+ _ bh)))))))))
 
-(defmethod absolute-coordinates ((box box))
-  (list
-   (~> box top-left absolute-x)
-   (~> box top-left absolute-y)
-   (~> box bottom-right absolute-x)
-   (~> box bottom-right absolute-y)))
-
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
       (parent box)
