@@ -108,10 +108,7 @@
                     (car mouse-at)))
             (bry (- (~> box bottom-right absolute-y)
                     (cdr mouse-at))))
-        (list tlx tly brx bry
-              :score
-              (+ tlx tly brx bry)
-              )))))
+        (+ tlx tly brx bry)))))
 
 (defmethod mouse-overp ((box box))
   (when (equal (~> gui-window:*lisp-app* gui-window:current-motion)
