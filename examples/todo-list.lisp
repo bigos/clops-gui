@@ -32,10 +32,10 @@
             (list (gui-box:x object) (gui-box:y object))
             (list (gui-box:absolute-x object) (gui-box:absolute-y object)))))
 
-(defmethod print-object ((object gui-box:box) stream)
-  (print-unreadable-object (object stream :identity t :type t)
-    (format stream "obj: ~S"
-            (slot-values object))))
+;; (defmethod print-object ((object gui-box:box) stream)
+;;   (print-unreadable-object (object stream :identity t :type t)
+;;     (format stream "obj: ~S"
+;;             (slot-values object))))
 
 (defun make-coordinates (x y)
   (make-instance 'gui-box:coordinates :x x :y y))
@@ -248,16 +248,16 @@
   (render-action-box))
 
 (defmethod process-event ((lisp-window todo-window) event &rest args)
-        (unless (member event '(:timeout :motion))
-          (format t "~&going to process ~A ~A  "
-                  event
-                  (case event
-                    ((:focus-enter :focus-leave)
-                     (gui-window:window-hkey lisp-window))
-                    (:key-pressed
-                     (destructuring-bind ((letter name code mods)) args
-                       (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
-                    (T args))))
+  (unless (member event '(:timeout :motion))
+    (format t "~&going to process ~A ~A  "
+            event
+            (case event
+              ((:focus-enter :focus-leave)
+               (gui-window:window-hkey lisp-window))
+              (:key-pressed
+               (destructuring-bind ((letter name code mods)) args
+                 (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
+              (T args))))
   (case event
     (:timeout
      ;; do nothing yet
@@ -275,9 +275,12 @@
      (destructuring-bind ((button x y)) args
        (declare (ignore button))
 
-       (format t "processing mouse at ~S ~S" x y)
-
-     ))
+       (format t "~&processing mouse at ~S ~S" x y)
+       (loop for w being the hash-value  in (gui-window:all-widgets lisp-window)
+             do
+                (if (gui-box:mouse-overp w)
+                    (format t "over ~S ~S~%" w (gui-box::mouse-over-score w))
+                    (format t "~S ~S~%" w (gui-box::mouse-over-score w))))))
 
 
     (:released)

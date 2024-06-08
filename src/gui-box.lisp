@@ -85,6 +85,13 @@
                                                          :y          (~> box top-left y          (+ _ bh))
                                                          :absolute-y (~> box top-left absolute-y (+ _ bh)))))))))
 
+(defmethod absolute-coordinates ((box box))
+  (list
+   (~> box top-left absolute-x)
+   (~> box top-left absolute-y)
+   (~> box bottom-right absolute-x)
+   (~> box bottom-right absolute-y)))
+
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
       (parent box)
@@ -94,6 +101,21 @@
   (loop for po = box then (gui-box:parent po)
         until (typep po 'gui-window:lisp-window)
         collect po))
+
+;;; mouse over has all positives
+(defmethod mouse-over-score ((box box))
+  (when (equal (~> gui-window:*lisp-app* gui-window:current-motion)
+               (root-window box))
+    (let ((mouse-at (~> gui-window:*lisp-app* gui-window:mouse-coordinates)))
+      (let ((tlx (- (car mouse-at)
+                    (~> box top-left absolute-x)))
+            (tly (- (cdr mouse-at)
+                    (~> box top-left absolute-y)))
+            (brx (- (~> box bottom-right absolute-x)
+                    (car mouse-at)))
+            (bry (- (~> box bottom-right absolute-y)
+                    (cdr mouse-at))))
+        (list tlx tly brx bry)))))
 
 (defmethod mouse-overp ((box box))
   (when (equal (~> gui-window:*lisp-app* gui-window:current-motion)
