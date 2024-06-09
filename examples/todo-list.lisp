@@ -249,15 +249,15 @@
 
 (defmethod process-event ((lisp-window todo-window) event &rest args)
   (unless (member event '(:timeout :motion))
-        (format t "~&going to process ~A ~A  "
-                event
-                (case event
-                  ((:focus-enter :focus-leave)
-                   (gui-window:window-hkey lisp-window))
-                  (:key-pressed
-                   (destructuring-bind ((letter name code mods)) args
-                     (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
-                  (T args))))
+            (format t "~&going to process ~A ~A  "
+                    event
+                    (case event
+                      ((:focus-enter :focus-leave)
+                       (gui-window:window-hkey lisp-window))
+                      (:key-pressed
+                       (destructuring-bind ((letter name code mods)) args
+                         (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
+                      (T args))))
   (case event
     (:timeout
      ;; do nothing yet
@@ -275,6 +275,7 @@
      (destructuring-bind ((button x y)) args
        (declare (ignore button))
        (format t "~&processing mouse at ~S ~S" x y)
+
        (let ((most-specific-widget nil))
          (loop
            for w being the hash-value  in (gui-window:all-widgets lisp-window)
