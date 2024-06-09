@@ -24,7 +24,6 @@
 
 ;;; === methods ================================================================
 (defmethod add-child ((parent-box box) (child-box box))
-  (recalculate-absolute child-box)
   (setf
    (parent child-box) parent-box
    (gethash (sxhash child-box) (gui-window:all-widgets(root-window child-box))) child-box)
