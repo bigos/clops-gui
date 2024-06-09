@@ -36,6 +36,7 @@
    dimensions
    gir-window
    lisp-window
+   most-current-widget
    mouse-button
    mouse-button-pressed
    mouse-button-released

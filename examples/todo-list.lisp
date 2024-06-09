@@ -276,28 +276,7 @@
        (declare (ignore button))
        (format t "~&processing mouse at ~S ~S" x y)
 
-       (let ((most-specific-widget nil))
-         (loop
-           for w being the hash-value  in (gui-window:all-widgets lisp-window)
-           for mos = (gui-box:mouse-over-score w)
-           for minmos = nil then (cond ((and mos (null minmos))
-                                        (setf most-specific-widget w)
-                                        mos)
-                                       ((and (null mos) minmos)
-                                        minmos)
-                                       ((and mos minmos)
-                                        (if (< mos minmos)
-                                            (progn
-                                              (setf most-specific-widget w)
-                                              mos)
-                                            minmos))
-                                       (t
-                                        (warn "weird mos minmos ~S ~S" mos minmos)))
-
-           do (if (gui-box:mouse-overp w)
-                  (format t "over ~S ~S ~S~%" w mos (gui-box:mouse-score w))
-                  (format t "~S ~S ~S~%"      w mos (gui-box:mouse-score w)))
-           finally (warn "minmos is ~S ~S" minmos most-specific-widget)))))
+       (gui-window:most-current-widget lisp-window)))
 
     (:released)
     (:scroll)

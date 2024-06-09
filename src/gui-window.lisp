@@ -162,10 +162,36 @@
   (setf (gethash (sxhash box) (all-widgets lisp-window)) box)
   (pushnew box (children lisp-window)))
 
+(defmethod most-current-widget ((lisp-window lisp-window))
+  (loop
+    for w being the hash-value in (gui-window:all-widgets lisp-window)
+    for mos = (gui-box:mouse-over-score w)
+    for msw = nil then (cond ((and mos (null msw))
+                              w)
+                             ((and (and mos minmos)
+                                   (< mos minmos))
+                              w)
+                             (T msw))
+    for minmos = nil then (cond ((and mos (null minmos))
+                                 mos)
+                                ((and (null mos) minmos)
+                                 minmos)
+                                ((and mos minmos)
+                                 (if (< mos minmos)
+                                     mos
+                                     minmos))
+                                (t
+                                 (warn "weird mos minmos ~S ~S" mos minmos)))
+    do (if (gui-box:mouse-overp w)
+           (format t "over ~S ~S ~S~%" w mos (gui-box:mouse-score w))
+           (format t "~S ~S ~S~%"      w mos (gui-box:mouse-score w)))
+    finally (warn "minmos is ~S ~S" minmos msw)
+            (return msw)))
+
 ;;; ======================== window mouse handling =============================
 (defmethod mouse-motion-enter ((window lisp-window)  x y)
-  (setf (mouse-coordinates *lisp-app*) (cons x y)
-        (current-motion    *lisp-app*) window))
+    (setf (mouse-coordinates *lisp-app*) (cons x y)
+          (current-motion    *lisp-app*) window))
 
 (defmethod mouse-motion-leave ()
   (setf (mouse-coordinates *lisp-app*) nil
