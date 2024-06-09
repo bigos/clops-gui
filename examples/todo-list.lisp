@@ -281,8 +281,12 @@
          for mos = (gui-box::mouse-over-score w)
          for minmos = nil then (cond ((and mos (null minmos))
                                       mos)
+                                     ((and (null mos) minmos)
+                                      minmos)
                                      ((and mos minmos)
-                                      (min mos minmos)))
+                                      (min mos minmos))
+                                     (t
+                                      (warn "weird mos minmos ~S ~S" mos minmos)))
 
          do (if (gui-box:mouse-overp w)
                 (format t "over ~S ~S ~S~%" w mos (gui-box::mouse-score w))
