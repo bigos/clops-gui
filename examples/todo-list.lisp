@@ -249,15 +249,15 @@
 
 (defmethod process-event ((lisp-window todo-window) event &rest args)
   (unless (member event '(:timeout :motion))
-    (format t "~&going to process ~A ~A  "
-            event
-            (case event
-              ((:focus-enter :focus-leave)
-               (gui-window:window-hkey lisp-window))
-              (:key-pressed
-               (destructuring-bind ((letter name code mods)) args
-                 (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
-              (T args))))
+        (format t "~&going to process ~A ~A  "
+                event
+                (case event
+                  ((:focus-enter :focus-leave)
+                   (gui-window:window-hkey lisp-window))
+                  (:key-pressed
+                   (destructuring-bind ((letter name code mods)) args
+                     (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
+                  (T args))))
   (case event
     (:timeout
      ;; do nothing yet
@@ -274,17 +274,20 @@
     (:pressed
      (destructuring-bind ((button x y)) args
        (declare (ignore button))
-
        (format t "~&processing mouse at ~S ~S" x y)
+
        (loop
          for w being the hash-value  in (gui-window:all-widgets lisp-window)
-             for mos = (gui-box::mouse-over-score w)
-             for minmos = 10000 then (min minmos mos)
-             do
-                (if (gui-box:mouse-overp w)
-                    (format t "over ~S ~S ~S~%" w mos minmos)
-                    (format t "~S ~S ~S~%"      w mos minmos)))))
+         for mos = (gui-box::mouse-over-score w)
+         for minmos = nil then (cond ((and mos (null minmos))
+                                      mos)
+                                     ((and mos minmos)
+                                      (min mos minmos)))
 
+         do (if (gui-box:mouse-overp w)
+                (format t "over ~S ~S ~S~%" w mos (gui-box::mouse-score w))
+                (format t "~S ~S ~S~%"      w mos (gui-box::mouse-score w)))
+         finally (warn "minmos is ~S" minmos))))
 
     (:released)
     (:scroll)
