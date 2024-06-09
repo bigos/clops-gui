@@ -274,9 +274,8 @@
     (:pressed
      (destructuring-bind ((button x y)) args
        (declare (ignore button))
-       (format t "~&processing mouse at ~S ~S" x y)
-
-       (gui-window:most-current-widget lisp-window)))
+       (format t "~&processing mouse at ~S ~S on widget ~S~%" x y
+               (gui-window:most-current-widget lisp-window))))
 
     (:released)
     (:scroll)
