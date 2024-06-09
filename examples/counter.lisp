@@ -223,4 +223,4 @@
 
   (gui-window:window *window*))
 
-(main)
+;; (main)

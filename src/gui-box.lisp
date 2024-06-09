@@ -24,6 +24,7 @@
 
 ;;; === methods ================================================================
 (defmethod add-child ((parent-box box) (child-box box))
+  (recalculate-absolute child-box)
   (setf
    (parent child-box) parent-box
    (gethash (sxhash child-box) (gui-window:all-widgets(root-window child-box))) child-box)
@@ -53,8 +54,11 @@
       (error "It should not be invoked unless the parent is a lisp-window")))
 
 (defmethod recalculate-absolute ((box box))
+  (warn "type of box ~S and parent ~S" (type-of box) (type-of (parent box)))
   (if (typep (parent box) 'gui-window:lisp-window)
-      (recalculate-absolute-root box)
+      (progn
+        (warn "going to recalculate root")
+        (recalculate-absolute-root box))
 
       (progn
         (let

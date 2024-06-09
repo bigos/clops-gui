@@ -101,6 +101,7 @@
    mouse-score
    parent
    parent-boxes
+   recalculate-absolute
    recalculate-absolute-root
    root-window
    text
