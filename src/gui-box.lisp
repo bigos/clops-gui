@@ -105,8 +105,8 @@
               (tly (- (cdr mouse-at)                   (~> box top-left absolute-y)))
               (brx (- (~> box bottom-right absolute-x) (car mouse-at)))
               (bry (- (~> box bottom-right absolute-y) (cdr mouse-at))))
-          (warn "zzz ~S ~S ~S ~S" tlx tly brx bry)
-          (if (some (lambda (x) (< x 0)) (list tlx tly brx bry))
+
+          (if (every (lambda (x) (>= x 0)) (list tlx tly brx bry))
               (setf (mouse-score box) (+ tlx tly brx bry))
               (setf (mouse-score box) nil))))
       (setf (mouse-score box) nil)))
