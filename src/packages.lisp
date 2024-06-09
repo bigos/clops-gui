@@ -95,7 +95,9 @@
    children
    coordinates
    height
+   mouse-over-score
    mouse-overp
+   mouse-score
    parent
    parent-boxes
    recalculate-absolute-root
