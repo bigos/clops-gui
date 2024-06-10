@@ -60,6 +60,11 @@
 (defclass/std todo-box   (gui-box:box) (()))
 (defclass/std action-box (gui-box:box) (()))
 
+(defclass/std action-add (gui-box:text-box)  (()))
+(defclass/std action-remove (gui-box:text-box) (()))
+(defclass/std action-up (gui-box:text-box)   (()))
+(defclass/std action-down (gui-box:text-box) (()))
+
 ;;; === methods =================================================================
 (defmethod initialize-instance :after ((window todo-window) &rest initargs &key)
   (declare (ignore initargs))
@@ -78,19 +83,45 @@
                                       :parent window
                                       :top-left (make-coordinates 20 100)
                                       :width 400
-                                      :height 50)
+                                      :height 200)
    (action-box window) (make-instance 'action-box
                                       :parent window
-                                      :top-left (make-coordinates 20 200)
+                                      :top-left (make-coordinates 20 330)
                                       :width 400
                                       :height 50))
 
-  (warn "going to add root box")
   (gui-window:add-child window (search-box window))
-  (warn "going to add root box")
   (gui-window:add-child window (todo-box   window))
-  (warn "going to add root box")
-  (gui-window:add-child window (action-box window)))
+  (gui-window:add-child window (action-box window))
+
+  (gui-box:add-child (~> window action-box) (make-instance 'action-add
+                                                           :parent (~> window action-box)
+                                                           :top-left (make-coordinates 5 5)
+                                                           :width 20
+                                                           :height 20
+                                                           :text "Add"))
+
+  (gui-box:add-child (~> window action-box) (make-instance 'action-remove
+                                                           :parent (~> window action-box)
+                                                           :top-left (make-coordinates 55 5)
+                                                           :width 20
+                                                           :height 20
+                                                           :text "Remove"))
+
+  (gui-box:add-child (~> window action-box) (make-instance 'action-up
+                                                           :parent (~> window action-box)
+                                                           :top-left (make-coordinates 105 5)
+                                                           :width 20
+                                                           :height 20
+                                                           :text "Up"))
+
+  (gui-box:add-child (~> window action-box) (make-instance 'action-down
+                                                           :parent (~> window action-box)
+                                                           :top-left (make-coordinates 155 5)
+                                                           :width 20
+                                                           :height 20
+                                                           :text "Down")))
+
 
 (defmethod initialize-instance :after ((box search-box) &rest initargs &key)
   (declare (ignore initargs))
@@ -112,16 +143,10 @@
                                    :top-left (make-coordinates 280 10)
                                    :width 110
                                    :height 30
-                                   :text "Search")
-   (inner-button box) (make-instance 'gui-box:box
-                                     :parent (button box)
-                                     :top-left (make-coordinates 5 5)
-                                     :width 20
-                                     :height 20))
+                                   :text "Search"))
 
   (gui-box:add-child box (text-field box))
-  (gui-box:add-child box (button box))
-  (gui-box:add-child (button box) (inner-button box)))
+  (gui-box:add-child box (button box)))
 
 (defmethod render ((search-box search-box))
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
