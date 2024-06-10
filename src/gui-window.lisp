@@ -167,7 +167,7 @@
   (loop
     for w being the hash-value in (gui-window:all-widgets lisp-window)
     for mos = (gui-box:mouse-over-score w)
-    for current-widget = (cond ((and mos (null current-widget))
+    for current-widget = (cond ((and mos (null minmos))
                                 w)
                                ((and mos minmos (< mos minmos))
                                 w)
