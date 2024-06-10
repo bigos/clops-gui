@@ -53,10 +53,10 @@
       (error "It should not be invoked unless the parent is a lisp-window")))
 
 (defmethod recalculate-absolute ((box box))
-  (warn "type of box ~S and parent ~S" (type-of box) (type-of (parent box)))
+  ;(warn "type of box ~S and parent ~S" (type-of box) (type-of (parent box)))
   (if (typep (parent box) 'gui-window:lisp-window)
       (progn
-        (warn "going to recalculate root")
+        ;(warn "going to recalculate root")
         (recalculate-absolute-root box))
 
       (progn

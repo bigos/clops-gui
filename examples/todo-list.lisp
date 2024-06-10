@@ -103,21 +103,21 @@
 
   (gui-box:add-child (~> window action-box) (make-instance 'action-remove
                                                            :parent (~> window action-box)
-                                                           :top-left (make-coordinates 55 5)
+                                                           :top-left (make-coordinates 105 5)
                                                            :width 20
                                                            :height 20
                                                            :text "Remove"))
 
   (gui-box:add-child (~> window action-box) (make-instance 'action-up
                                                            :parent (~> window action-box)
-                                                           :top-left (make-coordinates 105 5)
+                                                           :top-left (make-coordinates 205 5)
                                                            :width 20
                                                            :height 20
                                                            :text "Up"))
 
   (gui-box:add-child (~> window action-box) (make-instance 'action-down
                                                            :parent (~> window action-box)
-                                                           :top-left (make-coordinates 155 5)
+                                                           :top-left (make-coordinates 305 5)
                                                            :width 20
                                                            :height 20
                                                            :text "Down")))
@@ -179,15 +179,43 @@
    (~> box gui-box:height))
   (cairo:fill-path))
 
-
 (defmethod render :after ((box gui-box:box) )
   (loop for b in (gui-box:children box) do (render b)))
 
+(defmethod render ((box gui-box:text-box))
+  (gui-window:set-rgba (gui-box:box-color box))
+
+
+  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
+  (cairo:set-font-size 20)
+
+  (let ((my-text (format nil "~A" (~> box gui-box:text))))
+    (multiple-value-bind (xb yb width height)
+        (cairo:text-extents my-text)
+      (declare (ignore xb yb))
+
+      (cairo:rectangle
+       (~> box gui-box:top-left gui-box:absolute-x)
+       (~> box gui-box:top-left gui-box:absolute-y)
+       (+ width 4)
+       (+ height 4))
+      (cairo:fill-path)
+
+      (setf (~> box gui-box:width) (+ width 4)
+            (~> box gui-box:height) (+ width 4))
+      (gui-box:recalculate-absolute box)
+
+      (cairo:move-to (~> box gui-box:top-left gui-box:absolute-x (+ _  2))
+                     ;; so the height is useless here because I can not line up the -
+                     (~> box gui-box:top-left gui-box:absolute-y (+ _ height 2))))
+    (gui-window:set-rgba "black")
+    (cairo:show-text my-text)))
+
 ;;; === experiment ==============================================================
 (defun experiment-first-window ()
-  (setf
-   gui-window:*client-fn-draw-objects*  'todo-list::draw-window
-   gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
+    (setf
+     gui-window:*client-fn-draw-objects*  'todo-list::draw-window
+     gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
 
   (assert (zerop (hash-table-count (gui-window:all-windows))))
 
