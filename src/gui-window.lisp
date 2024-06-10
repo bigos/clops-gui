@@ -178,8 +178,8 @@
                          mos)
                         (t minmos))
     do (if (gui-box:mouse-overp w)
-           (format t "over ~S ~S ~S~%" w mos (gui-box:mouse-score w))
-           (format t "____ ~S ~S ~S~%"      w mos (gui-box:mouse-score w)))
+           (format t "over ~S ~S ~S ~S~%" w mos (gui-box:mouse-score w) (gui-box:absolute-coordinates w))
+           (format t "____ ~S ~S ~S ~S~%" w mos (gui-box:mouse-score w) (gui-box:absolute-coordinates w)))
     finally (warn "minmos is ~S ~S" minmos current-widget)
             (return current-widget)))
 

@@ -121,6 +121,12 @@
       (and (<= (~> box top-left absolute-x) (car mouse-at) (~> box bottom-right absolute-x))
            (<= (~> box top-left absolute-y) (cdr mouse-at) (~> box bottom-right absolute-y))))))
 
+(defmethod absolute-coordinates ((box box))
+  (list (~> box top-left absolute-x)
+        (~> box top-left absolute-y)
+        (~> box bottom-right absolute-x)
+        (~> box bottom-right absolute-y)))
+
 (defmethod box-mouse ((box box))
   (if (mouse-overp box)
       (if (zerop (~> gui-window:*lisp-app* gui-window:mouse-button))

@@ -88,6 +88,7 @@
   (:import-from :defclass-std
                 defclass/std)
   (:export
+   absolute-coordinates
    absolute-x
    absolute-y
    add-child
