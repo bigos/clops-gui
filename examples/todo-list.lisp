@@ -145,8 +145,6 @@
    (~> search-box gui-box:height))
   (cairo:fill-path))
 
-;;; possibly treat the top-left coordinates as relative, recalculating the absolute values at rendering
-
 (defmethod render ((box gui-box:box))
   (gui-window:set-rgba "#ffff0040")
   (cairo:rectangle
@@ -190,41 +188,6 @@
     ;; (process-event lisp-window :key-pressed (list " " "space" 65 nil))
     ))
 
-
-(defun render-todo-box ()
-  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
-  (cairo:set-font-size 12)
-
-  (let ((my-text (format nil "~A" "todo box will go here")))
-    (multiple-value-bind (xb yb width height)
-        (cairo:text-extents "X")
-      (declare (ignore xb yb width height))
-
-      (cairo:move-to 20 100))
-    (gui-window:set-rgba "green")
-    (cairo:show-text my-text))
-
-  (gui-window:set-rgba "#11FF0040")
-  (cairo:rectangle 20 110 400 130)
-  (cairo:fill-path))
-
-(defun render-action-box ()
-  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
-  (cairo:set-font-size 12)
-
-  (let ((my-text (format nil "~A" "action box will go here")))
-    (multiple-value-bind (xb yb width height)
-        (cairo:text-extents "X")
-      (declare (ignore xb yb width height))
-
-      (cairo:move-to 20 260))
-    (gui-window:set-rgba "blue")
-    (cairo:show-text my-text))
-
-  (gui-window:set-rgba "#1100FF40")
-  (cairo:rectangle 20 270 400 60)
-  (cairo:fill-path))
-
 ;;; ============================================================================
 (defmethod draw-window ((window todo-window))
   (let ((cv 0.13)) (cairo:set-source-rgb  cv cv cv))
@@ -242,10 +205,9 @@
     (gui-window:set-rgba "black")
     (cairo:show-text my-text))
 
-
   (render (search-box window))
-  (render-todo-box)
-  (render-action-box))
+  (render (todo-box window))
+  (render (action-box window)))
 
 (defmethod process-event ((lisp-window todo-window) event &rest args)
   (unless (member event '(:timeout :motion))
