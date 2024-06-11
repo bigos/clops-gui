@@ -94,7 +94,6 @@
   (gui-window:add-child window (todo-box   window))
   (gui-window:add-child window (action-box window))
 
-
   (gui-box:add-child (~> window action-box) (make-instance 'action-add
                                                            :parent (~> window action-box)
                                                            :top-left (make-coordinates 5 5)
@@ -186,6 +185,7 @@
 (defmethod render ((box gui-box:text-box))
   (gui-window:set-rgba (gui-box:box-color box))
 
+
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
@@ -203,6 +203,7 @@
 
       (setf (~> box gui-box:width) (+ width 4)
             (~> box gui-box:height) (+ width 4))
+      (gui-box:recalculate-absolute box)
 
       (cairo:move-to (~> box gui-box:top-left gui-box:absolute-x (+ _  2))
                      ;; so the height is useless here because I can not line up the -

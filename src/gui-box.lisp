@@ -36,19 +36,6 @@
         (~> box top-left y) (+ (~> box top-left y) yd))
   (recalculate-absolute box))
 
-(defmethod initialize-instance :after ((box text-box) &rest initargs &key)
-  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
-  (cairo:set-font-size 20)
-
-  (let ((my-text (format nil "~A" (~> box text))))
-    (multiple-value-bind (xb yb width height)
-        (cairo:text-extents my-text)
-      (declare (ignore xb yb))
-
-      (setf (~> box width) (+ width 4)
-            (~> box height) (+ width 4))))
-  (recalculate-absolute box))
-
 (defmethod recalculate-absolute-root ((box box))
   (if (and (typep (parent box) 'gui-window:lisp-window))
       (progn
