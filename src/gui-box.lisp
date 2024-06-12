@@ -54,23 +54,19 @@
       (error "It should not be invoked unless the parent is a lisp-window")))
 
 (defmethod recalculate-absolute ((box box))
-  ;(warn "type of box ~S and parent ~S" (type-of box) (type-of (parent box)))
+  ;;(warn "type of box ~S and parent ~S" (type-of box) (type-of (parent box)))
   (if (typep (parent box) 'gui-window:lisp-window)
-      (progn
-        ;(warn "going to recalculate root")
-        (recalculate-absolute-root box))
+      ;;(warn "going to recalculate root")
+      (recalculate-absolute-root box)
 
       (progn
-        (let
-            ((parent-top-left-absolute-x (~> box parent top-left absolute-x))
-             (parent-top-left-absolute-y (~> box parent top-left absolute-y)))
+        ;; ensure parent top left present
+        (when (or (null (~> box parent top-left absolute-x))
+                  (null (~> box parent top-left absolute-y)))
+          (recalculate-absolute (parent box)))
 
-          ;; ensure parent top left present
-          (when (or (null parent-top-left-absolute-x)
-                    (null parent-top-left-absolute-y))
-            (recalculate-absolute (parent box))
-            (setf parent-top-left-absolute-x (~> box parent top-left absolute-x)
-                  parent-top-left-absolute-y (~> box parent top-left absolute-y)))
+        (let ((parent-top-left-absolute-x (~> box parent top-left absolute-x))
+              (parent-top-left-absolute-y (~> box parent top-left absolute-y)))
 
           ;; top left
           (setf (~> box top-left absolute-x) (+ parent-top-left-absolute-x (~> box top-left x))
