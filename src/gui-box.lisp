@@ -20,7 +20,8 @@
    (mouse-score)))
 
 (defclass/std text-box (box)
-  ((text)))
+  ((text)
+   (recalculate)))
 
 ;;; === methods ================================================================
 (defmethod add-child ((parent-box box) (child-box box))

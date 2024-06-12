@@ -148,6 +148,10 @@
   (gui-box:add-child box (text-field box))
   (gui-box:add-child box (button box)))
 
+(defmethod initialize-instance :after ((box gui-box:text-box) &rest initargs &key)
+  (declare (ignore initargs))
+  (setf (gui-box::recalculate box) t))
+
 (defmethod render ((search-box search-box))
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 12)
@@ -203,7 +207,10 @@
 
       (setf (~> box gui-box:width) (+ width 4)
             (~> box gui-box:height) (+ width 4))
-      (gui-box:recalculate-absolute box)
+
+      (when (gui-box::recalculate box)
+        (gui-box:recalculate-absolute box)
+        (setf (gui-box::recalculate box) nil))
 
       (cairo:move-to (~> box gui-box:top-left gui-box:absolute-x (+ _  2))
                      ;; so the height is useless here because I can not line up the -
