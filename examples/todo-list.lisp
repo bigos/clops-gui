@@ -242,6 +242,9 @@
     (process-event lisp-window :timeout)
     (process-event lisp-window :motion-enter (list 50 50 ))
 
+    (describe gui-window:*lisp-app* )    ;; it works
+
+
     ;; (process-event lisp-window :key-pressed (list "" "Escape" 9  nil))
     ;; (process-event lisp-window :key-pressed (list "" "F1" 67     nil))
     ;; (process-event lisp-window :key-pressed (list "r" "r" 10     nil))
