@@ -232,6 +232,9 @@
     lisp-window))
 
 (defun experiment ()
+  "Experiment is for experimenting with processing events and drawing windows
+  without the use of Gtk4 linrary. Instead of drawing on a window the outcomes
+  of the events are drawn on *.png files."
   (warn "starting experiment")
 
   (let ((lisp-window (experiment-first-window)))
@@ -253,6 +256,7 @@
 
 ;;; ============================================================================
 (defmethod draw-window ((window todo-window))
+  "Calls render for topmost boxes of the window."
   (let ((cv 0.13)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
