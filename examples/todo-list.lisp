@@ -151,20 +151,13 @@
   (declare (ignore initargs))
   (setf (gui-box::recalculate box) t))
 
-(defmethod text-dimentions ((box gui-box:text-box) text size font slant weight)
+(defun text-dimentions (text size font slant weight)
   (cairo:select-font-face font slant weight)
   (cairo:set-font-size size)
 
   (multiple-value-bind (xb yb width height)
       (cairo:text-extents text)
     (declare (ignore xb yb))
-
-    (setf (~> box gui-box:width) (+ width 4)
-          (~> box gui-box:height) (+ height 4))
-    (when (gui-box::recalculate box)
-      (gui-box:recalculate-absolute box)
-      (setf (gui-box::recalculate box) nil))
-
     (cons width height)))
 
 (defgeneric render (box)
@@ -208,9 +201,17 @@
   (gui-window:set-rgba (gui-box:box-color box))
 
   (let ((my-text (format nil "~A"  (~> box gui-box:text))))
-    (let ((the-text-dimentions (text-dimentions box my-text 20 "Ubuntu Mono" :normal :bold)))
+    (let ((the-text-dimentions (text-dimentions my-text 20 "Ubuntu Mono" :normal :bold)))
       (let ((width  (car the-text-dimentions))
             (height (cdr the-text-dimentions)))
+
+        (progn
+          ;; find the way to extract it elsewhere
+          (setf (~> box gui-box:width) (+ width 4)
+                (~> box gui-box:height) (+ height 4))
+          (when (gui-box::recalculate box)
+            (gui-box:recalculate-absolute box)
+            (setf (gui-box::recalculate box) nil)))
 
         ;; draw a box with 4/2 pixels margin
         (cairo:rectangle
