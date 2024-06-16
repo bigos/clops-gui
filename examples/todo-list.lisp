@@ -200,8 +200,8 @@
 (defmethod render ((box gui-box:text-box))
   (gui-window:set-rgba (gui-box:box-color box))
 
-  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
-  (cairo:set-font-size 20)
+  ;; (cairo:select-font-face "Ubuntu Mono" :normal :bold)
+  ;; (cairo:set-font-size 20)
 
   (let ((my-text (format nil "~A"  (~> box gui-box:text))))
     (let ((the-text-dimentions (text-dimentions my-text 20 "Ubuntu Mono" :normal :bold)))
