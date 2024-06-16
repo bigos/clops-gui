@@ -151,14 +151,14 @@
   (declare (ignore initargs))
   (setf (gui-box::recalculate box) t))
 
-(defun text-dimentions (text &optional (size 20) (font "Ubuntu Mono"))
-  (cairo:select-font-face text :normal :bold)
+(defun text-dimentions (text size font slant weight)
+  (cairo:select-font-face font slant weight)
   (cairo:set-font-size size)
 
   (multiple-value-bind (xb yb width height)
       (cairo:text-extents text)
     (declare (ignore xb yb))
-    (list width height)))
+    (cons width height)))
 
 (defgeneric render (box)
     (:documentation "Render a BOX usinng cairo "))
@@ -203,36 +203,33 @@
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
-  (warn "text dimensions calculation ~S" (text-dimentions "abc"))
+  (let ((my-text (format nil "~A"  (~> box gui-box:text))))
+    (let ((the-text-dimentions (text-dimentions my-text 20 "Ubuntu Mono" :normal :bold)))
+      (let ((width (car the-text-dimentions))
+            (height (cdr the-text-dimentions)))
 
-  (let ((my-text (format nil "~A" (~> box gui-box:text))))
-    ;; get the text width and height
-    (multiple-value-bind (xb yb width height)
-        (cairo:text-extents my-text)
-      (declare (ignore xb yb))
+        (progn
+          ;; set the box relative dimensions and recalculate the absolute dimensions
+          (setf (~> box gui-box:width) (+ width 4)
+                (~> box gui-box:height) (+ height 4))
+          (when (gui-box::recalculate box)
+            (gui-box:recalculate-absolute box)
+            (setf (gui-box::recalculate box) nil)))
 
-      (progn
-        ;; set the box relative dimensions and recalculate the absolute dimensions
-        (setf (~> box gui-box:width) (+ width 4)
-              (~> box gui-box:height) (+ height 4))
-        (when (gui-box::recalculate box)
-          (gui-box:recalculate-absolute box)
-          (setf (gui-box::recalculate box) nil)))
+        ;; draw a box with 4/2 pixels margin
+        (cairo:rectangle
+         (~> box gui-box:top-left gui-box:absolute-x)
+         (~> box gui-box:top-left gui-box:absolute-y)
+         (+ width 4)
+         (+ height 4))
+        (cairo:fill-path)
 
-      ;; draw a box with 4/2 pixels margin
-      (cairo:rectangle
-       (~> box gui-box:top-left gui-box:absolute-x)
-       (~> box gui-box:top-left gui-box:absolute-y)
-       (+ width 4)
-       (+ height 4))
-      (cairo:fill-path)
-
-      ;; move cairo cursor relative to absolute box position to have the margin
-      (cairo:move-to (~> box gui-box:top-left gui-box:absolute-x (+ _  2))
-                     ;; so the height is useless here because I can not line up the -
-                     (~> box gui-box:top-left gui-box:absolute-y (+ _ height 2))))
-    (gui-window:set-rgba "black")
-    (cairo:show-text my-text)))
+        ;; move cairo cursor relative to absolute box position to have the margin
+        (cairo:move-to (~> box gui-box:top-left gui-box:absolute-x (+ _  2))
+                       ;; so the height is useless here because I can not line up the -
+                       (~> box gui-box:top-left gui-box:absolute-y (+ _ height 2)))
+        (gui-window:set-rgba "black")
+        (cairo:show-text my-text)))))
 
 ;;; === experiment ==============================================================
 (defun experiment-first-window ()
