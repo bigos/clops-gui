@@ -205,13 +205,7 @@
       (let ((width  (car the-text-dimentions))
             (height (cdr the-text-dimentions)))
 
-        (progn
-          ;; find the way to extract it elsewhere
-          (setf (~> box gui-box:width)  (+ width  4)
-                (~> box gui-box:height) (+ height 4))
-          (when (gui-box::recalculate box)
-            (gui-box:recalculate-absolute box)
-            (setf (gui-box::recalculate box) nil)))
+        (gui-box::resize box width height)
 
         ;; draw a box with 4/2 pixels margin
         (cairo:rectangle

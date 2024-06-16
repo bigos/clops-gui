@@ -37,6 +37,13 @@
         (~> box top-left y) (+ (~> box top-left y) yd))
   (recalculate-absolute box))
 
+(defmethod resize ((box box) nwidth nheight)
+  (unless (and (eq (~> box width) nwidth)
+               (eq (~> box height) nheight))
+    (setf (~> box width)  (+ nwidth  4)
+          (~> box height) (+ nheight 4))
+    (recalculate-absolute box)))
+
 (defmethod recalculate-absolute-root ((box box))
   (if (and (typep (parent box) 'gui-window:lisp-window))
       (progn
