@@ -151,8 +151,17 @@
   (declare (ignore initargs))
   (setf (gui-box::recalculate box) t))
 
+(defun text-dimentions (text &optional (size 20) (font "Ubuntu Mono"))
+  (cairo:select-font-face text :normal :bold)
+  (cairo:set-font-size size)
+
+  (multiple-value-bind (xb yb width height)
+      (cairo:text-extents text)
+    (declare (ignore xb yb))
+    (list width height)))
+
 (defgeneric render (box)
-  (:documentation "Render a BOX usinng cairo "))
+    (:documentation "Render a BOX usinng cairo "))
 
 (defmethod render ((search-box search-box))
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
@@ -193,6 +202,8 @@
 
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
+
+  (warn "text dimensions calculation ~S" (text-dimentions "abc"))
 
   (let ((my-text (format nil "~A" (~> box gui-box:text))))
     ;; get the text width and height
