@@ -205,6 +205,7 @@
       (let ((width  (car the-text-dimentions))
             (height (cdr the-text-dimentions)))
 
+        ;; some text boxes will not be resized on text change
         (gui-box::resize box width height)
 
         ;; draw a box with 4/2 pixels margin
