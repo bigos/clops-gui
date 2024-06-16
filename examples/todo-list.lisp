@@ -191,7 +191,6 @@
 (defmethod render ((box gui-box:text-box))
   (gui-window:set-rgba (gui-box:box-color box))
 
-
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
 
@@ -201,6 +200,14 @@
         (cairo:text-extents my-text)
       (declare (ignore xb yb))
 
+      (progn
+        ;; set the box relative dimensions and recalculate the absolute dimensions
+        (setf (~> box gui-box:width) (+ width 4)
+              (~> box gui-box:height) (+ height 4))
+        (when (gui-box::recalculate box)
+          (gui-box:recalculate-absolute box)
+          (setf (gui-box::recalculate box) nil)))
+
       ;; draw a box with 4/2 pixels margin
       (cairo:rectangle
        (~> box gui-box:top-left gui-box:absolute-x)
@@ -208,14 +215,6 @@
        (+ width 4)
        (+ height 4))
       (cairo:fill-path)
-
-      (progn
-        ;; set the box relative dimensions and recalculate the absolute dimensions
-        (setf (~> box gui-box:width) (+ width 4)
-              (~> box gui-box:height) (+ width 4))
-        (when (gui-box::recalculate box)
-          (gui-box:recalculate-absolute box)
-          (setf (gui-box::recalculate box) nil)))
 
       ;; move cairo cursor relative to absolute box position to have the margin
       (cairo:move-to (~> box gui-box:top-left gui-box:absolute-x (+ _  2))
