@@ -207,7 +207,7 @@
 
         (progn
           ;; find the way to extract it elsewhere
-          (setf (~> box gui-box:width) (+ width 4)
+          (setf (~> box gui-box:width)  (+ width  4)
                 (~> box gui-box:height) (+ height 4))
           (when (gui-box::recalculate box)
             (gui-box:recalculate-absolute box)
