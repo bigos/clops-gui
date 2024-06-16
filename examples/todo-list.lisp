@@ -122,7 +122,6 @@
                                                            :height 20
                                                            :text "Down")))
 
-
 (defmethod initialize-instance :after ((box search-box) &rest initargs &key)
   (declare (ignore initargs))
 
@@ -151,6 +150,9 @@
 (defmethod initialize-instance :after ((box gui-box:text-box) &rest initargs &key)
   (declare (ignore initargs))
   (setf (gui-box::recalculate box) t))
+
+(defgeneric render (box)
+  (:documentation "Render a BOX using cairo functions and possibly recalculate absolute coordinates"))
 
 (defmethod render ((search-box search-box))
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
@@ -187,8 +189,11 @@
   (loop for b in (gui-box:children box) do (render b)))
 
 (defmethod render ((box gui-box:text-box))
-  (gui-window:set-rgba (gui-box:box-color box))
+  (when (gui-box::recalculate box)
+    (gui-box:recalculate-absolute box)
+    (setf (gui-box::recalculate box) nil))
 
+  (gui-window:set-rgba (gui-box:box-color box))
 
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 20)
@@ -207,10 +212,6 @@
 
       (setf (~> box gui-box:width) (+ width 4)
             (~> box gui-box:height) (+ width 4))
-
-      (when (gui-box::recalculate box)
-        (gui-box:recalculate-absolute box)
-        (setf (gui-box::recalculate box) nil))
 
       (cairo:move-to (~> box gui-box:top-left gui-box:absolute-x (+ _  2))
                      ;; so the height is useless here because I can not line up the -
