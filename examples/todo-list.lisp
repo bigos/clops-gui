@@ -207,12 +207,12 @@
        (+ height 4))
       (cairo:fill-path)
 
-      (setf (~> box gui-box:width) (+ width 4)
-            (~> box gui-box:height) (+ width 4))
-
-      (when (gui-box::recalculate box)
-        (gui-box:recalculate-absolute box)
-        (setf (gui-box::recalculate box) nil))
+      (progn
+        (setf (~> box gui-box:width) (+ width 4)
+              (~> box gui-box:height) (+ width 4))
+        (when (gui-box::recalculate box)
+          (gui-box:recalculate-absolute box)
+          (setf (gui-box::recalculate box) nil)))
 
       (cairo:move-to (~> box gui-box:top-left gui-box:absolute-x (+ _  2))
                      ;; so the height is useless here because I can not line up the -
@@ -222,9 +222,9 @@
 
 ;;; === experiment ==============================================================
 (defun experiment-first-window ()
-    (setf
-     gui-window:*client-fn-draw-objects*  'todo-list::draw-window
-     gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
+      (setf
+       gui-window:*client-fn-draw-objects*  'todo-list::draw-window
+       gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
 
   (assert (zerop (hash-table-count (gui-window:all-windows))))
 
