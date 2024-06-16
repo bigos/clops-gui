@@ -196,10 +196,12 @@
   (cairo:set-font-size 20)
 
   (let ((my-text (format nil "~A" (~> box gui-box:text))))
+    ;; get the text width and height
     (multiple-value-bind (xb yb width height)
         (cairo:text-extents my-text)
       (declare (ignore xb yb))
 
+      ;; draw a box with 4/2 pixels margin
       (cairo:rectangle
        (~> box gui-box:top-left gui-box:absolute-x)
        (~> box gui-box:top-left gui-box:absolute-y)
@@ -208,12 +210,14 @@
       (cairo:fill-path)
 
       (progn
+        ;; set the box relative dimensions and recalculate the absolute dimensions
         (setf (~> box gui-box:width) (+ width 4)
               (~> box gui-box:height) (+ width 4))
         (when (gui-box::recalculate box)
           (gui-box:recalculate-absolute box)
           (setf (gui-box::recalculate box) nil)))
 
+      ;; move cairo cursor relative to absolute box position to have the margin
       (cairo:move-to (~> box gui-box:top-left gui-box:absolute-x (+ _  2))
                      ;; so the height is useless here because I can not line up the -
                      (~> box gui-box:top-left gui-box:absolute-y (+ _ height 2))))
