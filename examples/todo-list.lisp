@@ -17,28 +17,47 @@
 (in-package #:todo-list)
 
 ;;; === utilities ==============================================================
-(defun slot-values (obj)
-  (loop for the-slot in (mapcar
-                         #'sb-mop:slot-definition-name
-                         (sb-mop:class-slots (class-of obj)))
+(defun slot-names (obj)
+  (~> obj
+      class-of
+      sb-mop:class-slots
+      (mapcar #'sb-mop:slot-definition-name  _)))
+
+(defun slot-values-except (obj exceptions)
+  (loop for the-slot in (slot-names obj)
         collect (if (slot-boundp obj the-slot)
-                    (cons the-slot
-                          (slot-value obj the-slot))
+                    (if (member the-slot exceptions)
+                        (cons the-slot
+                              :ignored)
+                        (cons the-slot
+                              (slot-value obj the-slot)))
                     the-slot)))
 
 (defmethod print-object ((object gui-box:coordinates) stream)
   (print-unreadable-object (object stream :identity t :type t)
-    (format stream "rel: ~S, abs: ~S"
-            (list (gui-box:x object) (gui-box:y object))
-            (list (gui-box:absolute-x object) (gui-box:absolute-y object)))))
+    (format stream "rel: ~S x ~S, abs: ~S x ~S"
+            (gui-box:x object)
+            (gui-box:y object)
+            (gui-box:absolute-x object)
+            (gui-box:absolute-y object))))
 
-;; (defmethod print-object ((object gui-box:box) stream)
-;;   (print-unreadable-object (object stream :identity t :type t)
-;;     (format stream "obj: ~S"
-;;             (slot-values object))))
+(defmethod print-object ((object gui-box:box) stream)
+  (print-unreadable-object (object stream :identity t :type t)
+    (format stream "obj: ~S"
+            (slot-values-except object '(gui-box:parent
+                                         gui-box:children)))))
+
+;; (defclass/std box ()
+;;   ((parent)
+;;    (children)
+;;    (top-left)
+;;    (bottom-right)
+;;    (width)
+;;    (height)
+;;    (mouse-score)))
 
 (defun make-coordinates (x y)
-  (make-instance 'gui-box:coordinates :x x :y y))
+    (make-instance 'gui-box:coordinates :x x :y y))
 
 (defmethod box-coordinates ((box gui-box:box) x y)
   ;; we need to consider parents in relative coordinates
