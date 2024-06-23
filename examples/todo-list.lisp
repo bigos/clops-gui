@@ -90,9 +90,9 @@
                                       :width 400
                                       :height 50))
 
-  (gui-box:add-child window (search-box window))
-  (gui-box:add-child window (todo-box   window))
-  (gui-box:add-child window (action-box window))
+  (gui-window:add-child window (search-box window))
+  (gui-window:add-child window (todo-box   window))
+  (gui-window:add-child window (action-box window))
 
   (gui-box:add-child (~> window action-box) (make-instance 'action-add
                                                            :parent (~> window action-box)

@@ -286,7 +286,7 @@
                                    (:initial  "Press p key to start")
                                    (:playing  "Move mouse to control left pad")
                                    (:won      "Press r key to restart")))))
-    (~> pong-game pong-window (gui-box:add-child _ tb))
+    (~> pong-game pong-window (gui-window:add-child _ tb))
     (when nil
       (warn "going to render tb ~S ~S ~S"
             tb
@@ -300,7 +300,7 @@
                            :width 50
                            :height 20
                            :text (format nil "~A" (state pong-game)))))
-    (~> pong-game pong-window (gui-box:add-child _ tb))
+    (~> pong-game pong-window (gui-window:add-child _ tb))
     (when nil
       (warn "going to render tb ~S ~S ~S"
             tb
