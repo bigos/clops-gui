@@ -57,7 +57,7 @@
                          label-counted
                          button-minus
                          button-reset)
-          do (gui-window:add-child window c))))
+          do (gui-box:add-child window c))))
 
 (defmethod render ((box gui-box:text-box))
   (gui-window:set-rgba (gui-box:box-color box))
