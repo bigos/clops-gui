@@ -265,18 +265,6 @@
   (let ((cv 0.13)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
-  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
-  (cairo:set-font-size 20)
-
-  (let ((my-text (format nil "~A" "Let's go!")))
-    (multiple-value-bind (xb yb width height)
-        (cairo:text-extents "X")
-      (declare (ignore xb yb width height))
-
-      (cairo:move-to 20 20))
-    (gui-window:set-rgba "black")
-    (cairo:show-text my-text))
-
   (render (search-box window))
   (render (todo-box window))
   (render (action-box window)))
