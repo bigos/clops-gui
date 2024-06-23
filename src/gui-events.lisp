@@ -1,8 +1,7 @@
 ;;;
 (in-package #:gui-events)
 
-(defparameter *client-fn-process-event* nil
-  "Clients with provide a symbol of the function called when the event occurs.")
+(defparameter *client-fn-process-event* nil)
 
 ;;; ================================= All defined GUI Events ===========================
 
