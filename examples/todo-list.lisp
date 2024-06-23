@@ -47,15 +47,6 @@
             (slot-values-except object '(gui-box:parent
                                          gui-box:children)))))
 
-;; (defclass/std box ()
-;;   ((parent)
-;;    (children)
-;;    (top-left)
-;;    (bottom-right)
-;;    (width)
-;;    (height)
-;;    (mouse-score)))
-
 (defun make-coordinates (x y)
     (make-instance 'gui-box:coordinates :x x :y y))
 
