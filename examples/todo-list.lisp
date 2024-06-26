@@ -23,6 +23,12 @@
       sb-mop:class-slots
       (mapcar #'sb-mop:slot-definition-name  _)))
 
+(defun slot-names-and-classes (obj)
+  (loop for the-slot in (slot-names obj)
+        collect (if (slot-boundp obj the-slot)
+                    (cons the-slot (type-of (slot-value obj the-slot)))
+                    the-slot)))
+
 (defun slot-values-except (obj exceptions)
   (loop for the-slot in (slot-names obj)
         collect (if (slot-boundp obj the-slot)
