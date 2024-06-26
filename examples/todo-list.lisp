@@ -235,10 +235,9 @@
 
 ;;; === experiment ==============================================================
 (defun experiment-first-window ()
-      (setf
-       gui-window:*client-fn-draw-objects*  'todo-list::draw-window
-       gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
+  (setf gui-window:*client-fn-draw-objects*  'todo-list::draw-window)
 
+  (setf gui-window:*lisp-app* (make-instance 'gui-window::lisp-app))
   (assert (zerop (hash-table-count (gui-window:all-windows))))
 
   (let ((lisp-window (make-instance 'todo-window)))
@@ -248,13 +247,13 @@
 
 (defun experiment ()
   "Experiment is for experimenting with processing events and drawing windows
-  without the use of Gtk4 linrary. Instead of drawing on a window the outcomes
+  without the use of Gtk4 library. Instead of drawing on a window the outcomes
   of the events are drawn on *.png files."
   (warn "starting experiment")
 
   (let ((lisp-window (experiment-first-window)))
     (process-event lisp-window :resize (list 800 400 ))
-    (process-event lisp-window :resize (list 600 200 ))
+    (process-event lisp-window :resize (list 600 410 ))
     (break "checking the widget structure ~S" (list gui-window:*lisp-app*
                                                     lisp-window))
     (process-event lisp-window :timeout)
