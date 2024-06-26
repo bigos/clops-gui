@@ -64,10 +64,7 @@
                       (~> b gui-box:top-left gui-box:y))))
 
 ;;; === classes =================================================================
-(defclass/std todo-window (gui-window:lisp-window)
-  ((search-box)
-   (todo-box)
-   (action-box)))
+(defclass/std todo-window (gui-window:lisp-window) ())
 
 (defclass/std search-box (gui-box:box)
   ((text-field)
@@ -86,58 +83,54 @@
 (defmethod initialize-instance :after ((window todo-window) &rest initargs &key)
   (declare (ignore initargs))
 
-  ;; TODO think about relative coordinates
+  (let ((search-box (make-instance 'search-box
+                                   :parent window
+                                   :top-left (make-coordinates 20 20)
+                                   :width 400
+                                   :height 50))
+        (todo-box   (make-instance 'todo-box
+                                   :parent window
+                                   :top-left (make-coordinates 20 100)
+                                   :width 400
+                                   :height 200))
+        (action-box (make-instance 'action-box
+                                   :parent window
+                                   :top-left (make-coordinates 20 330)
+                                   :width 400
+                                   :height 50)))
 
-  ;; because these coordinates are in lisp-window they are absolute
 
-  (setf
-   (search-box window) (make-instance 'search-box
-                                      :parent window
-                                      :top-left (make-coordinates 20 20)
-                                      :width 400
-                                      :height 50)
-   (todo-box window)   (make-instance 'todo-box
-                                      :parent window
-                                      :top-left (make-coordinates 20 100)
-                                      :width 400
-                                      :height 200)
-   (action-box window) (make-instance 'action-box
-                                      :parent window
-                                      :top-left (make-coordinates 20 330)
-                                      :width 400
-                                      :height 50))
+    (gui-window:add-child window search-box )
+    (gui-window:add-child window todo-box   )
+    (gui-window:add-child window action-box )
 
-  (gui-window:add-child window (search-box window))
-  (gui-window:add-child window (todo-box   window))
-  (gui-window:add-child window (action-box window))
+    (gui-box:add-child action-box (make-instance 'action-add
+                                                 :parent action-box
+                                                 :top-left (make-coordinates 5 5)
+                                                 :width 20
+                                                 :height 20
+                                                 :text "Add"))
 
-  (gui-box:add-child (~> window action-box) (make-instance 'action-add
-                                                           :parent (~> window action-box)
-                                                           :top-left (make-coordinates 5 5)
-                                                           :width 20
-                                                           :height 20
-                                                           :text "Add"))
+    (gui-box:add-child action-box (make-instance 'action-remove
+                                                 :parent action-box
+                                                 :top-left (make-coordinates 105 5)
+                                                 :width 20
+                                                 :height 20
+                                                 :text "Remove"))
 
-  (gui-box:add-child (~> window action-box) (make-instance 'action-remove
-                                                           :parent (~> window action-box)
-                                                           :top-left (make-coordinates 105 5)
-                                                           :width 20
-                                                           :height 20
-                                                           :text "Remove"))
+    (gui-box:add-child action-box (make-instance 'action-up
+                                                 :parent action-box
+                                                 :top-left (make-coordinates 205 5)
+                                                 :width 20
+                                                 :height 20
+                                                 :text "Up"))
 
-  (gui-box:add-child (~> window action-box) (make-instance 'action-up
-                                                           :parent (~> window action-box)
-                                                           :top-left (make-coordinates 205 5)
-                                                           :width 20
-                                                           :height 20
-                                                           :text "Up"))
-
-  (gui-box:add-child (~> window action-box) (make-instance 'action-down
-                                                           :parent (~> window action-box)
-                                                           :top-left (make-coordinates 305 5)
-                                                           :width 20
-                                                           :height 20
-                                                           :text "Down")))
+    (gui-box:add-child action-box (make-instance 'action-down
+                                                 :parent action-box
+                                                 :top-left (make-coordinates 305 5)
+                                                 :width 20
+                                                 :height 20
+                                                 :text "Down"))))
 
 (defmethod initialize-instance :after ((box search-box) &rest initargs &key)
   (declare (ignore initargs))
@@ -276,14 +269,19 @@
     ))
 
 ;;; ============================================================================
+(defun typed-widget (window widget-type)
+  (first
+   (loop for w in (gui-window:children window) when (typep w widget-type) collect w)))
+
 (defmethod draw-window ((window todo-window))
   "Calls render for topmost boxes of the window."
   (let ((cv 0.13)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
-  (render (search-box window))
-  (render (todo-box window))
-  (render (action-box window)))
+  (break "zzzzzzzzzzzzzzzzzzzzzzz")
+  (render (typed-widget window 'search-box))
+  (render (typed-widget window 'todo-box))
+  (render (typed-widget window 'action-box)))
 
 (defmethod process-event ((lisp-window todo-window) event &rest args)
   (unless (member event '(:timeout :motion))
