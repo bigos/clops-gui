@@ -159,7 +159,7 @@
 
 (defmethod initialize-instance :after ((box gui-box:text-box) &rest initargs &key)
   (declare (ignore initargs))
-  (setf (gui-box::recalculate box) t))
+  (setf (gui-box:recalculate box) t))
 
 (defun text-dimentions (text size font slant weight)
   (cairo:select-font-face font slant weight)
@@ -216,7 +216,7 @@
             (height (cdr the-text-dimentions)))
 
         ;; some text boxes will not be resized on text change
-        (gui-box::resize box width height)
+        (gui-box:resize box width height)
 
         ;; draw a box with 4/2 pixels margin
         (cairo:rectangle

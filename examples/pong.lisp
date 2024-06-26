@@ -26,7 +26,7 @@
 
   (assert (zerop (hash-table-count (gui-window:all-windows))))
   (let ((lisp-window (make-instance 'pong-window)))
-    (gui-window::window-creation-from-simulation :testing lisp-window)
+    (gui-window:window-creation-from-simulation :testing lisp-window)
     (assert (eq 1 (hash-table-count (gui-window:all-windows))))
     lisp-window))
 
@@ -290,9 +290,9 @@
     (when nil
       (warn "going to render tb ~S ~S ~S"
             tb
-            (~> tb gui-box::root-window gui-window:dimensions)
+            (~> tb gui-box:root-window gui-window:dimensions)
             (gui-window:current-motion gui-window:*lisp-app*)))
-    (~> tb gui-box::mouse-overp)
+    (~> tb gui-box:mouse-overp)
     (render tb))
 
   (let ((tb (make-instance 'gui-box:text-box
@@ -304,9 +304,9 @@
     (when nil
       (warn "going to render tb ~S ~S ~S"
             tb
-            (~> tb gui-box::root-window gui-window:dimensions)
+            (~> tb gui-box:root-window gui-window:dimensions)
             (gui-window:current-motion gui-window:*lisp-app*)))
-    (~> tb gui-box::mouse-overp)
+    (~> tb gui-box:mouse-overp)
     (render tb))
 
   (render (game-area pong-game))
