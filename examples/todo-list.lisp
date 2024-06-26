@@ -27,8 +27,9 @@
   (loop for the-slot in (slot-names obj)
         collect (if (slot-boundp obj the-slot)
                     (if (member the-slot exceptions)
-                        (cons the-slot
-                              :ignored)
+                        (list the-slot
+                              :ignored
+                              (type-of (slot-value obj the-slot)))
                         (cons the-slot
                               (slot-value obj the-slot)))
                     the-slot)))
