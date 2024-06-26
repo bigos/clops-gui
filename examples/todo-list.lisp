@@ -254,8 +254,7 @@
   (let ((lisp-window (experiment-first-window)))
     (process-event lisp-window :resize (list 800 400 ))
     (process-event lisp-window :resize (list 600 410 ))
-    (break "checking the widget structure ~S" (list gui-window:*lisp-app*
-                                                    lisp-window))
+
     (process-event lisp-window :timeout)
     (process-event lisp-window :motion-enter (list 50 50 ))
 
@@ -278,7 +277,6 @@
   (let ((cv 0.13)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
-  (break "zzzzzzzzzzzzzzzzzzzzzzz")
   (render (typed-widget window 'search-box))
   (render (typed-widget window 'todo-box))
   (render (typed-widget window 'action-box)))
