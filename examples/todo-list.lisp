@@ -245,8 +245,9 @@
     (assert (eq 1 (hash-table-count (gui-window:all-windows))))
     lisp-window))
 
-;;; that does not work as expected
-;; (declaim (ftype (function (t t &rest t) t) process-event))
+;;; when you skip the arguments part of the function this may work as a forward
+;;: declaration for process-event and hide the warning
+(declaim (ftype function process-event))
 
 (defun experiment ()
   "Experiment is for experimenting with processing events and drawing windows
