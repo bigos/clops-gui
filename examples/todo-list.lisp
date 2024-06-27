@@ -245,6 +245,9 @@
     (assert (eq 1 (hash-table-count (gui-window:all-windows))))
     lisp-window))
 
+;;; that does not work as expected
+;; (declaim (ftype (function (t t &rest t) t) process-event))
+
 (defun experiment ()
   "Experiment is for experimenting with processing events and drawing windows
   without the use of Gtk4 library. Instead of drawing on a window the outcomes
@@ -258,7 +261,7 @@
     (process-event lisp-window :timeout)
     (process-event lisp-window :motion-enter (list 50 50 ))
 
-    (describe gui-window:*lisp-app* )    ;; it works
+    (describe gui-window:*lisp-app* ) ;; it works
 
 
     ;; (process-event lisp-window :key-pressed (list "" "Escape" 9  nil))
