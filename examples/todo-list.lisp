@@ -69,7 +69,7 @@
 (defclass/std search-box (gui-box:box)
   ((text-field)
    (button)
-   (inner-button)))
+ ))
 
 (defclass/std todo-box   (gui-box:box) (()))
 (defclass/std action-box (gui-box:box) (()))
@@ -99,7 +99,6 @@
                                    :width 400
                                    :height 50)))
 
-
     (gui-window:add-child window search-box )
     (gui-window:add-child window todo-box   )
     (gui-window:add-child window action-box )
@@ -110,21 +109,18 @@
                                                  :width 20
                                                  :height 20
                                                  :text "Add"))
-
     (gui-box:add-child action-box (make-instance 'action-remove
                                                  :parent action-box
                                                  :top-left (make-coordinates 105 5)
                                                  :width 20
                                                  :height 20
                                                  :text "Remove"))
-
     (gui-box:add-child action-box (make-instance 'action-up
                                                  :parent action-box
                                                  :top-left (make-coordinates 205 5)
                                                  :width 20
                                                  :height 20
                                                  :text "Up"))
-
     (gui-box:add-child action-box (make-instance 'action-down
                                                  :parent action-box
                                                  :top-left (make-coordinates 305 5)
@@ -141,21 +137,21 @@
   ;; there we should add the parent coordinates
   ;; and have 20+20 20+10 instead of 40 30
   ;; the addition should be done at rendering stage
-  (setf
-   (text-field box) (make-instance 'gui-box:text-box
-                                   :parent box
-                                   :top-left (make-coordinates 10 10)
-                                   :width 200
-                                   :height 30)
-   (button box)     (make-instance 'gui-box:text-box
-                                   :parent box
-                                   :top-left (make-coordinates 280 10)
-                                   :width 110
-                                   :height 30
-                                   :text "Search"))
 
-  (gui-box:add-child box (text-field box))
-  (gui-box:add-child box (button box)))
+  (gui-box:add-child box
+                     (make-instance 'gui-box:text-box
+                                    :parent box
+                                    :top-left (make-coordinates 10 10)
+                                    :width 200
+                                    :height 30))
+  (gui-box:add-child box
+                     (make-instance 'gui-box:text-box
+                                    :parent box
+                                    :top-left (make-coordinates 280 10)
+                                    :width 110
+                                    :height 30
+                                    :text "Search")))
+
 
 (defmethod initialize-instance :after ((box gui-box:text-box) &rest initargs &key)
   (declare (ignore initargs))
@@ -312,7 +308,7 @@
     (:pressed
      (destructuring-bind ((button x y)) args
        (declare (ignore button))
-       (format t "~&processing mouse at ~S ~S on widget ~S~%" x y
+       (format t "~&processing mouse at ~S ~S ~%on widget ~S~%" x y
                (gui-window:most-current-widget lisp-window))))
 
     (:released)
