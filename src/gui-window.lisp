@@ -90,8 +90,10 @@
    (current-motion)
    (current-focus) ; it is not reliable for the last created window
    (mouse-coordinates)
-   (mouse-button :std 0)
-   ))
+   (mouse-button :std 0)))
+
+(defun make-lisp-app (gtk4-app)
+  (make-instance 'lisp-app :gtk4-app gtk4-app))
 
 (defclass/std lisp-window ()
   ((gir-window  :type (or gir::object-instance keyword)
@@ -438,7 +440,7 @@
 (defun window (lisp-window)
       (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
                                        :flags gio:+application-flags-flags-none+)))
-        (setf *lisp-app* (make-instance 'lisp-app :gtk4-app app))
+        (setf *lisp-app* (make-lisp-app app))
         (window-creation-from-main app *initial-title* *client-fn-menu-bar* lisp-window)
 
         (let ((status (gtk:application-run app nil)))
