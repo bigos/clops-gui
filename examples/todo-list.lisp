@@ -83,21 +83,22 @@
 (defmethod initialize-instance :after ((window todo-window) &rest initargs &key)
   (declare (ignore initargs))
 
-  (let ((search-box (make-instance 'search-box
-                                   :parent window
-                                   :top-left (make-coordinates 20 20)
-                                   :width 400
-                                   :height 50))
-        (todo-box   (make-instance 'todo-box
-                                   :parent window
-                                   :top-left (make-coordinates 20 100)
-                                   :width 400
-                                   :height 200))
-        (action-box (make-instance 'action-box
-                                   :parent window
-                                   :top-left (make-coordinates 20 330)
-                                   :width 400
-                                   :height 50)))
+  (let
+      ((search-box (make-instance 'search-box
+                                  :parent window
+                                  :top-left (make-coordinates 20 20)
+                                  :width 400
+                                  :height 50))
+       (todo-box   (make-instance 'todo-box
+                                  :parent window
+                                  :top-left (make-coordinates 20 100)
+                                  :width 400
+                                  :height 200))
+       (action-box (make-instance 'action-box
+                                  :parent window
+                                  :top-left (make-coordinates 20 330)
+                                  :width 400
+                                  :height 50)))
 
     (gui-window:add-child window search-box )
     (gui-box:add-child search-box
@@ -141,6 +142,15 @@
                                                  :width 20
                                                  :height 20
                                                  :text "Down"))))
+
+(defmethod add-item ((window todo-window) string)
+  (let ((todo-box (typed-widget window 'todo-box)))
+    (gui-box:add-child todo-box (make-instance 'todo-item
+                                               :parent todo-box
+                                               :top-left (make-coordinates 5 5)
+                                               :width 200
+                                               :height 30
+                                               :text string))))
 
 (defmethod initialize-instance :after ((box gui-box:text-box) &rest initargs &key)
   (declare (ignore initargs))
