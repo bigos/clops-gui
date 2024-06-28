@@ -92,7 +92,7 @@
    (mouse-coordinates)
    (mouse-button :std 0)))
 
-(defun make-lisp-app (gtk4-app)
+(defun make-lisp-app (&optional gtk4-app)
   (make-instance 'lisp-app :gtk4-app gtk4-app))
 
 (defclass/std lisp-window ()
