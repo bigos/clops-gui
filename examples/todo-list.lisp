@@ -100,9 +100,23 @@
                                    :height 50)))
 
     (gui-window:add-child window search-box )
-    (gui-window:add-child window todo-box   )
-    (gui-window:add-child window action-box )
+    (gui-box:add-child search-box
+                       (make-instance 'gui-box:text-box
+                                      :parent search-box
+                                      :top-left (make-coordinates 10 10)
+                                      :width 200
+                                      :height 30))
+    (gui-box:add-child search-box
+                       (make-instance 'gui-box:text-box
+                                      :parent search-box
+                                      :top-left (make-coordinates 280 10)
+                                      :width 110
+                                      :height 30
+                                      :text "Search"))
 
+    (gui-window:add-child window todo-box   )
+
+    (gui-window:add-child window action-box )
     (gui-box:add-child action-box (make-instance 'action-add
                                                  :parent action-box
                                                  :top-left (make-coordinates 5 5)
@@ -127,31 +141,6 @@
                                                  :width 20
                                                  :height 20
                                                  :text "Down"))))
-
-(defmethod initialize-instance :after ((box search-box) &rest initargs &key)
-  (declare (ignore initargs))
-
-  ;; TODO think about relative coordinates
-  ;; TODO step here and analyse the possibilities
-
-  ;; there we should add the parent coordinates
-  ;; and have 20+20 20+10 instead of 40 30
-  ;; the addition should be done at rendering stage
-
-  (gui-box:add-child box
-                     (make-instance 'gui-box:text-box
-                                    :parent box
-                                    :top-left (make-coordinates 10 10)
-                                    :width 200
-                                    :height 30))
-  (gui-box:add-child box
-                     (make-instance 'gui-box:text-box
-                                    :parent box
-                                    :top-left (make-coordinates 280 10)
-                                    :width 110
-                                    :height 30
-                                    :text "Search")))
-
 
 (defmethod initialize-instance :after ((box gui-box:text-box) &rest initargs &key)
   (declare (ignore initargs))
