@@ -156,6 +156,16 @@
   (declare (ignore initargs))
   (setf (gui-box:recalculate box) t))
 
+;; (defmethod process-box ((box 'action-add))
+;;   (warn "going to process action add ~S" box))
+
+(defmethod process-box ((box T))
+  (typecase box
+    (action-add
+     (warn "processing action-add"))
+    (t
+     (warn "going to process box ~S" box))))
+
 (defun text-dimentions (text size font slant weight)
   (cairo:select-font-face font slant weight)
   (cairo:set-font-size size)
@@ -307,8 +317,10 @@
     (:pressed
      (destructuring-bind ((button x y)) args
        (declare (ignore button))
-       (format t "~&processing mouse at ~S ~S ~%on widget ~S~%" x y
-               (gui-window:most-current-widget lisp-window))))
+       (let ((current-widget (gui-window:most-current-widget lisp-window)))
+         (format t "~&processing mouse at ~S ~S ~%on widget ~S~%" x y
+                 current-widget)
+         (process-box current-widget))))
 
     (:released)
     (:scroll)
