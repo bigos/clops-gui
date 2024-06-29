@@ -72,6 +72,7 @@
  ))
 
 (defclass/std todo-box   (gui-box:box) (()))
+(defclass/std todo-item   (gui-box:text-box) (()))
 (defclass/std action-box (gui-box:box) (()))
 
 (defclass/std action-add (gui-box:text-box)  (()))
@@ -160,10 +161,11 @@
 ;;   (warn "going to process action add ~S" box))
 ;;; the example below may be better
 
-(defmethod process-box ((box T))
+(defmethod process-box ((window todo-window) (box T))
   (typecase box
     (action-add
-     (warn "processing action-add"))
+     (warn "processing action-add")
+     (add-item window "Item 1"))
     (t
      (warn "going to process box ~S" box))))
 
@@ -321,7 +323,7 @@
        (let ((current-widget (gui-window:most-current-widget lisp-window)))
          (format t "~&processing mouse at ~S ~S ~%on widget ~S~%" x y
                  current-widget)
-         (process-box current-widget))))
+         (process-box lisp-window current-widget))))
 
     (:released)
     (:scroll)
