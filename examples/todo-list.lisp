@@ -152,7 +152,9 @@
                                                                            (+ (* (items todo-box) 40) 5) )
                                                :width 200
                                                :height 30
-                                               :text string))
+                                               :text (format nil "~a ~a"
+                                                             string
+                                                             (items todo-box))))
     (incf (items todo-box))))
 
 (defmethod initialize-instance :after ((box gui-box:text-box) &rest initargs &key)
