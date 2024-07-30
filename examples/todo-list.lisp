@@ -158,9 +158,11 @@
     (incf (items todo-box))))
 
 (defmethod remove-item ((window todo-window))
-  (let ((todo-box (typed-widget window 'todo-box)))
-    (gui-box:remove-child todo-box (car (gui-box:children todo-box)))
-    (decf (items todo-box))))
+  (let* ((todo-box (typed-widget window 'todo-box))
+         (first-child (car (gui-box:children todo-box))))
+    (when first-child
+      (gui-box:remove-child todo-box first-child)
+      (decf (items todo-box)))))
 
 (defmethod initialize-instance :after ((box gui-box:text-box) &rest initargs &key)
   (declare (ignore initargs))
