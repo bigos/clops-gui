@@ -33,10 +33,16 @@
   (pushnew child-box (children parent-box)))
 
 (defmethod remove-child ((parent-box box) (child-box box))
-  (remhash (sxhash child-box) (gui-window:all-widgets (root-window child-box)))
+  (warn "removing child")
+  (let ((outcome
+          (remhash (sxhash child-box) (gui-window:all-widgets (root-window child-box)))))
+    (warn "we had outcome ~A" outcome))
 
   ;; remove it from parent's children
-  (remove child-box (children parent-box) :test #'equal))
+  (warn "children ~A"  (children parent-box))
+  (warn "children before removal ~A" (length (children parent-box)))
+  (pop (children parent-box) )
+  (warn "children after removal ~A" (length (children parent-box))))
 
 
 (defmethod move ((box box) xd yd)
