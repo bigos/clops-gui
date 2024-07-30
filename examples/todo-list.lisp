@@ -157,6 +157,11 @@
                                                              (items todo-box))))
     (incf (items todo-box))))
 
+(defmethod remove-item ((window todo-window))
+  (let ((todo-box (typed-widget window 'todo-box)))
+    (gui-box:remove-child todo-box (car (children todo-box)))
+    (decf (items todo-box))))
+
 (defmethod initialize-instance :after ((box gui-box:text-box) &rest initargs &key)
   (declare (ignore initargs))
   (setf (gui-box:recalculate box) t))
@@ -170,6 +175,9 @@
     (action-add
      (warn "processing action-add")
      (add-item window "Item 1"))
+    (action-remove
+     (warn "processing acion-remove")
+     (remove-item ))
     (t
      (warn "going to process box ~S" box))))
 

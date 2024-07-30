@@ -92,6 +92,7 @@
    absolute-x
    absolute-y
    add-child
+   remove-child
    box
    box-color
    children

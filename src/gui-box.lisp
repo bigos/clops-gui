@@ -32,6 +32,13 @@
   (recalculate-absolute child-box)
   (pushnew child-box (children parent-box)))
 
+(defmethod remove-child ((parent-box box) (child-box box))
+  (remhash (sxhash child-box) (gui-window:all-widgets (root-window child-box)))
+
+  ;; remove it from parent's children
+  (remove child-box (children parent-box) :test #'equal))
+
+
 (defmethod move ((box box) xd yd)
   (setf (~> box top-left x) (+ (~> box top-left x) xd)
         (~> box top-left y) (+ (~> box top-left y) yd))
