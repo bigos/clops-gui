@@ -27,23 +27,19 @@
 (defmethod add-child ((parent-box box) (child-box box))
   (setf
    (parent child-box) parent-box
-   (gethash (sxhash child-box) (gui-window:all-widgets(root-window child-box))) child-box)
+   (gethash (sxhash child-box) (gui-window:all-widgets (root-window child-box))) child-box)
 
   (recalculate-absolute child-box)
   (pushnew child-box (children parent-box)))
 
 (defmethod remove-child ((parent-box box) (child-box box))
-  (warn "removing child")
-  (let ((outcome
-          (remhash (sxhash child-box) (gui-window:all-widgets (root-window child-box)))))
-    (warn "we had outcome ~A" outcome))
+  (remhash (sxhash child-box) (gui-window:all-widgets (root-window child-box)))
 
-  ;; remove it from parent's children
-  (warn "children ~A"  (children parent-box))
-  (warn "children before removal ~A" (length (children parent-box)))
-  (pop (children parent-box) )
-  (warn "children after removal ~A" (length (children parent-box))))
-
+  (setf (children parent-box)
+        (remove child-box (children parent-box)
+                :test (lambda (a b)
+                        (eq (sxhash a)
+                            (sxhash b))))))
 
 (defmethod move ((box box) xd yd)
   (setf (~> box top-left x) (+ (~> box top-left x) xd)
