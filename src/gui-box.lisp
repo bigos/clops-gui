@@ -30,7 +30,7 @@
    (gethash (sxhash child-box) (gui-window:all-widgets (root-window child-box))) child-box)
 
   (recalculate-absolute child-box)
-  (pushnew child-box (children parent-box)))
+  (push child-box (children parent-box)))
 
 (defmethod remove-child ((parent-box box) (child-box box))
   (remhash (sxhash child-box) (gui-window:all-widgets (root-window child-box)))
