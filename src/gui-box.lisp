@@ -36,7 +36,7 @@
   (remhash (sxhash child-box) (gui-window:all-widgets (root-window child-box)))
 
   (setf (children parent-box)
-        (delete child-box (children parent-box)
+        (remove child-box (children parent-box)
                 :test (lambda (a b)
                         (eq (sxhash a)
                             (sxhash b))))))
