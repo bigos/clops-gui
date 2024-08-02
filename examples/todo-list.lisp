@@ -173,12 +173,16 @@
 ;;; the example below may be better
 
 (defmethod process-box ((window todo-window) (box T))
+  (warn "processing box")
   (typecase box
     (action-add
      (warn "processing action-add")
      (add-item window "Item 1"))
     (action-remove
      (warn "processing acion-remove")
+     (remove-item window))
+    (todo-item
+     (warn "processing todo-item click ~S" box)
      (remove-item window))
     (t
      (warn "going to process box ~S" box))))
