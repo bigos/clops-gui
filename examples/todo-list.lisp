@@ -71,7 +71,9 @@
    (button)
  ))
 
-(defclass/std todo-box   (gui-box:box) ((items :std 0)))
+(defclass/std todo-box   (gui-box:box)
+  ((items :std 0)
+   (last-clicked)))
 (defclass/std todo-item   (gui-box:text-box) (()))
 (defclass/std action-box (gui-box:box) (()))
 
@@ -159,7 +161,7 @@
 
 (defmethod remove-item ((window todo-window))
   (let* ((todo-box (typed-widget window 'todo-box))
-         (first-child (car (gui-box:children todo-box))))
+         (first-child (~> todo-box last-clicked)))
     (when first-child
       (gui-box:remove-child todo-box first-child)
       (decf (items todo-box)))))
@@ -183,7 +185,8 @@
      (remove-item window))
     (todo-item
      (warn "processing todo-item click ~S" box)
-     (remove-item window))
+     (setf (~> box gui-box:parent last-clicked) box)
+     )
     (t
      (warn "going to process box ~S" box))))
 
