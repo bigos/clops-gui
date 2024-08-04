@@ -293,6 +293,14 @@
     (process-event lisp-window :pressed (list 1 34.2 339.1))
     (process-event lisp-window :pressed (list 1 34.2 339.1))
 
+    (process-event lisp-window :motion (list 90.1 155.0 ))
+    (process-event lisp-window :pressed (list 1 90.1 155.0))
+
+    (process-event lisp-window :motion (list 242.0 348.0 ))
+    (process-event lisp-window :pressed (list 1 242.0 348.0))
+
+    (process-event lisp-window :motion (list 1.0 1.0 ))
+
     ;; (process-event lisp-window :key-pressed (list "" "Escape" 9  nil))
     ;; (process-event lisp-window :key-pressed (list "" "F1" 67     nil))
     ;; (process-event lisp-window :key-pressed (list "r" "r" 10     nil))
