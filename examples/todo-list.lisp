@@ -42,7 +42,7 @@
 
 (defmethod print-object ((object gui-box:coordinates) stream)
   (print-unreadable-object (object stream :identity t :type t)
-    (format stream "rel: ~S x ~S, abs: ~S x ~S"
+    (format stream "rel: ~Sx~S, abs: ~Sx~S"
             (gui-box:x object)
             (gui-box:y object)
             (gui-box:absolute-x object)
