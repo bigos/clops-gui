@@ -323,7 +323,8 @@
   (render (typed-widget window 'action-box)))
 
 (defmethod process-event ((lisp-window todo-window) event &rest args)
-  (push (list event args) (events lisp-window))
+  (unless (eq event :motion)
+    (push (list event args) (events lisp-window)))
 
   (unless (member event '(:timeout :motion))
     (format t "~&going to process ~A ~A  "
