@@ -279,39 +279,47 @@
   of the events are drawn on *.png files."
   (warn "starting experiment")
 
-  (let ((lisp-window (experiment-first-window)))
-    (process-event lisp-window :resize (list 800 400 ))
-    (process-event lisp-window :resize (list 600 410 ))
-
-    (process-event lisp-window :timeout)
-    (process-event lisp-window :motion-enter (list 50 50 ))
-
-    (describe gui-window:*lisp-app* ) ;; it works
-
-    (process-event lisp-window :motion (list 34.1 339.2 ))
-
-    (process-event lisp-window :pressed (list 1 34.2 339.1))
-    (process-event lisp-window :pressed (list 1 34.2 339.1))
-    (process-event lisp-window :pressed (list 1 34.2 339.1))
-
-    (process-event lisp-window :motion (list 90.1 155.0 ))
-    (process-event lisp-window :pressed (list 1 90.1 155.0))
-
-    (process-event lisp-window :motion (list 242.0 348.0 ))
-    (process-event lisp-window :pressed (list 1 242.0 348.0))
-
-    (process-event lisp-window :motion (list 1.0 1.0 ))
-
-    ;; (process-event lisp-window :key-pressed (list "" "Escape" 9  nil))
-    ;; (process-event lisp-window :key-pressed (list "" "F1" 67     nil))
-    ;; (process-event lisp-window :key-pressed (list "r" "r" 10     nil))
-    ;; (process-event lisp-window :key-pressed (list " " "space" 65 nil))
-    ))
+  (let ((lisp-window (experiment-first-window))
+        (events '((:RESIZE ((600 400)))
+                 (:KEY-RELEASED (("" "Return" 36 NIL)))
+                 (:MOTION-ENTER ((354.0d0 304.0d0)))
+                 (:TIMEOUT (NIL))
+                 (:PRESSED ((1 44.793792724609375d0 350.4526062011719d0)))
+                 (:TIMEOUT (NIL))
+                 (:RELEASED ((1 44.793792724609375d0 350.4526062011719d0)))
+                 (:TIMEOUT (NIL))
+                 (:PRESSED ((1 44.793792724609375d0 350.4526062011719d0)))
+                 (:RELEASED ((1 44.793792724609375d0 350.4526062011719d0)))
+                 (:TIMEOUT (NIL))
+                 (:PRESSED ((1 44.793792724609375d0 350.4526062011719d0)))
+                 (:RELEASED ((1 44.793792724609375d0 350.4526062011719d0)))
+                 (:TIMEOUT (NIL))
+                 (:PRESSED ((1 49.269317626953125d0 156.13282775878906d0)))
+                 (:RELEASED ((1 49.269317626953125d0 156.13282775878906d0)))
+                 (:TIMEOUT (NIL)) (:TIMEOUT (NIL)) (:TIMEOUT (NIL))
+                 (:PRESSED ((1 148.84666442871094d0 342.5928039550781d0)))
+                 (:RELEASED ((1 148.84666442871094d0 342.5928039550781d0)))
+                 (:TIMEOUT (NIL)) (:TIMEOUT (NIL)) (:TIMEOUT (NIL)) (:TIMEOUT (NIL))
+                 (:TIMEOUT (NIL))
+                 (:PRESSED ((1 72.76570129394531d0 191.9850616455078d0)))
+                 (:TIMEOUT (NIL))
+                 (:RELEASED ((1 72.76570129394531d0 191.9850616455078d0)))
+                 (:TIMEOUT (NIL))
+                 (:PRESSED ((1 233.32022094726563d0 343.38616943359375d0)))
+                 (:TIMEOUT (NIL))
+                 (:RELEASED ((1 233.32022094726563d0 343.38616943359375d0)))
+                 (:TIMEOUT (NIL))
+                 (:KEY-PRESSED (("e" "e" 26 NIL))))))
+    (loop for event in events
+          for e = (car event)
+          for eargs = (caadr event)
+          do
+             (funcall 'process-event (cons lisp-window (cons e eargs)))))
 
 ;;; ============================================================================
-(defun typed-widget (window widget-type)
-  (first
-   (loop for w in (gui-window:children window) when (typep w widget-type) collect w)))
+  (defun typed-widget (window widget-type)
+    (first
+     (loop for w in (gui-window:children window) when (typep w widget-type) collect w))))
 
 (defmethod draw-window ((window todo-window))
   "Calls render for topmost boxes of the window."
