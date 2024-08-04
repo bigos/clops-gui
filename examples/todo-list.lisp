@@ -280,46 +280,28 @@
   (warn "starting experiment")
 
   (let ((lisp-window (experiment-first-window))
-        (events '((:RESIZE ((600 400)))
-                 (:KEY-RELEASED (("" "Return" 36 NIL)))
-                 (:MOTION-ENTER ((354.0d0 304.0d0)))
-                 (:TIMEOUT (NIL))
-                 (:PRESSED ((1 44.793792724609375d0 350.4526062011719d0)))
-                 (:TIMEOUT (NIL))
-                 (:RELEASED ((1 44.793792724609375d0 350.4526062011719d0)))
-                 (:TIMEOUT (NIL))
-                 (:PRESSED ((1 44.793792724609375d0 350.4526062011719d0)))
-                 (:RELEASED ((1 44.793792724609375d0 350.4526062011719d0)))
-                 (:TIMEOUT (NIL))
-                 (:PRESSED ((1 44.793792724609375d0 350.4526062011719d0)))
-                 (:RELEASED ((1 44.793792724609375d0 350.4526062011719d0)))
-                 (:TIMEOUT (NIL))
-                 (:PRESSED ((1 49.269317626953125d0 156.13282775878906d0)))
-                 (:RELEASED ((1 49.269317626953125d0 156.13282775878906d0)))
-                 (:TIMEOUT (NIL)) (:TIMEOUT (NIL)) (:TIMEOUT (NIL))
-                 (:PRESSED ((1 148.84666442871094d0 342.5928039550781d0)))
-                 (:RELEASED ((1 148.84666442871094d0 342.5928039550781d0)))
-                 (:TIMEOUT (NIL)) (:TIMEOUT (NIL)) (:TIMEOUT (NIL)) (:TIMEOUT (NIL))
-                 (:TIMEOUT (NIL))
-                 (:PRESSED ((1 72.76570129394531d0 191.9850616455078d0)))
-                 (:TIMEOUT (NIL))
-                 (:RELEASED ((1 72.76570129394531d0 191.9850616455078d0)))
-                 (:TIMEOUT (NIL))
-                 (:PRESSED ((1 233.32022094726563d0 343.38616943359375d0)))
-                 (:TIMEOUT (NIL))
-                 (:RELEASED ((1 233.32022094726563d0 343.38616943359375d0)))
-                 (:TIMEOUT (NIL))
-                 (:KEY-PRESSED (("e" "e" 26 NIL))))))
+        (events '((:RESIZE ((600 400))) (:KEY-RELEASED (("" "Return" 36 NIL)))                 (:TIMEOUT (NIL)) (:MOTION-ENTER ((194.0d0 390.0d0)))
+                 (:MOTION ((194.81414794921875d0 390.444091796875d0)))
+                 (:MOTION-LEAVE (NIL)) (:MOTION-ENTER ((0.0d0 332.0d0)))
+                 (:MOTION ((0.110321044921875d0 332.4322509765625d0))) (:TIMEOUT (NIL))
+                 (:MOTION ((39.44886779785156d0 346.9728088378906d0)))
+                 (:PRESSED ((1 39.44886779785156d0 346.9728088378906d0)))
+                 (:RELEASED ((1 39.44886779785156d0 346.9728088378906d0)))
+                 (:TIMEOUT (NIL)) (:KEY-PRESSED (("e" "e" 26 NIL))))))
     (loop for event in events
           for e = (car event)
           for eargs = (caadr event)
           do
-             (funcall 'process-event (cons lisp-window (cons e eargs)))))
+             (break "breaking on event ~A" event)
+             (funcall 'process-event
+                      lisp-window
+                      e
+                      eargs ))))
 
 ;;; ============================================================================
-  (defun typed-widget (window widget-type)
-    (first
-     (loop for w in (gui-window:children window) when (typep w widget-type) collect w))))
+(defun typed-widget (window widget-type)
+  (first
+   (loop for w in (gui-window:children window) when (typep w widget-type) collect w)))
 
 (defmethod draw-window ((window todo-window))
   "Calls render for topmost boxes of the window."
@@ -331,8 +313,13 @@
   (render (typed-widget window 'action-box)))
 
 (defmethod process-event ((lisp-window todo-window) event &rest args)
-  (unless (eq event :motion)
-    (push (list event args) (events lisp-window)))
+  (if (and (eq event
+               :motion)
+           (eq (caar (events lisp-window))
+               :motion))
+      (progn
+        )
+      (push (list event args) (events lisp-window)))
 
   (unless (member event '(:timeout :motion))
     (format t "~&going to process ~A ~A  "
