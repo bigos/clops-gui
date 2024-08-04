@@ -58,7 +58,8 @@
     (make-instance 'gui-box:coordinates :x x :y y))
 
 ;;; === classes =================================================================
-(defclass/std todo-window (gui-window:lisp-window) ())
+(defclass/std todo-window (gui-window:lisp-window)
+  ((events)))
 
 (defclass/std search-box (gui-box:box)
   ((text-field)
@@ -322,6 +323,8 @@
   (render (typed-widget window 'action-box)))
 
 (defmethod process-event ((lisp-window todo-window) event &rest args)
+  (push (list event args) (events lisp-window))
+
   (unless (member event '(:timeout :motion))
     (format t "~&going to process ~A ~A  "
             event
@@ -364,6 +367,8 @@
        (cond
          ((equal entered "p")
           (break "break to examine ~S" lisp-window))
+         ((equal entered "e")
+          (format t "events ~S" (reverse (events lisp-window))))
          (t nil))))
     (otherwise
      (warn "not handled event ~S ~S" event args)))
