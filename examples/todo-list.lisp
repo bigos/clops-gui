@@ -287,6 +287,11 @@
 
     (describe gui-window:*lisp-app* ) ;; it works
 
+    (process-event lisp-window :motion (list 34.1 339.2 ))
+
+    (process-event lisp-window :pressed (list 1 34.2 339.1))
+    (process-event lisp-window :pressed (list 1 34.2 339.1))
+    (process-event lisp-window :pressed (list 1 34.2 339.1))
 
     ;; (process-event lisp-window :key-pressed (list "" "Escape" 9  nil))
     ;; (process-event lisp-window :key-pressed (list "" "F1" 67     nil))
