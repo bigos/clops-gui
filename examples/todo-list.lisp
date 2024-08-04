@@ -57,12 +57,6 @@
 (defun make-coordinates (x y)
     (make-instance 'gui-box:coordinates :x x :y y))
 
-(defmethod box-coordinates ((box gui-box:box) x y)
-  ;; we need to consider parents in relative coordinates
-  (loop for b in (gui-box:parent-boxes box)
-        collect (cons (~> b gui-box:top-left gui-box:x)
-                      (~> b gui-box:top-left gui-box:y))))
-
 ;;; === classes =================================================================
 (defclass/std todo-window (gui-window:lisp-window) ())
 
