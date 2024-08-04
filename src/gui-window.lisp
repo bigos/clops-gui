@@ -59,7 +59,7 @@
   ;; gtk will put the drawn surface on canvas
   )
 
-(defun simulate-draw-func (window)
+(defun simulate-draw-func (window &optional log)
   (let ((surface (cairo:create-image-surface :argb32
                                               ;; use defaults if dimensions are nil
                                               (or (car (dimensions window)) 150)
@@ -77,10 +77,11 @@
 
     ;; put drawn surface to a file
     (cairo:surface-write-to-png surface
-                                (format nil "~Acairo-simulate-drawing~A-~A.png"
+                                (format nil "~Acairo-simulate-drawing~A-~A-~A.png"
                                         (uiop:temporary-directory)
                                         (get-internal-run-time)
-                                        (gir-window window)))))
+                                        (gir-window window)
+                                        log))))
 
 ;;; ========================== windows =========================================
 
@@ -122,10 +123,10 @@
         (w (window-hkey window)))
     (eq h w)))
 
-(defmethod redraw-canvas ((window lisp-window))
+(defmethod redraw-canvas ((window lisp-window) &optional log)
   (etypecase (gir-window window)
     (keyword
-     (simulate-draw-func (window-get *lisp-app* window)))
+     (simulate-draw-func (window-get *lisp-app* window) log))
     (t
      (gtk4:widget-queue-draw
       (serapeum:~> window gir-window gtk4:widget-first-child gtk4:widget-first-child)))))

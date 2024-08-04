@@ -292,7 +292,7 @@
           for e = (car event)
           for eargs = (caadr event)
           do
-             (break "breaking on event ~A" event)
+
              (funcall 'process-event
                       lisp-window
                       e
@@ -376,7 +376,7 @@
   ;;            (gui-window:redraw-canvas lwin))
   ;;          (gui-window:all-windows))
 
-  (gui-window:redraw-canvas lisp-window))
+  (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
 
 ;;; === main ===================================================================
 (defun init ()
