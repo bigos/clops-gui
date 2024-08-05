@@ -280,14 +280,60 @@
   (warn "starting experiment")
 
   (let ((lisp-window (experiment-first-window))
-        (events '((:RESIZE ((600 400))) (:KEY-RELEASED (("" "Return" 36 NIL)))                 (:TIMEOUT (NIL)) (:MOTION-ENTER ((194.0d0 390.0d0)))
-                 (:MOTION ((194.81414794921875d0 390.444091796875d0)))
-                 (:MOTION-LEAVE (NIL)) (:MOTION-ENTER ((0.0d0 332.0d0)))
-                 (:MOTION ((0.110321044921875d0 332.4322509765625d0))) (:TIMEOUT (NIL))
-                 (:MOTION ((39.44886779785156d0 346.9728088378906d0)))
-                 (:PRESSED ((1 39.44886779785156d0 346.9728088378906d0)))
-                 (:RELEASED ((1 39.44886779785156d0 346.9728088378906d0)))
-                 (:TIMEOUT (NIL)) (:KEY-PRESSED (("e" "e" 26 NIL))))))
+        (events '((:RESIZE ((600 400))) (:KEY-RELEASED (("" "Return" 36 NIL)))
+                  (:TIMEOUT (NIL)) (:MOTION-ENTER ((194.0d0 390.0d0)))
+                  (:MOTION ((194.81414794921875d0 390.444091796875d0)))
+                  (:MOTION-LEAVE (NIL)) (:MOTION-ENTER ((0.0d0 332.0d0)))
+                  (:MOTION ((0.110321044921875d0 332.4322509765625d0))) (:TIMEOUT (NIL))
+                  (:MOTION ((39.44886779785156d0 346.9728088378906d0)))
+                  (:PRESSED ((1 39.44886779785156d0 346.9728088378906d0)))
+                  (:RELEASED ((1 39.44886779785156d0 346.9728088378906d0)))
+                  (:TIMEOUT (NIL)) (:KEY-PRESSED (("e" "e" 26 NIL))))))
+    (loop for event in events
+          for e = (car event)
+          for eargs = (caadr event)
+          do
+             (break "data ~s" (list
+                               gui-window:*lisp-app*
+                               lisp-window))
+             (funcall 'process-event
+                      lisp-window
+                      e
+                      eargs ))))
+
+(defun experiment2 ()
+  "Experiment is for experimenting with processing events and drawing windows
+  without the use of Gtk4 library. Instead of drawing on a window the outcomes
+  of the events are drawn on *.png files."
+  (warn "starting experiment")
+
+  (let ((lisp-window (experiment-first-window))
+        (events '((:RESIZE ((600 400))) (:KEY-RELEASED (("" "Return" 36 NIL)))
+                  (:TIMEOUT (NIL)) (:MOTION-ENTER ((108.0d0 398.0d0)))
+                  (:MOTION ((108.60342407226563d0 398.8349914550781d0))) (:TIMEOUT (NIL))
+                  (:MOTION ((71.0396728515625d0 371.4473571777344d0)))
+                  (:PRESSED ((1 54.74913024902344d0 347.03326416015625d0)))
+                  (:TIMEOUT (NIL))
+                  (:RELEASED ((1 54.74913024902344d0 347.03326416015625d0)))
+                  (:PRESSED ((1 54.74913024902344d0 347.03326416015625d0)))
+                  (:RELEASED ((1 54.74913024902344d0 347.03326416015625d0)))
+                  (:TIMEOUT (NIL))
+                  (:PRESSED ((1 54.74913024902344d0 347.03326416015625d0)))
+                  (:RELEASED ((1 54.74913024902344d0 347.03326416015625d0)))
+                  (:TIMEOUT (NIL)) (:TIMEOUT (NIL))
+                  (:MOTION ((56.17039489746094d0 343.71697998046875d0))) (:TIMEOUT (NIL))
+                  (:MOTION ((95.32330322265625d0 164.16073608398438d0))) (:TIMEOUT (NIL))
+                  (:PRESSED ((1 87.11729431152344d0 158.2057647705078d0)))
+                  (:RELEASED ((1 87.11729431152344d0 158.2057647705078d0)))
+                  (:MOTION ((88.10462951660156d0 159.19308471679688d0))) (:TIMEOUT (NIL))
+                  (:MOTION ((122.39567565917969d0 206.91482543945313d0)))
+                  (:TIMEOUT (NIL))
+                  (:PRESSED ((1 154.67227172851563d0 344.4140930175781d0)))
+                  (:RELEASED ((1 154.67227172851563d0 344.4140930175781d0)))
+                  (:TIMEOUT (NIL)) (:TIMEOUT (NIL)) (:TIMEOUT (NIL))
+                  (:MOTION ((156.16693115234375d0 342.42120361328125d0)))
+                  (:TIMEOUT (NIL)) (:KEY-PRESSED (("e" "e" 26 NIL))))
+                ))
     (loop for event in events
           for e = (car event)
           for eargs = (caadr event)
@@ -310,7 +356,19 @@
 
   (render (typed-widget window 'search-box))
   (render (typed-widget window 'todo-box))
-  (render (typed-widget window 'action-box)))
+  (render (typed-widget window 'action-box))
+
+  (let ((app gui-window:*lisp-app*))
+    (when (and (eq (gui-window:current-motion app)
+                   window)
+               (gui-window:mouse-coordinates app))
+      (gui-window:set-rgba "pink")
+      (cairo:rectangle
+       (car (gui-window:mouse-coordinates app))
+       (cdr (gui-window:mouse-coordinates app))
+       25
+       25)
+      (cairo:fill-path))))
 
 (defmethod process-event ((lisp-window todo-window) event &rest args)
   (unless (and (eq :motion event)
