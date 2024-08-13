@@ -161,10 +161,6 @@
       (gui-box:remove-child todo-box first-child)
       (decf (items todo-box)))))
 
-(defmethod initialize-instance :after ((box gui-box:text-box) &rest initargs &key)
-  (declare (ignore initargs))
-  (setf (gui-box:recalculate box) t))
-
 ;; (defmethod process-box ((box action-add))
 ;;   (warn "going to process action add ~S" box))
 ;;; the example below may be better

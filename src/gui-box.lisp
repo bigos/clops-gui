@@ -24,6 +24,10 @@
    (recalculate)))
 
 ;;; === methods ================================================================
+(defmethod initialize-instance :after ((box text-box) &rest initargs &key)
+  (declare (ignore initargs))
+  (setf (recalculate box) t))
+
 (defmethod add-child ((parent-box box) (child-box box))
   (setf
    (parent child-box) parent-box
