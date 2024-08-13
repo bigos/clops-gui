@@ -103,6 +103,7 @@
    mouse-score
    parent
    parent-boxes
+   recalculate-absolute
    resize
    root-window
    text
