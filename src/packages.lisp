@@ -18,21 +18,21 @@
                 defclass/std)
   (:export
    *client-fn-draw-objects*
-   *initial-title*
-   *initial-window-width*
-   *initial-window-height*
-   *timeout-period*
-   *lisp-app*
    *client-fn-menu-bar*
+   *initial-title*
+   *initial-window-height*
+   *initial-window-width*
+   *lisp-app*
+   *timeout-period*
    add-child
-   all-windows
    all-widgets
+   all-windows
    children
    close-all-windows-and-quit
-   current-motion
    current-focus
-   current-motion-window
    current-focus-window
+   current-motion
+   current-motion-window
    dimensions
    gir-window
    lisp-window
