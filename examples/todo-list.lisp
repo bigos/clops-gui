@@ -179,7 +179,7 @@
      (setf (~> box gui-box:parent last-clicked) box)
      )
     (t
-     (warn "going to process box ~S" box))))
+     (warn "going to process unknown box ~S" (type-of box)))))
 
 (defun text-dimentions (text size font slant weight)
   (cairo:select-font-face font slant weight)
