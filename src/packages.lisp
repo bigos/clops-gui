@@ -104,7 +104,6 @@
    parent
    parent-boxes
    recalculate-absolute
-   render
    resize
    root-window
    text
