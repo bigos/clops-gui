@@ -230,7 +230,7 @@
 (defmethod render ((box gui-box:text-box))
   (gui-window:set-rgba (gui-box:box-color box))
 
-  (let ((my-text (format nil "~A"  (~> box gui-box:text))))
+  (let ((my-text (format nil "~A" (~> box gui-box:text))))
     (let ((the-text-dimentions (text-dimentions my-text 20 "Ubuntu Mono" :normal :bold)))
       (let ((width  (car the-text-dimentions))
             (height (cdr the-text-dimentions)))
