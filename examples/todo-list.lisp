@@ -190,9 +190,6 @@
     (declare (ignore xb yb))
     (cons width height)))
 
-(defgeneric render (box)
-    (:documentation "Render a BOX usinng cairo "))
-
 (defmethod render ((search-box search-box))
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 12)
@@ -214,18 +211,6 @@
    (~> search-box gui-box:width)
    (~> search-box gui-box:height))
   (cairo:fill-path))
-
-(defmethod render ((box gui-box:box))
-  (gui-window:set-rgba "#ffff0040")
-  (cairo:rectangle
-   (~> box gui-box:top-left gui-box:absolute-x)
-   (~> box gui-box:top-left gui-box:absolute-y)
-   (~> box gui-box:width)
-   (~> box gui-box:height))
-  (cairo:fill-path))
-
-(defmethod render :after ((box gui-box:box) )
-  (loop for b in (gui-box:children box) do (render b)))
 
 (defmethod render ((box gui-box:text-box))
   (gui-window:set-rgba (gui-box:box-color box))

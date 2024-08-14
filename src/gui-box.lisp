@@ -113,20 +113,33 @@
         until (typep po 'gui-window:lisp-window)
         collect po))
 
+;;; render ----------------------------------------------------
+(defmethod render ((box box))
+  (gui-window:set-rgba "#ffff0040")
+  (cairo:rectangle
+   (~> box gui-box:top-left gui-box:absolute-x)
+   (~> box gui-box:top-left gui-box:absolute-y)
+   (~> box gui-box:width)
+   (~> box gui-box:height))
+  (cairo:fill-path))
+
+(defmethod render :after ((box box) )
+  (loop for b in (children box) do (render b)))
+
 ;;; mouse over has all positives
 (defmethod mouse-over-score ((box box))
-  (if (equal (~> gui-window:*lisp-app* gui-window:current-motion)
-             (root-window box))
-      (let ((mouse-at (~> gui-window:*lisp-app* gui-window:mouse-coordinates)))
-        (let ((tlx (- (car mouse-at)                   (~> box top-left absolute-x)))
-              (tly (- (cdr mouse-at)                   (~> box top-left absolute-y)))
-              (brx (- (~> box bottom-right absolute-x) (car mouse-at)))
-              (bry (- (~> box bottom-right absolute-y) (cdr mouse-at))))
+    (if (equal (~> gui-window:*lisp-app* gui-window:current-motion)
+               (root-window box))
+        (let ((mouse-at (~> gui-window:*lisp-app* gui-window:mouse-coordinates)))
+          (let ((tlx (- (car mouse-at)                   (~> box top-left absolute-x)))
+                (tly (- (cdr mouse-at)                   (~> box top-left absolute-y)))
+                (brx (- (~> box bottom-right absolute-x) (car mouse-at)))
+                (bry (- (~> box bottom-right absolute-y) (cdr mouse-at))))
 
-          (if (every (lambda (x) (>= x 0)) (list tlx tly brx bry))
-              (setf (mouse-score box) (+ tlx tly brx bry))
-              (setf (mouse-score box) nil))))
-      (setf (mouse-score box) nil)))
+            (if (every (lambda (x) (>= x 0)) (list tlx tly brx bry))
+                (setf (mouse-score box) (+ tlx tly brx bry))
+                (setf (mouse-score box) nil))))
+        (setf (mouse-score box) nil)))
 
 (defmethod mouse-overp ((box box))
   (when (equal (~> gui-window:*lisp-app* gui-window:current-motion)
