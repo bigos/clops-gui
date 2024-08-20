@@ -362,22 +362,15 @@
        25)
       (cairo:fill-path))))
 
-(defmethod process-event ((lisp-window todo-window) event &rest args)
+(defun store-events (lisp-window event args)
   (if (and (eq event :motion)
            (eq (car (first (events lisp-window))) :motion))
       (setf (first (events lisp-window)) (list event args))
-      (push (list event args) (events lisp-window)))
+      (push (list event args) (events lisp-window))))
 
-  (unless (member event '(:timeout :motion))
-    (format t "~&going to process ~A ~A  "
-            event
-            (case event
-              ((:focus-enter :focus-leave)
-               (gui-window:window-hkey lisp-window))
-              (:key-pressed
-               (destructuring-bind ((letter name code mods)) args
-                 (warn "pressed ~S" (list letter name code mods (gui-window:window-hkey lisp-window)))))
-              (T args))))
+(defmethod process-event ((lisp-window todo-window) event &rest args)
+  (store-events lisp-window event args)
+
   (case event
     (:timeout
      ;; do nothing yet
