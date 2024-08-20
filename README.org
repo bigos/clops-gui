@@ -24,3 +24,9 @@ but that is not my priority.
 ** Installation
 
 You need SBCL, quicklisp and ultralisp. Please follow the relevant instructions.
+
+also install development libraries
+
+#+begin_example
+sudo apt install libgtk-4-dev
+#+end_example
