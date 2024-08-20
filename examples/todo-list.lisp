@@ -363,11 +363,9 @@
       (cairo:fill-path))))
 
 (defmethod process-event ((lisp-window todo-window) event &rest args)
-  (if (eq event :motion)
-      (progn
-        (if (eq :motion (car (first (events lisp-window))))
-            (setf (first (events lisp-window)) (list event args))
-            (push (list event args) (events lisp-window))))
+  (if (and (eq event :motion)
+           (eq (car (first (events lisp-window))) :motion))
+      (setf (first (events lisp-window)) (list event args))
       (push (list event args) (events lisp-window)))
 
   (unless (member event '(:timeout :motion))
