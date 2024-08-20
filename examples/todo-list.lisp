@@ -416,13 +416,7 @@
     (otherwise
      (warn "not handled event ~S ~S" event args)))
 
-  ;; add drawing ------------------------------
-
-  ;; (maphash (lambda (key lwin)
-  ;;            (declare (ignore key))
-  ;;            (gui-window:redraw-canvas lwin))
-  ;;          (gui-window:all-windows))
-
+  ;; redrawing ------------------------------
   (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
 
 ;;; === main ===================================================================
