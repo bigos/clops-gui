@@ -156,10 +156,12 @@
 
 (defmethod remove-item ((window todo-window))
   (let* ((todo-box (typed-widget window 'todo-box))
-         (first-child (~> todo-box last-clicked)))
-    (when first-child
-      (gui-box:remove-child todo-box first-child)
-      (decf (items todo-box)))))
+         (last-clicked (~> todo-box last-clicked)))
+    (when last-clicked
+      (gui-box:remove-child todo-box last-clicked)
+      (decf (items todo-box))
+      ;; recalculate coordinates of todobox children
+      )))
 
 ;; (defmethod process-box ((box action-add))
 ;;   (warn "going to process action add ~S" box))
