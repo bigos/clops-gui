@@ -61,11 +61,6 @@
 (defclass/std todo-window (gui-window:lisp-window)
   ((events)))
 
-(defclass/std search-box (gui-box:box)
-  ((text-field)
-   (button)
- ))
-
 (defclass/std todo-box   (gui-box:box)
   ((items :std 0)
    (last-clicked)))
@@ -74,20 +69,13 @@
 
 (defclass/std action-add (gui-box:text-box)  (()))
 (defclass/std action-remove (gui-box:text-box) (()))
-(defclass/std action-up (gui-box:text-box)   (()))
-(defclass/std action-down (gui-box:text-box) (()))
 
 ;;; === methods =================================================================
 (defmethod initialize-instance :after ((window todo-window) &rest initargs &key)
   (declare (ignore initargs))
 
   (let
-      ((search-box (make-instance 'search-box
-                                  :parent window
-                                  :top-left (make-coordinates 20 20)
-                                  :width 400
-                                  :height 50))
-       (todo-box   (make-instance 'todo-box
+      ((todo-box   (make-instance 'todo-box
                                   :parent window
                                   :top-left (make-coordinates 20 100)
                                   :width 400
@@ -98,24 +86,11 @@
                                   :width 400
                                   :height 50)))
 
-    (gui-window:add-child window search-box )
-    (gui-box:add-child search-box
-                       (make-instance 'gui-box:text-box
-                                      :parent search-box
-                                      :top-left (make-coordinates 10 10)
-                                      :width 200
-                                      :height 30))
-    (gui-box:add-child search-box
-                       (make-instance 'gui-box:text-box
-                                      :parent search-box
-                                      :top-left (make-coordinates 280 10)
-                                      :width 110
-                                      :height 30
-                                      :text "Search"))
 
-    (gui-window:add-child window todo-box   )
+    (gui-window:add-child window todo-box)
 
     (gui-window:add-child window action-box )
+
     (gui-box:add-child action-box (make-instance 'action-add
                                                  :parent action-box
                                                  :top-left (make-coordinates 5 5)
@@ -127,19 +102,7 @@
                                                  :top-left (make-coordinates 105 5)
                                                  :width 20
                                                  :height 20
-                                                 :text "Remove"))
-    (gui-box:add-child action-box (make-instance 'action-up
-                                                 :parent action-box
-                                                 :top-left (make-coordinates 205 5)
-                                                 :width 20
-                                                 :height 20
-                                                 :text "Up"))
-    (gui-box:add-child action-box (make-instance 'action-down
-                                                 :parent action-box
-                                                 :top-left (make-coordinates 305 5)
-                                                 :width 20
-                                                 :height 20
-                                                 :text "Down"))))
+                                                 :text "Remove"))))
 
 (defmethod add-item ((window todo-window) string)
   (let ((todo-box (typed-widget window 'todo-box)))
@@ -203,31 +166,6 @@
 
 (defgeneric render (box)
     (:documentation "Render a BOX usinng cairo "))
-
-(defmethod render ((search-box search-box))
-  (cairo:select-font-face "Ubuntu Mono" :normal :bold)
-  (cairo:set-font-size 12)
-
-  (let* ((app gui-window:*lisp-app*)
-         (my-text (format nil "~A - ~S"
-                          "search box"
-                          (gui-window:mouse-coordinates app))))
-    (multiple-value-bind (xb yb width height)
-        (cairo:text-extents "X")
-      (declare (ignore xb yb width))
-
-      (cairo:move-to    (~> search-box gui-box:top-left gui-box:absolute-x)
-                        (+ (~> search-box gui-box:top-left gui-box:absolute-y) height)))
-    (gui-window:set-rgba "red")
-    (cairo:show-text my-text))
-
-  (gui-window:set-rgba "#55667740")
-  (cairo:rectangle
-   (~> search-box gui-box:top-left gui-box:absolute-x)
-   (~> search-box gui-box:top-left gui-box:absolute-y)
-   (~> search-box gui-box:width)
-   (~> search-box gui-box:height))
-  (cairo:fill-path))
 
 (defmethod render ((box gui-box:box))
   (gui-window:set-rgba "#ffff0040")
@@ -357,7 +295,6 @@
   (let ((cv 0.13)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
-  (render (typed-widget window 'search-box))
   (render (typed-widget window 'todo-box))
   (render (typed-widget window 'action-box))
 
