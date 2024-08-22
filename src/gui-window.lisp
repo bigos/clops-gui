@@ -196,7 +196,8 @@
         (current-motion    *lisp-app*) nil))
 
 (defmethod mouse-button-pressed (button)
-  (incf (mouse-button *lisp-app*) (expt 2 button)))
+  (incf (mouse-button *lisp-app*))
+  (warn "pressed mouse button"))
 
 (defmethod mouse-button-released ()
   (setf (mouse-button *lisp-app*) 0))

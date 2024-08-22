@@ -42,9 +42,9 @@
   (setf (children parent-box)
         (remove child-box (children parent-box))))
 
-(defmethod move ((box box) xd yd)
-  (setf (~> box top-left x) (+ (~> box top-left x) xd)
-        (~> box top-left y) (+ (~> box top-left y) yd))
+(defmethod move ((box box) xdelta ydelta)
+  (setf (~> box top-left x) (+ (~> box top-left x) xdelta)
+        (~> box top-left y) (+ (~> box top-left y) ydelta))
   (recalculate-absolute box))
 
 (defmethod move-to ((box box) x y)

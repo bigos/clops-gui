@@ -331,9 +331,11 @@
        (let ((current-widget (gui-window:most-current-widget lisp-window)))
          (format t "~&processing mouse at ~S ~S ~%on widget ~S~%" x y
                  current-widget)
+         (gui-window:mouse-button-pressed current-widget)
          (process-box lisp-window current-widget))))
 
-    (:released)
+    (:released
+     (gui-window:mouse-button-released))
     (:scroll)
     (:resize
      (destructuring-bind ((w h)) args
