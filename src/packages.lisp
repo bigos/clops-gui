@@ -101,6 +101,7 @@
    mouse-over-score
    mouse-overp
    mouse-score
+   move-to
    parent
    parent-boxes
    recalculate-absolute

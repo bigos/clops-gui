@@ -47,6 +47,11 @@
         (~> box top-left y) (+ (~> box top-left y) yd))
   (recalculate-absolute box))
 
+(defmethod move-to ((box box) x y)
+  (setf (~> box top-left x) x
+        (~> box top-left y) y)
+  (recalculate-absolute box))
+
 (defmethod resize ((box box) nwidth nheight)
   (unless (and (eq (~> box width) nwidth)
                (eq (~> box height) nheight))

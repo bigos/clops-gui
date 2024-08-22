@@ -159,9 +159,15 @@
          (last-clicked (~> todo-box last-clicked)))
     (when last-clicked
       (gui-box:remove-child todo-box last-clicked)
-      (decf (items todo-box))
+      (when (> (items todo-box) 0)
+        (decf (items todo-box)))
       ;; recalculate coordinates of todobox children
-      )))
+      (loop for c in (gui-box:children todo-box)
+            for z = 0 then (1+ z)
+            do
+               (gui-box:move-to c
+                                4
+                                (+ (* z 40) 5))))))
 
 ;; (defmethod process-box ((box action-add))
 ;;   (warn "going to process action add ~S" box))
