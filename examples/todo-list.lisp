@@ -162,7 +162,10 @@
       (when (> (items todo-box) 0)
         (decf (items todo-box)))
       ;; recalculate coordinates of todobox children
-      (loop for c in (gui-box:children todo-box)
+      (loop for c in (sort (gui-box:children todo-box)
+                           (lambda (a b)
+                             (string<= (gui-box:text a)
+                                       (gui-box:text b))))
             for z = 0 then (1+ z)
             do
                (gui-box:move-to c
