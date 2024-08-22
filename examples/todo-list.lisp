@@ -86,7 +86,6 @@
                                   :width 400
                                   :height 50)))
 
-
     (gui-window:add-child window todo-box)
 
     (gui-window:add-child window action-box )
