@@ -135,10 +135,6 @@
                                 4
                                 (+ (* z 40) 5))))))
 
-;; (defmethod process-box ((box action-add))
-;;   (warn "going to process action add ~S" box))
-;;; the example below may be better
-
 (defmethod process-box ((window todo-window) (box T))
   (warn "processing box")
   (typecase box
