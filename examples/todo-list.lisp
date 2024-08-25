@@ -256,6 +256,7 @@
                    (:MOTION-ENTER ((594.0d0 218.0d0)))
                    (:MOTION ((36.661827087402344d0 338.5277404785156d0)))
                    (:MOTION ((38.44976806640625d0 341.4234924316406d0)))
+                   (:assert (eq 1 2))
                    (:PRESSED ((1 38.44976806640625d0 341.4234924316406d0)))
                    (:RELEASED ((1 38.44976806640625d0 341.4234924316406d0)))
                    (:PRESSED ((1 38.44976806640625d0 341.4234924316406d0)))
@@ -275,10 +276,12 @@
           for e = (car event)
           for eargs = (caadr event)
           do
-             (funcall 'process-event
-                      lisp-window
-                      e
-                      eargs ))))
+             (if (eq e :assert)
+                 (assert (eval (cadr event)))
+                 (funcall 'process-event
+                          lisp-window
+                          e
+                          eargs )))))
 
 ;;; ============================================================================
 (defun typed-widget (window widget-type)
