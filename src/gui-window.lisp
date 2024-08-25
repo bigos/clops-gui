@@ -315,8 +315,7 @@
       (gtk4:connect motion-controller "motion"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion
                                                                        (append (list lisp-window)
-                                                                               args
-                                                                               (list)))))
+                                                                               args))))
       (gtk4:connect motion-controller "enter"
                     (lambda (e &rest args) (declare (ignore e)) (apply #'gui-events:de-motion-enter
                                                                        (append (list lisp-window)
