@@ -248,18 +248,17 @@
                       eargs ))))
 
 (defun window-widget-center% (type-symbol)
-  (let ((cc
-          (loop for hv being the hash-value in
-                                            (gui-window:all-widgets
-                                             (gethash :testing
-                                                      (gui-window:all-windows)))
-                for rhv = (when (typep hv type-symbol)
-                            (gui-box:central-point hv))
-                until rhv
-                finally (return rhv))))
-    (if cc
-        cc
-        (error "button not found"))))
+  (loop for hv being the hash-value in
+                                    (gui-window:all-widgets
+                                     (gethash :testing
+                                              (gui-window:all-windows)))
+        for rhv = (when (typep hv type-symbol)
+                    (gui-box:central-point hv))
+        until rhv
+        finally
+           (if rhv
+               (return rhv)
+               (error "button not found"))))
 
 ;;; (experiment2)
 (defun experiment2 ()
