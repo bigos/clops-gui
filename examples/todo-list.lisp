@@ -311,8 +311,10 @@
                                                                 (gui-window:all-widgets
                                                                  (gethash :testing
                                                                           (gui-window:all-windows)))
-                                    until (typep hv 'action-remove) finally
-                                      (return (gui-box:central-point hv)))))
+                                    for rhv = (when (typep hv 'action-remove)
+                                                hv)
+                                    until rhv
+                                    finally (return (gui-box:central-point rhv)))))
 
                    (:assert (equal "Remove" (~> (gui-window:all-windows)
                                              (gethash :testing _)
