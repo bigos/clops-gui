@@ -119,20 +119,23 @@
 (defmethod remove-item ((window todo-window))
   (let* ((todo-box (typed-widget window 'todo-box))
          (last-clicked (~> todo-box last-clicked)))
-    (when last-clicked
-      (gui-box:remove-child todo-box last-clicked)
-      (when (> (items todo-box) 0)
-        (decf (items todo-box)))
-      ;; recalculate coordinates of todobox children
-      (loop for c in (sort (gui-box:children todo-box)
-                           (lambda (a b)
-                             (string<= (gui-box:text a)
-                                       (gui-box:text b))))
-            for z = 0 then (1+ z)
-            do
-               (gui-box:move-to c
-                                4
-                                (+ (* z 40) 5))))))
+    (if last-clicked
+      (progn
+        (gui-box:remove-child todo-box last-clicked)
+        (warn "removed last clicked")
+        (when (> (items todo-box) 0)
+          (decf (items todo-box)))
+        ;; recalculate coordinates of todobox children
+        (loop for c in (sort (gui-box:children todo-box)
+                             (lambda (a b)
+                               (string<= (gui-box:text a)
+                                         (gui-box:text b))))
+              for z = 0 then (1+ z)
+              do
+                 (gui-box:move-to c
+                                  4
+                                  (+ (* z 40) 5))))
+      (warn "no last clicked detected"))))
 
 (defmethod process-box ((window todo-window) (box T))
   (warn "processing box")
