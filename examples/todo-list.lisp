@@ -305,13 +305,13 @@
                                     (gui-box:children _)
                                     (length _) )))
                    (:RELEASED ((1 82.94773864746094d0 148.03538513183594d0)))
-                   (:MOTION ((169.45411682128906d0 341.844970703125d0)))
+                   ;;(:MOTION ((169.45411682128906d0 341.844970703125d0)))
                    ;; try to find the center coordinates
                    (:motion (,(loop for hv being the hash-value in
                                                                 (gui-window:all-widgets
                                                                  (gethash :testing
                                                                           (gui-window:all-windows)))
-                                    until (typep hv 'action-add) finally
+                                    until (typep hv 'action-remove) finally
                                       (return (gui-box:central-point hv)))))
 
                    (:assert (equal "Remove" (~> (gui-window:all-windows)
