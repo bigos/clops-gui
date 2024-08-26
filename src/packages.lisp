@@ -95,6 +95,7 @@
    remove-child
    box
    box-color
+   central-point
    children
    coordinates
    height

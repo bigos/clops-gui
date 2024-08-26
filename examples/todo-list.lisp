@@ -255,7 +255,7 @@
   (warn "starting experiment")
 
   (let* ((lisp-window (experiment-first-window))
-         (events '((:RESIZE ((600 400)))
+         (events `((:RESIZE ((600 400)))
                    (:KEY-RELEASED (("" "Return" 36 NIL)))
                    (:MOTION-ENTER ((594.0d0 218.0d0)))
                    (:assert (eq 1 (hash-table-count (gui-window:all-windows))))
@@ -306,10 +306,18 @@
                                     (length _) )))
                    (:RELEASED ((1 82.94773864746094d0 148.03538513183594d0)))
                    (:MOTION ((169.45411682128906d0 341.844970703125d0)))
+                   ;; try to find the center coordinates
+                   (:motion (,(loop for hv being the hash-value in
+                                                                (gui-window:all-widgets
+                                                                 (gethash :testing
+                                                                          (gui-window:all-windows)))
+                                    until (typep hv 'action-add) finally
+                                      (return (gui-box:central-point hv)))))
+
                    (:assert (equal "Remove" (~> (gui-window:all-windows)
-                                      (gethash :testing _)
-                                      (gui-window:most-current-widget _)
-                                      (gui-box:text _))))
+                                             (gethash :testing _)
+                                             (gui-window:most-current-widget _)
+                                             (gui-box:text _))))
                    (:PRESSED ((1 169.45411682128906d0 341.844970703125d0)))
                    (:assert (eq 2  (~> (gui-window:all-windows)
                                     (gethash :testing _)

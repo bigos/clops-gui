@@ -59,6 +59,14 @@
           (~> box height) (+ nheight 4))
     (recalculate-absolute box)))
 
+(defmethod central-point ((box box))
+  ;; absolute central point
+  (let ((half-width  (/ (width box)  2))
+        (half-height (/ (height box) 2)))
+    (list
+     (~> box top-left absolute-x (+ _ half-width))
+     (~> box top-left absolute-y (+ _ half-height)))))
+
 (defmethod recalculate-absolute-root ((box box))
   (if (and (typep (parent box) 'gui-window:lisp-window))
       (progn
