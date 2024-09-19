@@ -322,9 +322,9 @@
                    (:motion (,(window-widget-center% 'action-remove)))
 
                    (:assert (equal "Remove" (~> (gui-window:all-windows)
-                                        (gethash :testing _)
-                                        (gui-window:most-current-widget _)
-                                        (gui-box:text _))))
+                                                (gethash :testing _)
+                                                (gui-window:most-current-widget _)
+                                                (gui-box:text _))))
                    (:PRESSED ((1 169.45411682128906d0 341.844970703125d0)))
                    (:assert (eq 2  (~> (gui-window:all-windows)
                                        (gethash :testing _)
@@ -338,13 +338,12 @@
     (loop for event in events
           for e = (car event)
           for eargs = (caadr event)
-          do
-          (if (eq e :assert)
-              (assert (eval (cadr event)))
-              (funcall 'process-event
-                       lisp-window
-                       e
-                       eargs )))))
+          do (if (eq e :assert)
+                 (assert (eval (cadr event)))
+                 (funcall 'process-event
+                          lisp-window
+                          e
+                          eargs )))))
 
 ;;; ============================================================================
 (defun typed-widget (window widget-type)
