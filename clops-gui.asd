@@ -10,6 +10,7 @@
                 :components
                 ((:file "packages")
                  (:file "gui-events")
+                 (:file "gui-drawing")
                  (:file "gui-menu")
                  (:file "gui-box")
                  (:file "gui-window")

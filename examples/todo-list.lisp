@@ -430,8 +430,9 @@
 (defun main ()
   (init)
 
-  (setf gui-window:*client-fn-menu-bar*      nil
-        gui-window:*client-fn-draw-objects*  'todo-list::draw-window
+  (setf
+        gui-drawing:*client-fn-draw-objects*  'todo-list::draw-window
+   gui-window:*client-fn-menu-bar*      nil
         gui-events:*client-fn-process-event* 'todo-list::process-event
         gui-window:*initial-window-width*    600
         gui-window:*initial-window-height*   400

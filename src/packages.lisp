@@ -81,6 +81,13 @@
    de-scroll
    de-timeout))
 
+(defpackage #:gui-drawing
+  (:use #:cl)
+  (:export
+   *client-fn-draw-objects*
+   %draw-func
+   simulate-draw-func))
+
 (defpackage #:gui-box
   (:use #:cl)
   (:import-from :serapeum
