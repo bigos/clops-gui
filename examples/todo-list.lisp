@@ -338,8 +338,7 @@
     (loop for event in events
           for e = (car event)
           for eargs = (caadr event)
-          do
-             (if (eq e :assert)
+          do (if (eq e :assert)
                  (assert (eval (cadr event)))
                  (funcall 'process-event
                           lisp-window
