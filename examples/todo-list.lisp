@@ -205,7 +205,7 @@
 
 ;;; === experiment ==============================================================
 (defun experiment-first-window ()
-  (setf gui-window:*client-fn-draw-objects*  'todo-list::draw-window)
+  (setf gui-drawing:*client-fn-draw-objects*  'todo-list::draw-window)
 
   (setf gui-window:*lisp-app* (gui-window::make-lisp-app))
   (assert (zerop (hash-table-count (gui-window:all-windows))))

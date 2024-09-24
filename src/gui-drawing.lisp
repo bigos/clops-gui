@@ -23,7 +23,7 @@
                                                        :height height
                                                        :pixel-based-p nil))
                   ;; call actual drawing
-                  (funcall *client-fn-draw-objects* (window-get *lisp-app* (gtk4:widget-parent
+                  (funcall *client-fn-draw-objects* (gui-window::window-get gui-window::*lisp-app* (gtk4:widget-parent
                                                                             (gtk4:widget-parent
                                                                              (gir:build-object-ptr (gir:nget gtk4:*ns* "DrawingArea") area)))))
                   ;; ############################################################################

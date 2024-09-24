@@ -215,7 +215,7 @@
   (init)
 
   (setf gui-window:*client-fn-menu-bar*      'counter::menu-bar
-        gui-window:*client-fn-draw-objects*  'counter::draw-window
+        gui-drawing:*client-fn-draw-objects*  'counter::draw-window
         gui-events:*client-fn-process-event* 'counter::process-event
         gui-window:*initial-window-width*    600
         gui-window:*initial-window-height*   400

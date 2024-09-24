@@ -21,7 +21,7 @@
 ;;; ======================= experiment =========================================
 (defun experiment-first-window ()
   (setf
-   gui-window:*client-fn-draw-objects*  'pong::draw-window
+   gui-drawing:*client-fn-draw-objects*  'pong::draw-window
    gui-window:*lisp-app* (gui-window::make-lisp-app))
 
   (assert (zerop (hash-table-count (gui-window:all-windows))))
@@ -592,7 +592,7 @@
 ;;; === main ===================================================================
 
 (defun main ()
-  (setf gui-window:*client-fn-draw-objects*  'pong::draw-window
+  (setf gui-drawing:*client-fn-draw-objects*  'pong::draw-window
         gui-events:*client-fn-process-event* 'pong::process-event
         gui-window:*client-fn-menu-bar*      'pong::menu-bar
         gui-window:*initial-window-width*    600
