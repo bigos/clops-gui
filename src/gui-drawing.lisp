@@ -2,9 +2,6 @@
 
 (defparameter *client-fn-draw-objects* nil)
 
-
-;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 ;;; both %draw-func and simulate-draw-func create context on each call
 ;;; we need to investigate whether it is necessary only on the dimensions change
 
@@ -14,30 +11,30 @@
                                     (width :int)
                                     (height :int)
                                     (data :pointer))
-                  (declare (ignore data))
+  (declare (ignore data))
 
-                  ;; ###########################################################################
-                  (setf cairo:*context* (make-instance 'cairo:context
-                                                       :pointer cr
-                                                       :width width
-                                                       :height height
-                                                       :pixel-based-p nil))
-                  ;; call actual drawing
-                  (funcall *client-fn-draw-objects* (gui-window:window-get gui-window:*lisp-app* (gtk4:widget-parent
-                                                                            (gtk4:widget-parent
-                                                                             (gir:build-object-ptr (gir:nget gtk4:*ns* "DrawingArea") area)))))
-                  ;; ############################################################################
+  ;; create context
+  (setf cairo:*context* (make-instance 'cairo:context
+                                       :pointer cr
+                                       :width width
+                                       :height height
+                                       :pixel-based-p nil))
+  ;; call actual drawing
+  (funcall *client-fn-draw-objects* (gui-window:window-get gui-window:*lisp-app* (gtk4:widget-parent
+                                                                                  (gtk4:widget-parent
+                                                                                   (gir:build-object-ptr (gir:nget gtk4:*ns* "DrawingArea") area)))))
 
-                  ;; gtk will put the drawn surface on canvas
-                  )
+
+  ;; gtk will put the drawn surface on canvas
+  )
 
 (defun simulate-draw-func (window &optional log)
   (let ((surface (cairo:create-image-surface :argb32
-                                              ;; use defaults if dimensions are nil
-                                              (or (car (gui-window:dimensions window)) 150)
-                                              (or (cdr (gui-window:dimensions window)) 100))))
+                                             ;; use defaults if dimensions are nil
+                                             (or (car (gui-window:dimensions window)) 150)
+                                             (or (cdr (gui-window:dimensions window)) 100))))
 
-    ;; #########################################################################
+    ;; create context
     (setf  cairo:*context* (cairo:create-context surface))
 
     (when (null *client-fn-draw-objects*)
@@ -45,7 +42,6 @@
 
     ;; call actual drawing
     (funcall *client-fn-draw-objects* window)
-    ;; #########################################################################
 
     ;; put drawn surface to a file
     (cairo:surface-write-to-png surface
