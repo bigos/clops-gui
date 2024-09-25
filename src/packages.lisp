@@ -10,29 +10,6 @@
    prepare-section
    prepare-submenu))
 
-(defpackage #:gui-window-gtk
-  (:use #:cl)
-  (:import-from :serapeum
-                ~>)
-  (:import-from :defclass-std
-                defclass/std)
-  (:export
-   *client-fn-draw-objects*
-   *client-fn-menu-bar*
-   *initial-title*
-   *initial-window-height*
-   *initial-window-width*
-   *lisp-app*
-   *timeout-period*
-   close-all-windows-and-quit
-   gir-window
-   lisp-window
-   new-window-for-app
-   present-about-dialog
-   window
-   window-creation-from-menu
-   window-creation-from-simulation))
-
 (defpackage #:gui-window
   (:use #:cl)
   (:import-from :serapeum
@@ -79,6 +56,28 @@
    window-resize
    windows
    ))
+(defpackage #:gui-window-gtk
+  (:use #:cl)
+  (:import-from :serapeum
+                ~>)
+  (:import-from :defclass-std
+                defclass/std)
+  (:export
+   *client-fn-draw-objects*
+   *client-fn-menu-bar*
+   *initial-title*
+   *initial-window-height*
+   *initial-window-width*
+   *lisp-app*
+   *timeout-period*
+   close-all-windows-and-quit
+   gir-window
+   lisp-window
+   new-window-for-app
+   present-about-dialog
+   window
+   window-creation-from-menu
+   window-creation-from-simulation))
 
 (defpackage #:gui-events
   (:use #:cl)

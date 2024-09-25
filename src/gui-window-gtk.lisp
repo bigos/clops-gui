@@ -109,7 +109,7 @@
 
   (gtk4:connect window "close-request" (lambda (widget &rest args)
                                          (declare (ignore widget args))
-                                         (window-remove *lisp-app* window)
+                                         (gui-window::window-remove gui-window::*lisp-app* window)
                                          (gtk4:window-close window))))
 
 (defun canvas-events (canvas lisp-window)
