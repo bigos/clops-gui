@@ -178,9 +178,9 @@
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))))
     ((:motion :motion-enter)
      (destructuring-bind ((x y)) args
-       (gui-window:mouse-motion-enter lisp-window x y)))
+       (gui-app:mouse-motion-enter lisp-window x y)))
     (:motion-leave
-     (gui-window:mouse-motion-leave))
+     (gui-app:mouse-motion-leave))
     (:pressed
      ;; TODO find better way of finding mouse buttons state
      (destructuring-bind ((button x y)) args

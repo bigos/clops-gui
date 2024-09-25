@@ -48,3 +48,19 @@
   (if (remhash (gui-window:window-hkey window) (windows app))
       (warn "success, window removed ~S" window)
       (warn "strange, window not removed ~S" window)))
+
+;;; ======================== window mouse handling =============================
+(defmethod mouse-motion-enter ((window gui-window:lisp-window)  x y)
+  (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) (cons x y)
+        (gui-app:current-motion    gui-app:*lisp-app*) window))
+
+(defmethod mouse-motion-leave ()
+  (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) nil
+        (gui-app:current-motion   gui-app:*lisp-app*) nil))
+
+(defmethod mouse-button-pressed (button)
+  (incf (gui-app:mouse-button gui-app:*lisp-app*))
+  (warn "pressed mouse button"))
+
+(defmethod mouse-button-released ()
+  (setf (gui-app:mouse-button gui-app:*lisp-app*) 0))

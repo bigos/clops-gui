@@ -27,8 +27,13 @@
    current-motion-window
    gtk4-app
    make-lisp-app
+   most-current-widget
    mouse-button
+   mouse-button-pressed
+   mouse-button-released
    mouse-coordinates
+   mouse-motion-enter
+   mouse-motion-leave
    window-get
    window-remove
    windows
@@ -52,11 +57,6 @@
    dimensions
    gir-window
    lisp-window
-   most-current-widget
-   mouse-button-pressed
-   mouse-button-released
-   mouse-motion-enter
-   mouse-motion-leave
    new-window-for-app
    redraw-canvas
    set-rgba
@@ -80,7 +80,6 @@
    *timeout-period*
    close-all-windows-and-quit
    gir-window
-   lisp-window
    new-window-for-app
    present-about-dialog
    window

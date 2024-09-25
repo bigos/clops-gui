@@ -77,19 +77,3 @@
     ;;        (format t "____ ~S ~S ~S ~S~%" w mos (gui-box:mouse-score w) (gui-box:absolute-coordinates w)))
     finally ;; (warn "minmos is ~S ~S" minmos current-widget)
             (return current-widget)))
-
-;;; ======================== window mouse handling =============================
-(defmethod mouse-motion-enter ((window lisp-window)  x y)
-    (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) (cons x y)
-          (gui-app:current-motion    gui-app:*lisp-app*) window))
-
-(defmethod mouse-motion-leave ()
-  (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) nil
-        (gui-app:current-motion   gui-app:*lisp-app*) nil))
-
-(defmethod mouse-button-pressed (button)
-  (incf (gui-app:mouse-button gui-app:*lisp-app*))
-  (warn "pressed mouse button"))
-
-(defmethod mouse-button-released ()
-  (setf (gui-app:mouse-button gui-app:*lisp-app*) 0))

@@ -386,9 +386,9 @@
      )
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y)) args
-       (gui-window:mouse-motion-enter lisp-window x y)))
+       (gui-app:mouse-motion-enter lisp-window x y)))
     (:motion-leave
-     (gui-window:mouse-motion-leave))
+     (gui-app:mouse-motion-leave))
     (:focus-enter)
     (:focus-leave)
     (:pressed
