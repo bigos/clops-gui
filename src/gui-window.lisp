@@ -74,7 +74,7 @@
 (defmethod redraw-canvas ((window lisp-window) &optional log)
   (etypecase (gir-window window)
     (keyword
-     (simulate-draw-func (window-get *lisp-app* window) log))
+     (gui-drawing:simulate-draw-func (window-get *lisp-app* window) log))
     (t
      (gtk4:widget-queue-draw
       (serapeum:~> window gir-window gtk4:widget-first-child gtk4:widget-first-child)))))

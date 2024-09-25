@@ -23,7 +23,7 @@
                                                        :height height
                                                        :pixel-based-p nil))
                   ;; call actual drawing
-                  (funcall *client-fn-draw-objects* (gui-window::window-get gui-window::*lisp-app* (gtk4:widget-parent
+                  (funcall *client-fn-draw-objects* (gui-window:window-get gui-window:*lisp-app* (gtk4:widget-parent
                                                                             (gtk4:widget-parent
                                                                              (gir:build-object-ptr (gir:nget gtk4:*ns* "DrawingArea") area)))))
                   ;; ############################################################################
@@ -34,8 +34,8 @@
 (defun simulate-draw-func (window &optional log)
   (let ((surface (cairo:create-image-surface :argb32
                                               ;; use defaults if dimensions are nil
-                                              (or (car (dimensions window)) 150)
-                                              (or (cdr (dimensions window)) 100))))
+                                              (or (car (gui-window:dimensions window)) 150)
+                                              (or (cdr (gui-window:dimensions window)) 100))))
 
     ;; #########################################################################
     (setf  cairo:*context* (cairo:create-context surface))
@@ -52,5 +52,5 @@
                                 (format nil "~Acairo-simulate-drawing~A-~A-~A.png"
                                         (uiop:temporary-directory)
                                         (get-internal-run-time)
-                                        (gir-window window)
+                                        (gui-window:gir-window window)
                                         log))))
