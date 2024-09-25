@@ -90,8 +90,8 @@
 
   (let* ((top-line  30)
          (left-line 30)
-         (right-line  (- gui-window:*initial-window-width*  30))
-         (bottom-line (- gui-window:*initial-window-height* (* 2 30))))
+         (right-line  (- gui-window-gtk:*initial-window-width*  30))
+         (bottom-line (- gui-window-gtk:*initial-window-height* (* 2 30))))
     (setf
      (player-human pong-game)    (make-instance 'player-human
                                                 :pad-height 100

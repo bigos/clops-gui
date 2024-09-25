@@ -27,7 +27,6 @@
    current-motion-window
    gtk4-app
    make-lisp-app
-   most-current-widget
    mouse-button
    mouse-button-pressed
    mouse-button-released
@@ -48,8 +47,6 @@
   (:export
    *client-fn-draw-objects*
    *client-fn-menu-bar*
-   *initial-window-height*
-   *initial-window-width*
    *timeout-period*
    add-child
    all-widgets
@@ -57,6 +54,7 @@
    dimensions
    gir-window
    lisp-window
+   most-current-widget
    new-window-for-app
    redraw-canvas
    set-rgba
