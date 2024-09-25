@@ -32,7 +32,7 @@
   (warn "starting experiment")
   (setf
    *model* (make-instance 'model)
-   gui-window:*lisp-app* (gui-app::make-lisp-app))
+   gui-app:*lisp-app* (gui-app::make-lisp-app))
   (assert (zerop (hash-table-count (gui-app:all-windows))))
   (let ((lisp-window (make-instance 'gui-window:lisp-window)))
     (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
@@ -149,12 +149,12 @@
   (cairo:select-font-face "Ubuntu Mono" :normal :bold)
   (cairo:set-font-size 15)
 
-  (if (null (gui-window:mouse-coordinates gui-window:*lisp-app*))
+  (if (null (gui-app:mouse-coordinates gui-app:*lisp-app*))
       (gui-window:set-rgba "red")
       (gui-window:set-rgba "#002244AA"))
   (cairo:move-to 10 50)
-  (when (gui-window:current-motion-window gui-window:*lisp-app* window)
-    (cairo:show-text (format nil "~A" (gui-window:mouse-coordinates gui-window:*lisp-app*))))
+  (when (gui-app:current-motion-window gui-app:*lisp-app* window)
+    (cairo:show-text (format nil "~A" (gui-app:mouse-coordinates gui-app:*lisp-app*))))
 
   (cairo:select-font-face "Ubuntu Mono" :normal :normal)
 
@@ -167,7 +167,7 @@
   (cairo:select-font-face "Ubuntu Mono" :italic :bold)
 
   (cairo:move-to 10 100)
-  (let ((cmotion    (gui-window:current-motion-window gui-window:*lisp-app* window)))
+  (let ((cmotion    (gui-app:current-motion-window gui-app:*lisp-app* window)))
     (if cmotion
         (gui-window:set-rgba "green")
         (gui-window:set-rgba "red"))
@@ -176,7 +176,7 @@
   (cairo:select-font-face "Ubuntu Mono" :oblique :normal)
 
   (cairo:move-to 10 120)
-  (let ((cfocus (gui-window:window-hkey (gui-app:current-focus-window gui-window:*lisp-app* window))))
+  (let ((cfocus (gui-window:window-hkey (gui-app:current-focus-window gui-app:*lisp-app* window))))
     (if cfocus
         (gui-window:set-rgba "green")
         (gui-window:set-rgba "red"))
@@ -264,11 +264,11 @@
     (:menu-radio (warn "not processed event ~S ~S" event args))
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y)) args
-       (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) (cons x y)
-             (gui-window:current-motion    gui-window:*lisp-app*) lisp-window)))
+       (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) (cons x y)
+             (gui-app:current-motion    gui-app:*lisp-app*) lisp-window)))
     (:motion-leave
-     (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
-           (gui-window:current-motion gui-window:*lisp-app*) nil))
+     (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) nil
+           (gui-app:current-motion gui-app:*lisp-app*) nil))
     (:focus-enter)
     (:focus-leave)
     (:pressed (warn "not processed event ~S ~S" event args))

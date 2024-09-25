@@ -34,7 +34,7 @@
 (defmethod redraw-canvas ((window lisp-window) &optional log)
   (etypecase (gir-window window)
     (keyword
-     (gui-drawing:simulate-draw-func (gui-app:window-get *lisp-app* window) log))
+     (gui-drawing:simulate-draw-func (gui-app:window-get gui-app:*lisp-app* window) log))
     (t
      (gtk4:widget-queue-draw
       (serapeum:~> window gir-window gtk4:widget-first-child gtk4:widget-first-child)))))
@@ -48,13 +48,8 @@
   (window-hkey
    (gir-window window)))
 
-(defun window-assert (window)
-      (assert (or (typep window 'gir::object-instance)
-                  (typep window 'sb-sys:system-area-pointer)
-                  (typep window 'symbol))))
-
 (defmethod window-resize (w h win)
-  (setf (dimensions (gui-app:window-get *lisp-app* win)) (cons w h)))
+  (setf (dimensions (gui-app:window-get gui-app:*lisp-app* win)) (cons w h)))
 
 ;;; ============================ window child widgets ==========================
 (defmethod add-child ((lisp-window lisp-window) (box gui-box:box))
@@ -85,16 +80,16 @@
 
 ;;; ======================== window mouse handling =============================
 (defmethod mouse-motion-enter ((window lisp-window)  x y)
-    (setf (mouse-coordinates *lisp-app*) (cons x y)
-          (current-motion    *lisp-app*) window))
+    (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) (cons x y)
+          (gui-app:current-motion    gui-app:*lisp-app*) window))
 
 (defmethod mouse-motion-leave ()
-  (setf (mouse-coordinates *lisp-app*) nil
-        (current-motion    *lisp-app*) nil))
+  (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) nil
+        (gui-app:current-motion   gui-app:*lisp-app*) nil))
 
 (defmethod mouse-button-pressed (button)
-  (incf (mouse-button *lisp-app*))
+  (incf (gui-app:mouse-button gui-app:*lisp-app*))
   (warn "pressed mouse button"))
 
 (defmethod mouse-button-released ()
-  (setf (mouse-button *lisp-app*) 0))
+  (setf (gui-app:mouse-button gui-app:*lisp-app*) 0))

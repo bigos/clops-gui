@@ -8,7 +8,8 @@
    prepare-item-simple
    prepare-radio-action
    prepare-section
-   prepare-submenu))
+   prepare-submenu
+   ))
 
 (defpackage #:gui-app
   (:use #:cl)
@@ -17,11 +18,21 @@
   (:import-from :defclass-std
                 defclass/std)
   (:export
+   *lisp-app*
+   all-windows
+   all-windows
    current-focus
    current-focus-window
-   all-windows
+   current-motion
+   current-motion-window
+   gtk4-app
+   make-lisp-app
+   mouse-button
+   mouse-coordinates
    window-get
-   windows))
+   window-remove
+   windows
+   ))
 
 (defpackage #:gui-window
   (:use #:cl)
@@ -32,38 +43,27 @@
   (:export
    *client-fn-draw-objects*
    *client-fn-menu-bar*
-
    *initial-window-height*
    *initial-window-width*
-   *lisp-app*
    *timeout-period*
    add-child
    all-widgets
    children
-   current-motion
-   current-motion-window
    dimensions
    gir-window
-   gtk4-app
    lisp-window
    most-current-widget
-   mouse-button
    mouse-button-pressed
    mouse-button-released
-   mouse-coordinates
    mouse-motion-enter
    mouse-motion-leave
    new-window-for-app
-
    redraw-canvas
    set-rgba
    simulate-draw-func
    window
-
-
    window-hkey
    window-resize
-   window-remove
    ))
 (defpackage #:gui-window-gtk
   (:use #:cl)
@@ -77,7 +77,6 @@
    *initial-title*
    *initial-window-height*
    *initial-window-width*
-   *lisp-app*
    *timeout-period*
    close-all-windows-and-quit
    gir-window
@@ -86,7 +85,8 @@
    present-about-dialog
    window
    window-creation-from-menu
-   window-creation-from-simulation))
+   window-creation-from-simulation
+   ))
 
 (defpackage #:gui-events
   (:use #:cl)
@@ -110,14 +110,16 @@
    de-released
    de-resize
    de-scroll
-   de-timeout))
+   de-timeout
+   ))
 
 (defpackage #:gui-drawing
   (:use #:cl)
   (:export
-   *client-fn-draw-objects*
    %draw-func
-   simulate-draw-func))
+   *client-fn-draw-objects*
+   simulate-draw-func
+   ))
 
 (defpackage #:gui-box
   (:use #:cl)
@@ -130,7 +132,6 @@
    absolute-x
    absolute-y
    add-child
-   remove-child
    box
    box-color
    central-point
@@ -144,6 +145,7 @@
    parent
    parent-boxes
    recalculate-absolute
+   remove-child
    resize
    root-window
    text

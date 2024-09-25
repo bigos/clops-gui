@@ -128,9 +128,9 @@
 
 ;;; mouse over has all positives
 (defmethod mouse-over-score ((box box))
-  (if (equal (~> gui-window:*lisp-app* gui-window:current-motion)
+  (if (equal (~> gui-app:*lisp-app* gui-app:current-motion)
              (root-window box))
-      (let ((mouse-at (~> gui-window:*lisp-app* gui-window:mouse-coordinates)))
+      (let ((mouse-at (~> gui-app:*lisp-app* gui-app:mouse-coordinates)))
         (let ((tlx (- (car mouse-at)                   (~> box top-left absolute-x)))
               (tly (- (cdr mouse-at)                   (~> box top-left absolute-y)))
               (brx (- (~> box bottom-right absolute-x) (car mouse-at)))
@@ -142,9 +142,9 @@
       (setf (mouse-score box) nil)))
 
 (defmethod mouse-overp ((box box))
-  (when (equal (~> gui-window:*lisp-app* gui-window:current-motion)
+  (when (equal (~> gui-app:*lisp-app* gui-app:current-motion)
                (root-window box))
-    (let ((mouse-at (~> gui-window:*lisp-app* gui-window:mouse-coordinates)))
+    (let ((mouse-at (~> gui-app:*lisp-app* gui-app:mouse-coordinates)))
       (and (<= (~> box top-left absolute-x) (car mouse-at) (~> box bottom-right absolute-x))
            (<= (~> box top-left absolute-y) (cdr mouse-at) (~> box bottom-right absolute-y))))))
 
@@ -156,7 +156,7 @@
 
 (defmethod box-mouse ((box box))
   (if (mouse-overp box)
-      (if (zerop (~> gui-window:*lisp-app* gui-window:mouse-button))
+      (if (zerop (~> gui-app:*lisp-app* gui-app:mouse-button))
           :mouse-over
           :mouse-pressed)
       :mouse-out))

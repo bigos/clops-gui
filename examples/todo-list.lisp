@@ -211,7 +211,7 @@
 (defun experiment-first-window ()
   (setf gui-drawing:*client-fn-draw-objects*  'todo-list::draw-window)
 
-  (setf gui-window:*lisp-app* (gui-app::make-lisp-app))
+  (setf gui-app:*lisp-app* (gui-app::make-lisp-app))
   (assert (zerop (hash-table-count (gui-app:all-windows))))
 
   (let ((lisp-window (make-instance 'todo-window)))
@@ -244,7 +244,7 @@
           for eargs = (caadr event)
           do
              (break "data ~s" (list
-                               gui-window:*lisp-app*
+                               gui-app:*lisp-app*
                                lisp-window))
              (funcall 'process-event
                       lisp-window
@@ -359,14 +359,14 @@
   (render (typed-widget window 'todo-box))
   (render (typed-widget window 'action-box))
 
-  (let ((app gui-window:*lisp-app*))
-    (when (and (eq (gui-window:current-motion app)
+  (let ((app gui-app:*lisp-app*))
+    (when (and (eq (gui-app:current-motion app)
                    window)
-               (gui-window:mouse-coordinates app))
+               (gui-app:mouse-coordinates app))
       (gui-window:set-rgba "pink")
       (cairo:rectangle
-       (car (gui-window:mouse-coordinates app))
-       (cdr (gui-window:mouse-coordinates app))
+       (car (gui-app:mouse-coordinates app))
+       (cdr (gui-app:mouse-coordinates app))
        25
        25)
       (cairo:fill-path))))
@@ -397,11 +397,11 @@
        (let ((current-widget (gui-window:most-current-widget lisp-window)))
          (format t "~&processing mouse at ~S ~S ~%on widget ~S~%" x y
                  current-widget)
-         (gui-window:mouse-button-pressed current-widget)
+         (gui-app:mouse-button-pressed current-widget)
          (process-box lisp-window current-widget))))
 
     (:released
-     (gui-window:mouse-button-released))
+     (gui-app:mouse-button-released))
     (:scroll)
     (:resize
      (destructuring-bind ((w h)) args

@@ -1,12 +1,14 @@
 (in-package #:gui-app)
 
+(defparameter *lisp-app* nil)
+
 ;;; ========================== windows =========================================
 
 (defclass/std lisp-app ()
   ((gtk4-app :type gir::object-instance)
    (windows :std (make-hash-table))
    (current-motion)
-   (current-focus) ; it is not reliable for the last created window
+   (current-focus)    ; it is not reliable for the last created window
    (mouse-coordinates)
    (mouse-button :std 0)))
 
@@ -35,6 +37,11 @@
   ;; (warn "existing windows ~S" (loop for k being the hash-key of (windows app) collect k ))
   (gethash (gui-window:window-hkey window)
            (windows app)))
+
+(defun window-assert (window)
+  (assert (or (typep window 'gir::object-instance)
+              (typep window 'sb-sys:system-area-pointer)
+              (typep window 'symbol))))
 
 (defmethod window-remove ((app lisp-app) (window T))
   (window-assert window)

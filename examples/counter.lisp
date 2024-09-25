@@ -185,7 +185,7 @@
      ;; TODO find better way of finding mouse buttons state
      (destructuring-bind ((button x y)) args
        (declare (ignore x y))
-       (gui-window:mouse-button-pressed button)
+       (gui-app:mouse-button-pressed button)
 
        (loop for c in (gui-window:children lisp-window)
              do (if (gui-box:mouse-overp c)
@@ -193,7 +193,7 @@
     (:released
      (destructuring-bind ((button x y)) args
        (declare (ignore button x y))
-       (gui-window:mouse-button-released)))
+       (gui-app:mouse-button-released)))
     (:resize
      (destructuring-bind ((w h)) args
        (gui-window:window-resize w h lisp-window)))

@@ -22,7 +22,7 @@
 (defun experiment-first-window ()
   (setf
    gui-drawing:*client-fn-draw-objects*  'pong::draw-window
-   gui-window:*lisp-app* (gui-app::make-lisp-app))
+   gui-app:*lisp-app* (gui-app::make-lisp-app))
 
   (assert (zerop (hash-table-count (gui-app:all-windows))))
   (let ((lisp-window (make-instance 'pong-window)))
@@ -291,7 +291,7 @@
       (warn "going to render tb ~S ~S ~S"
             tb
             (~> tb gui-box:root-window gui-window:dimensions)
-            (gui-window:current-motion gui-window:*lisp-app*)))
+            (gui-window:current-motion gui-app:*lisp-app*)))
     (~> tb gui-box:mouse-overp)
     (render tb))
 
@@ -305,7 +305,7 @@
       (warn "going to render tb ~S ~S ~S"
             tb
             (~> tb gui-box:root-window gui-window:dimensions)
-            (gui-window:current-motion gui-window:*lisp-app*)))
+            (gui-app:current-motion gui-app:*lisp-app*)))
     (~> tb gui-box:mouse-overp)
     (render tb))
 
@@ -489,26 +489,26 @@
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y)) args
        (warn "motioning ~S ~S" x y)
-       (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) (cons x y)
-             (gui-window:current-motion    gui-window:*lisp-app*) lisp-window)
+       (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) (cons x y)
+             (gui-app:current-motion    gui-app:*lisp-app*) lisp-window)
        (when *pong-game*
          (mouse-set-human-pad-y *pong-game* y))))
     (:motion-leave
-     (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
-           (gui-window:current-motion gui-window:*lisp-app*) nil))
+     (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) nil
+           (gui-app:current-motion gui-app:*lisp-app*) nil))
     (:focus-enter)
     (:focus-leave)
     (:pressed
      ;; TODO find better way of finding mouse buttons state
      (destructuring-bind ((button x y)) args
        (declare (ignore x y))
-       (incf (gui-window:mouse-button gui-window:*lisp-app*) (expt 2 button)))
-     (warn "button after press ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
+       (incf (gui-app:mouse-button gui-app:*lisp-app*) (expt 2 button)))
+     (warn "button after press ~S" (gui-app:mouse-button gui-app:*lisp-app*)))
     (:released
      (destructuring-bind ((button x y)) args
        (declare (ignore button x y))
-       (setf (gui-window:mouse-button gui-window:*lisp-app*) 0))
-     (warn "button after release ~S" (gui-window:mouse-button gui-window:*lisp-app*)))
+       (setf (gui-app:mouse-button gui-app:*lisp-app*) 0))
+     (warn "button after release ~S" (gui-app:mouse-button gui-app:*lisp-app*)))
     (:scroll)
     (:resize
      (destructuring-bind ((w h)) args
@@ -520,7 +520,7 @@
        (cond
 
          ((equalp entered "a")
-          (break "exammine ~S" gui-window:*lisp-app*))
+          (break "exammine ~S" gui-app:*lisp-app*))
          ((equalp entered "r")
           (restart-helper lisp-window))
          ((equalp entered "p")
@@ -553,11 +553,11 @@
      )
     ((:motion :motion-enter) ; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y)) args
-       (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) (cons x y)
-             (gui-window:current-motion    gui-window:*lisp-app*) lisp-window)))
+       (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) (cons x y)
+             (gui-app:current-motion    gui-app:*lisp-app*) lisp-window)))
     (:motion-leave
-     (setf (gui-window:mouse-coordinates gui-window:*lisp-app*) nil
-           (gui-window:current-motion gui-window:*lisp-app*) nil))
+     (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) nil
+           (gui-app:current-motion gui-app:*lisp-app*) nil))
     (:focus-enter)
     (:focus-leave)
     (:pressed)
