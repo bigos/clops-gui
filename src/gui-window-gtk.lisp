@@ -215,17 +215,17 @@
 (defun window-creation-from-simulation (window-title lisp-window)
   (assert (symbolp window-title))
   (let ((new-window (window-activation-and-connection
-                     *lisp-app*
+                     gui-window:*lisp-app*
                      nil
                      window-title
                      nil
                      lisp-window)))
-    (setf (current-focus *lisp-app*) (gir-window new-window))
+    (setf (gui-window::current-focus  gui-window::*lisp-app*) (gui-window::gir-window new-window))
     new-window))
 
 (defun window-creation-from-menu (window-title &optional window-menu-fn lisp-window)
   (let ((new-window (window-activation-and-connection
-                     *lisp-app*
+                     gui-window:*lisp-app*
                      (gtk4-app *lisp-app*)
                      window-title
                      window-menu-fn
@@ -237,7 +237,7 @@
   (gtk4:connect app "activate"
                 (lambda (app)
                   (let ((new-window (window-activation-and-connection
-                                     gui-window::*lisp-app*
+                                     gui-window:*lisp-app*
                                      app
                                      window-title
                                      window-menu-fn
