@@ -2,7 +2,6 @@
 
 
 (defparameter *timeout-period* 1000)
-(defparameter *lisp-app* nil)
 (defparameter *initial-window-width* 400)
 (defparameter *initial-window-height* 200)
 (defparameter *client-fn-menu-bar* nil)
@@ -13,7 +12,7 @@
 (defun present-about-dialog (data)
   (let ((dialog (about-dialog data)))
     (setf (gtk4:window-modal-p dialog) t
-          (gtk4:window-transient-for dialog) (gtk4:application-active-window (gtk4-app *lisp-app*)))
+          (gtk4:window-transient-for dialog) (gtk4:application-active-window (gtk4-app gui-window:*lisp-app*)))
     (gtk4:window-present dialog)))
 
 (defun about-dialog (data)
@@ -30,15 +29,15 @@
 
 ;; =========================== closing everything ==============================
 (defun close-all-windows-and-quit ()
-  (loop for aw = (gtk4:application-active-window (gtk4-app *lisp-app*))
+  (loop for aw = (gtk4:application-active-window (gtk4-app gui-window:*lisp-app*))
         until (null aw)
         do (gtk4:window-close aw)))
 
 ;; ============================== app windows ==================================
 
 (defun app-windows ()
-  (when (gtk4-app *lisp-app*)
-    (let ((app-windows (gtk4:application-windows (gtk4-app *lisp-app*))))
+  (when (gtk4-app gui-window:*lisp-app*)
+    (let ((app-windows (gtk4:application-windows (gtk4-app gui-window:*lisp-app*))))
       (loop for pos from 0 below (glib:glist-length app-windows)
             collect (glib:glist-nth app-windows pos)))))
 
@@ -77,7 +76,7 @@
     (gtk4:connect key-controller "key-pressed"
                   (lambda (e &rest args)
                     (declare (ignore e))
-                    (setf (current-focus *lisp-app*) window)
+                    (setf (gui-window:current-focus gui-window:*lisp-app*) window)
                     (apply #'gui-events:de-key-pressed
                            (append (list lisp-window)
                                    (funcall #'translate-key-args args)))))
@@ -92,13 +91,13 @@
     (gtk4:connect focus-controller "enter"
                   (lambda (e &rest args)
                     (declare (ignore e args))
-                    (setf (current-focus *lisp-app*) window)
+                    (setf (gui-window:current-focus gui-window:*lisp-app*) window)
                     (apply #'gui-events:de-focus-enter (list lisp-window))))
 
     (gtk4:connect focus-controller "leave"
                   (lambda (e &rest args)
                     (declare (ignore e args))
-                    (setf (gui-window::current-focus gui-window::*lisp-app*) nil)
+                    (setf (gui-window:current-focus gui-window:*lisp-app*) nil)
                     (apply #'gui-events:de-focus-leave (list lisp-window)))))
 
   (glib:timeout-add *timeout-period*
@@ -109,7 +108,7 @@
 
   (gtk4:connect window "close-request" (lambda (widget &rest args)
                                          (declare (ignore widget args))
-                                         (gui-window::window-remove gui-window::*lisp-app* window)
+                                         (gui-window:window-remove gui-window:*lisp-app* window)
                                          (gtk4:window-close window))))
 
 (defun canvas-events (canvas lisp-window)
@@ -205,12 +204,12 @@
 (defun window-activation-and-connection (lisp-app gtk4-app window-title window-menu-fn lisp-window)
   (if gtk4-app
       (let ((new-gtk4-window (new-window-for-app gtk4-app window-title window-menu-fn lisp-window)))
-        (setf (gui-window::gir-window lisp-window) new-gtk4-window
-              (gethash (gui-window::window-hkey new-gtk4-window) (gui-window::windows lisp-app)) lisp-window))
+        (setf (gui-window:gir-window lisp-window) new-gtk4-window
+              (gethash (gui-window:window-hkey new-gtk4-window) (gui-window:windows lisp-app)) lisp-window))
       ;; we still need better way of creating simulated windows
       (let ((new-sim-window window-title))
-        (setf (gui-window::gir-window lisp-window) window-title
-              (gethash (gui-window::window-hkey new-sim-window) (gui-window::windows lisp-app)) lisp-window))))
+        (setf (gui-window:gir-window lisp-window) window-title
+              (gethash (gui-window:window-hkey new-sim-window) (gui-window:windows lisp-app)) lisp-window))))
 
 (defun window-creation-from-simulation (window-title lisp-window)
   (assert (symbolp window-title))
@@ -220,17 +219,17 @@
                      window-title
                      nil
                      lisp-window)))
-    (setf (gui-window::current-focus  gui-window::*lisp-app*) (gui-window::gir-window new-window))
+    (setf (gui-window:current-focus  gui-window:*lisp-app*) (gui-window::gir-window new-window))
     new-window))
 
 (defun window-creation-from-menu (window-title &optional window-menu-fn lisp-window)
   (let ((new-window (window-activation-and-connection
                      gui-window:*lisp-app*
-                     (gtk4-app *lisp-app*)
+                     (gtk4-app gui-window:*lisp-app*)
                      window-title
                      window-menu-fn
                      lisp-window)))
-    (setf (current-focus *lisp-app*) (gir-window new-window))
+    (setf (gui-window:current-focus gui-window:*lisp-app*) (gir-window new-window))
     new-window))
 
 (defun window-creation-from-main (app window-title &optional window-menu-fn lisp-window)
@@ -242,16 +241,16 @@
                                      window-title
                                      window-menu-fn
                                      lisp-window)))
-                    (setf (gui-window::current-focus gui-window::*lisp-app*) (gui-window::gir-window new-window))
+                    (setf (gui-window:current-focus gui-window:*lisp-app*) (gui-window::gir-window new-window))
                     new-window))))
 
 (defun window (lisp-window)
       (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
                                        :flags gio:+application-flags-flags-none+)))
-        (setf gui-window::*lisp-app* (gui-window::make-lisp-app app))
+        (setf gui-window:*lisp-app* (gui-window::make-lisp-app app))
         (window-creation-from-main app *initial-title* *client-fn-menu-bar* lisp-window)
 
         (let ((status (gtk:application-run app nil)))
           (gobj:object-unref app)
-          (setf *lisp-app*  nil)
+          (setf gui-window:*lisp-app*  nil)
           status)))

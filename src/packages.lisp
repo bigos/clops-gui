@@ -54,6 +54,7 @@
    window-get
    window-hkey
    window-resize
+   window-remove
    windows
    ))
 (defpackage #:gui-window-gtk
