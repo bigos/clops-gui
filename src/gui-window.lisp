@@ -56,15 +56,15 @@
     (windows *lisp-app*))
 
 ;;; ========================== window manipulation =============================
-(defmethod (setf current-focus) :before ((window T) (lisp-app lisp-app))
-  (warn "~&??????????????????? setting current focus to ~s ~s~%~%"
-        (window-hkey window)
-        (type-of window)))
-
 (defmethod current-motion-window ((lisp-app lisp-app) (window t))
   (let ((m (window-hkey (current-motion lisp-app)))
         (w (window-hkey window)))
     (eq m w)))
+
+(defmethod (setf current-focus) :before ((window T) (lisp-app lisp-app))
+  (warn "~&??????????????????? setting current focus to ~s ~s~%~%"
+        (window-hkey window)
+        (type-of window)))
 
 (defmethod current-focus-window  ((lisp-app lisp-app) (window t))
   (let ((h (window-hkey (current-focus lisp-app)))

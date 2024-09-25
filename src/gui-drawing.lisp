@@ -3,7 +3,8 @@
 (defparameter *client-fn-draw-objects* nil)
 
 ;;; both %draw-func and simulate-draw-func create context on each call
-;;; we need to investigate whether it is necessary only on the dimensions change
+;;; we need to investigate whether it is necessary only on
+;;; the dimensions change or moving the window
 
 ;;; drawing callback ===========================================================
 (cffi:defcallback %draw-func :void ((area :pointer)
