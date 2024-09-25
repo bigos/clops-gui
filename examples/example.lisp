@@ -229,26 +229,26 @@
      (destructuring-bind ((menu-item)) args
        (warn "menu item ~s" menu-item)
        (cond ((equal menu-item "new-window")
-              (gui-window:window-creation-from-menu
+              (gui-window-gtk:window-creation-from-menu
                (format nil
                        "~A ~A"
-                       gui-window:*initial-title*
+                       gui-window-gtk:*initial-title*
                        (get-internal-run-time))
                ;; commenting it out will show windows without menu
                'example::menu-bar-simple
                (make-instance 'app-window)))
 
              ((equal menu-item "quit")
-              (gui-window:close-all-windows-and-quit))
+              (gui-window-gtk:close-all-windows-and-quit))
 
              ((equal menu-item "help")
-              (gui-window:window-creation-from-menu
+              (gui-window-gtk:window-creation-from-menu
                (format nil "~A" "Help")
                nil
                (make-instance 'help-window)))
 
              ((equal menu-item "about")
-              (gui-window:present-about-dialog
+              (gui-window-gtk:present-about-dialog
                (list
                 :authors (list "Jacek Podkanski")
                 :website "https://github.com/bigos"

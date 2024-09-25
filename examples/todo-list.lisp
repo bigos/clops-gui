@@ -433,10 +433,10 @@
         gui-drawing:*client-fn-draw-objects*  'todo-list::draw-window
    gui-window:*client-fn-menu-bar*      nil
         gui-events:*client-fn-process-event* 'todo-list::process-event
-        gui-window:*initial-window-width*    600
-        gui-window:*initial-window-height*   400
-        gui-window:*initial-title*           "To-Do List")
+        gui-window-gtk:*initial-window-width*    600
+        gui-window-gtk:*initial-window-height*   400
+        gui-window-gtk:*initial-title*           "To-Do List")
 
-  (gui-window:window (make-instance 'todo-window)))
+  (gui-window-gtk:window (make-instance 'todo-window)))
 
 ;; (main)

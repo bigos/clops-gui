@@ -19,7 +19,7 @@
   (:export
    *client-fn-draw-objects*
    *client-fn-menu-bar*
-   *initial-title*
+
    *initial-window-height*
    *initial-window-width*
    *lisp-app*
@@ -28,13 +28,14 @@
    all-widgets
    all-windows
    children
-   close-all-windows-and-quit
+
    current-focus
    current-focus-window
    current-motion
    current-motion-window
    dimensions
    gir-window
+   gtk4-app
    lisp-window
    most-current-widget
    mouse-button
@@ -44,13 +45,12 @@
    mouse-motion-enter
    mouse-motion-leave
    new-window-for-app
-   present-about-dialog
+
    redraw-canvas
    set-rgba
    simulate-draw-func
    window
-   window-creation-from-menu
-   window-creation-from-simulation
+
    window-get
    window-hkey
    window-resize

@@ -155,10 +155,10 @@
                  (warn "menu item ~s" menu-item)
                  (cond
                    ((equal menu-item "quit")
-                    (gui-window:close-all-windows-and-quit))
+                    (gui-window-gtk:close-all-windows-and-quit))
 
                    ((equal menu-item "about")
-                    (gui-window:present-about-dialog
+                    (gui-window-gtk:present-about-dialog
                      (list
                       :authors (list "Jacek Podkanski")
                       :website "https://github.com/bigos"
@@ -214,13 +214,13 @@
 (defun main ()
   (init)
 
-  (setf gui-window:*client-fn-menu-bar*      'counter::menu-bar
+  (setf gui-window-gtk:*client-fn-menu-bar*      'counter::menu-bar
         gui-drawing:*client-fn-draw-objects*  'counter::draw-window
         gui-events:*client-fn-process-event* 'counter::process-event
-        gui-window:*initial-window-width*    600
-        gui-window:*initial-window-height*   400
-        gui-window:*initial-title*           "Counter")
+        gui-window-gtk:*initial-window-width*    600
+        gui-window-gtk:*initial-window-height*   400
+        gui-window-gtk:*initial-title*           "Counter")
 
-  (gui-window:window *window*))
+  (gui-window-gtk:window *window*))
 
 (main)

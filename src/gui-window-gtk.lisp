@@ -12,7 +12,7 @@
 (defun present-about-dialog (data)
   (let ((dialog (about-dialog data)))
     (setf (gtk4:window-modal-p dialog) t
-          (gtk4:window-transient-for dialog) (gtk4:application-active-window (gtk4-app gui-window:*lisp-app*)))
+          (gtk4:window-transient-for dialog) (gtk4:application-active-window (gui-window:gtk4-app gui-window:*lisp-app*)))
     (gtk4:window-present dialog)))
 
 (defun about-dialog (data)
@@ -29,15 +29,15 @@
 
 ;; =========================== closing everything ==============================
 (defun close-all-windows-and-quit ()
-  (loop for aw = (gtk4:application-active-window (gtk4-app gui-window:*lisp-app*))
+  (loop for aw = (gtk4:application-active-window (gui-window:gtk4-app gui-window:*lisp-app*))
         until (null aw)
         do (gtk4:window-close aw)))
 
 ;; ============================== app windows ==================================
 
 (defun app-windows ()
-  (when (gtk4-app gui-window:*lisp-app*)
-    (let ((app-windows (gtk4:application-windows (gtk4-app gui-window:*lisp-app*))))
+  (when (gui-window:gtk4-app gui-window:*lisp-app*)
+    (let ((app-windows (gtk4:application-windows (gui-window:gtk4-app gui-window:*lisp-app*))))
       (loop for pos from 0 below (glib:glist-length app-windows)
             collect (glib:glist-nth app-windows pos)))))
 
@@ -219,17 +219,17 @@
                      window-title
                      nil
                      lisp-window)))
-    (setf (gui-window:current-focus  gui-window:*lisp-app*) (gui-window::gir-window new-window))
+    (setf (gui-window:current-focus  gui-window:*lisp-app*) (gui-window:gir-window new-window))
     new-window))
 
 (defun window-creation-from-menu (window-title &optional window-menu-fn lisp-window)
   (let ((new-window (window-activation-and-connection
                      gui-window:*lisp-app*
-                     (gtk4-app gui-window:*lisp-app*)
+                     (gui-window:gtk4-app gui-window:*lisp-app*)
                      window-title
                      window-menu-fn
                      lisp-window)))
-    (setf (gui-window:current-focus gui-window:*lisp-app*) (gir-window new-window))
+    (setf (gui-window:current-focus gui-window:*lisp-app*) (gui-window:gir-window new-window))
     new-window))
 
 (defun window-creation-from-main (app window-title &optional window-menu-fn lisp-window)
@@ -241,7 +241,7 @@
                                      window-title
                                      window-menu-fn
                                      lisp-window)))
-                    (setf (gui-window:current-focus gui-window:*lisp-app*) (gui-window::gir-window new-window))
+                    (setf (gui-window:current-focus gui-window:*lisp-app*) (gui-window:gir-window new-window))
                     new-window))))
 
 (defun window (lisp-window)
