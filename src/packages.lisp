@@ -10,7 +10,7 @@
    prepare-section
    prepare-submenu))
 
-(defpackage #:gui-window
+(defpackage #:gui-app
   (:use #:cl)
   (:import-from :serapeum
                 ~>)

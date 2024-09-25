@@ -34,15 +34,5 @@ sudo apt install libgtk-4-dev
 
 ** notes
 
-*** moving drawing to new file
-file:~/Programming/Lisp/clops-gui/clops-gui.asd::13
-file:~/Programming/Lisp/clops-gui/src/gui-drawing.lisp::1
-
-[[file:src/packages.lisp::(defpackage #:gui-drawing]]
-
-[[file:src/gui-window.lisp::defun simulate-draw-func (window &optional log]]
-[[file:src/gui-window.lisp::defclass/std lisp-app (]]
-
-draw-func
-file:~/Programming/Lisp/clops-gui/src/gui-window.lisp::41
-file:~/Programming/Lisp/clops-gui/src/gui-window.lisp::384
+*** moving to app
+file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
