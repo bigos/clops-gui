@@ -291,7 +291,7 @@
       (warn "going to render tb ~S ~S ~S"
             tb
             (~> tb gui-box:root-window gui-window:dimensions)
-            (gui-window:current-motion gui-app:*lisp-app*)))
+            (gui-app:current-motion gui-app:*lisp-app*)))
     (~> tb gui-box:mouse-overp)
     (render tb))
 
@@ -600,6 +600,6 @@
         gui-window-gtk:*timeout-period*          (/ 1000 100)
         gui-window-gtk:*initial-title*           "Pong")
 
-  (gui-window:window (make-instance 'pong-window)))
+  (gui-window-gtk:window (make-instance 'pong-window)))
 
 ;; (main)

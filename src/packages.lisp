@@ -60,8 +60,6 @@
    new-window-for-app
    redraw-canvas
    set-rgba
-   simulate-draw-func
-   window
    window-hkey
    window-resize
    ))
