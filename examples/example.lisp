@@ -35,7 +35,7 @@
    gui-window:*lisp-app* (gui-window::make-lisp-app))
   (assert (zerop (hash-table-count (gui-window:all-windows))))
   (let ((lisp-window (make-instance 'gui-window:lisp-window)))
-    (gui-window-gtk::window-creation-from-simulation :testing lisp-window)
+    (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
     (assert (eq 1 (hash-table-count (gui-window:all-windows))))
     (process-event lisp-window :resize (list 600 200 ))
     (process-event lisp-window :timeout)
@@ -51,7 +51,7 @@
   (warn "trying tools")
   (assert (eq 1 (hash-table-count (gui-window:all-windows))))
   (let ((lisp-window (make-instance 'gui-window:lisp-window)))
-    (gui-window-gtk::window-creation-from-simulation :tools lisp-window)
+    (gui-window-gtk:window-creation-from-simulation :tools lisp-window)
     (warn "should have tools window")
     (assert (eq 2 (hash-table-count (gui-window:all-windows))))
     ;; seems like resize is changing the wrong window

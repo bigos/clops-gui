@@ -211,7 +211,7 @@
   (assert (zerop (hash-table-count (gui-window:all-windows))))
 
   (let ((lisp-window (make-instance 'todo-window)))
-    (gui-window:window-creation-from-simulation :testing lisp-window)
+    (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
     (assert (eq 1 (hash-table-count (gui-window:all-windows))))
     lisp-window))
 
