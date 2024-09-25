@@ -293,9 +293,9 @@
   ;; define external functions
   (setf
    gui-drawing:*client-fn-draw-objects*  'example::draw-window
-   gui-window:*client-fn-menu-bar*      'example::menu-bar
    gui-events:*client-fn-process-event* 'example::process-event
-   gui-window:*initial-title*           "Example window"
+   gui-window-gtk:*client-fn-menu-bar*      'example::menu-bar
+   gui-window-gtk:*initial-title*           "Example window"
    )
 
   (setf *model* (make-instance 'model)))
@@ -305,6 +305,6 @@
 (defun main ()
   (init)
 
-  (gui-window:window (make-instance 'app-window)))
+  (gui-window-gtk:window (make-instance 'app-window)))
 
 (main)
