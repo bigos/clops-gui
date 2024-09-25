@@ -18,6 +18,16 @@
                 defclass/std)
   (:export
    *client-fn-draw-objects*
+   *client-fn-menu-bar*))
+
+(defpackage #:gui-window
+  (:use #:cl)
+  (:import-from :serapeum
+                ~>)
+  (:import-from :defclass-std
+                defclass/std)
+  (:export
+   *client-fn-draw-objects*
    *client-fn-menu-bar*
 
    *initial-window-height*

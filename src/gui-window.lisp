@@ -22,19 +22,6 @@
         (apply 'cairo:set-source-rgba (rest parsed-color))
         (error "~S is not a valid color" color))))
 
-;;; ========================== windows =========================================
-
-(defclass/std lisp-app ()
-  ((gtk4-app :type gir::object-instance)
-   (windows :std (make-hash-table))
-   (current-motion)
-   (current-focus) ; it is not reliable for the last created window
-   (mouse-coordinates)
-   (mouse-button :std 0)))
-
-(defun make-lisp-app (&optional gtk4-app)
-  (make-instance 'lisp-app :gtk4-app gtk4-app))
-
 (defclass/std lisp-window ()
   ((gir-window  :type (or gir::object-instance keyword)
                 :documentation "Either gir window or symbol used in test drawing")
@@ -42,25 +29,7 @@
    (children   :documentation "List of widgets whose parent is the window")
    (all-widgets :std (make-hash-table):documentation "All generations of widgets that eventually lead to the window. May be useful in finding current widget")))
 
-;;; ====== all windows =========================================================
-(defun all-windows ()
-    (windows *lisp-app*))
-
 ;;; ========================== window manipulation =============================
-(defmethod current-motion-window ((lisp-app lisp-app) (window t))
-  (let ((m (window-hkey (current-motion lisp-app)))
-        (w (window-hkey window)))
-    (eq m w)))
-
-(defmethod (setf current-focus) :before ((window T) (lisp-app lisp-app))
-  (warn "~&??????????????????? setting current focus to ~s ~s~%~%"
-        (window-hkey window)
-        (type-of window)))
-
-(defmethod current-focus-window  ((lisp-app lisp-app) (window t))
-  (let ((h (window-hkey (current-focus lisp-app)))
-        (w (window-hkey window)))
-    (eq h w)))
 
 (defmethod redraw-canvas ((window lisp-window) &optional log)
   (etypecase (gir-window window)
@@ -84,19 +53,8 @@
                   (typep window 'sb-sys:system-area-pointer)
                   (typep window 'symbol))))
 
-(defmethod window-get ((app lisp-app) (window T))
-  ;; (warn "existing windows ~S" (loop for k being the hash-key of (windows app) collect k ))
-  (gethash (window-hkey window)
-           (windows app)))
-
 (defmethod window-resize (w h win)
   (setf (dimensions (window-get *lisp-app* win)) (cons w h)))
-
-(defmethod window-remove ((app lisp-app) (window T))
-    (window-assert window)
-  (if (remhash (window-hkey window) (windows app))
-      (warn "success, window removed ~S" window)
-      (warn "strange, window not removed ~S" window)))
 
 ;;; ============================ window child widgets ==========================
 (defmethod add-child ((lisp-window lisp-window) (box gui-box:box))

@@ -11,6 +11,7 @@
                 ((:file "packages")
                  (:file "gui-events")
                  (:file "gui-drawing")
+                 (:file "gui-app")
                  (:file "gui-menu")
                  (:file "gui-box")
                  (:file "gui-window")
