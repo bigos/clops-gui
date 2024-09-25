@@ -32,11 +32,11 @@
   (warn "starting experiment")
   (setf
    *model* (make-instance 'model)
-   gui-window:*lisp-app* (gui-window::make-lisp-app))
-  (assert (zerop (hash-table-count (gui-window:all-windows))))
+   gui-window:*lisp-app* (gui-app::make-lisp-app))
+  (assert (zerop (hash-table-count (gui-app:all-windows))))
   (let ((lisp-window (make-instance 'gui-window:lisp-window)))
     (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
-    (assert (eq 1 (hash-table-count (gui-window:all-windows))))
+    (assert (eq 1 (hash-table-count (gui-app:all-windows))))
     (process-event lisp-window :resize (list 600 200 ))
     (process-event lisp-window :timeout)
     (process-event lisp-window :motion-enter (list 50 50 ))
@@ -49,11 +49,11 @@
     )
 
   (warn "trying tools")
-  (assert (eq 1 (hash-table-count (gui-window:all-windows))))
+  (assert (eq 1 (hash-table-count (gui-app:all-windows))))
   (let ((lisp-window (make-instance 'gui-window:lisp-window)))
     (gui-window-gtk:window-creation-from-simulation :tools lisp-window)
     (warn "should have tools window")
-    (assert (eq 2 (hash-table-count (gui-window:all-windows))))
+    (assert (eq 2 (hash-table-count (gui-app:all-windows))))
     ;; seems like resize is changing the wrong window
     (warn "added window trying to resize")
     (process-event lisp-window :resize (list 250 500 ))
@@ -176,7 +176,7 @@
   (cairo:select-font-face "Ubuntu Mono" :oblique :normal)
 
   (cairo:move-to 10 120)
-  (let ((cfocus (gui-window:window-hkey (gui-window:current-focus-window gui-window:*lisp-app* window))))
+  (let ((cfocus (gui-window:window-hkey (gui-app:current-focus-window gui-window:*lisp-app* window))))
     (if cfocus
         (gui-window:set-rgba "green")
         (gui-window:set-rgba "red"))
@@ -287,7 +287,7 @@
   (maphash (lambda (key lwin)
              (declare (ignore key))
              (gui-window:redraw-canvas lwin))
-           (gui-window:all-windows)))
+           (gui-app:all-windows)))
 
 (defun init ()
   ;; define external functions

@@ -17,8 +17,11 @@
   (:import-from :defclass-std
                 defclass/std)
   (:export
-   *client-fn-draw-objects*
-   *client-fn-menu-bar*))
+   current-focus
+   current-focus-window
+   all-windows
+   window-get
+   windows))
 
 (defpackage #:gui-window
   (:use #:cl)
@@ -36,11 +39,7 @@
    *timeout-period*
    add-child
    all-widgets
-   all-windows
    children
-
-   current-focus
-   current-focus-window
    current-motion
    current-motion-window
    dimensions
@@ -61,11 +60,10 @@
    simulate-draw-func
    window
 
-   window-get
+
    window-hkey
    window-resize
    window-remove
-   windows
    ))
 (defpackage #:gui-window-gtk
   (:use #:cl)

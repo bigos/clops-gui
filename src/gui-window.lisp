@@ -34,7 +34,7 @@
 (defmethod redraw-canvas ((window lisp-window) &optional log)
   (etypecase (gir-window window)
     (keyword
-     (gui-drawing:simulate-draw-func (window-get *lisp-app* window) log))
+     (gui-drawing:simulate-draw-func (gui-app:window-get *lisp-app* window) log))
     (t
      (gtk4:widget-queue-draw
       (serapeum:~> window gir-window gtk4:widget-first-child gtk4:widget-first-child)))))
@@ -54,7 +54,7 @@
                   (typep window 'symbol))))
 
 (defmethod window-resize (w h win)
-  (setf (dimensions (window-get *lisp-app* win)) (cons w h)))
+  (setf (dimensions (gui-app:window-get *lisp-app* win)) (cons w h)))
 
 ;;; ============================ window child widgets ==========================
 (defmethod add-child ((lisp-window lisp-window) (box gui-box:box))

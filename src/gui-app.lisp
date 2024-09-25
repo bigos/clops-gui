@@ -17,27 +17,27 @@
     (windows *lisp-app*))
 
 (defmethod current-motion-window ((lisp-app lisp-app) (window t))
-  (let ((m (window-hkey (current-motion lisp-app)))
-        (w (window-hkey window)))
+  (let ((m (gui-window:window-hkey (current-motion lisp-app)))
+        (w (gui-window:window-hkey window)))
     (eq m w)))
 
 (defmethod (setf current-focus) :before ((window T) (lisp-app lisp-app))
   (warn "~&??????????????????? setting current focus to ~s ~s~%~%"
-        (window-hkey window)
+        (gui-window:window-hkey window)
         (type-of window)))
 
 (defmethod current-focus-window  ((lisp-app lisp-app) (window t))
-  (let ((h (window-hkey (current-focus lisp-app)))
-        (w (window-hkey window)))
+  (let ((h (gui-window:window-hkey (current-focus lisp-app)))
+        (w (gui-window:window-hkey window)))
     (eq h w)))
 
 (defmethod window-get ((app lisp-app) (window T))
   ;; (warn "existing windows ~S" (loop for k being the hash-key of (windows app) collect k ))
-  (gethash (window-hkey window)
+  (gethash (gui-window:window-hkey window)
            (windows app)))
 
 (defmethod window-remove ((app lisp-app) (window T))
   (window-assert window)
-  (if (remhash (window-hkey window) (windows app))
+  (if (remhash (gui-window:window-hkey window) (windows app))
       (warn "success, window removed ~S" window)
       (warn "strange, window not removed ~S" window)))

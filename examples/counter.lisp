@@ -203,7 +203,7 @@
   (maphash (lambda (key lwin)
              (declare (ignore key))
              (gui-window:redraw-canvas lwin))
-           (gui-window:all-windows)))
+           (gui-app:all-windows)))
 
 ;;; === main ===================================================================
 (defun init ()

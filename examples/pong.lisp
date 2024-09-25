@@ -22,12 +22,12 @@
 (defun experiment-first-window ()
   (setf
    gui-drawing:*client-fn-draw-objects*  'pong::draw-window
-   gui-window:*lisp-app* (gui-window::make-lisp-app))
+   gui-window:*lisp-app* (gui-app::make-lisp-app))
 
-  (assert (zerop (hash-table-count (gui-window:all-windows))))
+  (assert (zerop (hash-table-count (gui-app:all-windows))))
   (let ((lisp-window (make-instance 'pong-window)))
     (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
-    (assert (eq 1 (hash-table-count (gui-window:all-windows))))
+    (assert (eq 1 (hash-table-count (gui-app:all-windows))))
     lisp-window))
 
 (defun experiment ()
@@ -534,7 +534,7 @@
   (maphash (lambda (key lwin)
              (declare (ignore key))
              (gui-window:redraw-canvas lwin))
-           (gui-window:all-windows)))
+           (gui-app:all-windows)))
 
 (defmethod process-event ((lisp-window tutorial-window) event &rest args)
   (unless (member event '(:timeout :motion))
