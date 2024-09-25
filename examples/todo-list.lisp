@@ -70,6 +70,10 @@
 (defclass/std action-add (gui-box:text-box)  (()))
 (defclass/std action-remove (gui-box:text-box) (()))
 
+(defun typed-widget (window widget-type)
+  (first
+   (loop for w in (gui-window:children window) when (typep w widget-type) collect w)))
+
 ;;; === methods =================================================================
 (defmethod initialize-instance :after ((window todo-window) &rest initargs &key)
   (declare (ignore initargs))
@@ -346,9 +350,6 @@
                           eargs )))))
 
 ;;; ============================================================================
-(defun typed-widget (window widget-type)
-  (first
-   (loop for w in (gui-window:children window) when (typep w widget-type) collect w)))
 
 (defmethod draw-window ((window todo-window))
   "Calls render for topmost boxes of the window."
@@ -431,7 +432,7 @@
 
   (setf
         gui-drawing:*client-fn-draw-objects*  'todo-list::draw-window
-   gui-window:*client-fn-menu-bar*      nil
+        gui-window-gtk:*client-fn-menu-bar*      nil
         gui-events:*client-fn-process-event* 'todo-list::process-event
         gui-window-gtk:*initial-window-width*    600
         gui-window-gtk:*initial-window-height*   400
