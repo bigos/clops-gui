@@ -11,8 +11,8 @@
 ;; =========================== dialogs =========================================
 (defun present-about-dialog (data)
   (let ((dialog (about-dialog data)))
-    (setf (gtk4:window-modal-p dialog) t
-          (gtk4:window-transient-for dialog) (gtk4:application-active-window (gui-app:gtk4-app gui-app:*lisp-app*)))
+    (setf (gtk4:window-modal-p dialog) t)
+    (setf (gtk4:window-transient-for dialog) (gtk4:application-active-window (gui-app:gtk4-app gui-app:*lisp-app*)))
     (gtk4:window-present dialog)))
 
 (defun about-dialog (data)
@@ -170,16 +170,12 @@
     (gtk4:application-add-window app window)
 
     (when window-menu-fn
-      (setf
-       (gtk4:application-menubar app) (funcall window-menu-fn app lisp-window)
-       (gtk4:application-window-show-menubar-p window) T))
+      (setf (gtk4:application-menubar app) (funcall window-menu-fn app lisp-window))
+      (setf (gtk4:application-window-show-menubar-p window) T))
 
-    (setf
-     (gtk4:window-title window) window-title
-     ;; it may not be needed as in wsl we can still use left edge and corners
-     ;; (gtk4:window-resizable-p window) T
-     (gtk4:window-default-size window) (list *initial-window-width*
-                                             *initial-window-height*))
+    (setf (gtk4:window-title window) window-title)
+    (setf (gtk4:window-default-size window) (list *initial-window-width*
+                                                  *initial-window-height*))
 
     (let ((box (gtk4:make-box :orientation gtk4:+orientation-vertical+
                               :spacing 0)))
@@ -204,12 +200,12 @@
 (defun window-activation-and-connection (lisp-app gtk4-app window-title window-menu-fn lisp-window)
   (if gtk4-app
       (let ((new-gtk4-window (new-window-for-app gtk4-app window-title window-menu-fn lisp-window)))
-        (setf (gui-window:gir-window lisp-window) new-gtk4-window
-              (gethash (gui-window:window-hkey new-gtk4-window) (gui-app::windows lisp-app)) lisp-window))
+        (setf (gui-window:gir-window lisp-window) new-gtk4-window)
+        (setf (gethash (gui-window:window-hkey new-gtk4-window) (gui-app::windows lisp-app)) lisp-window))
       ;; we still need better way of creating simulated windows
       (let ((new-sim-window window-title))
-        (setf (gui-window:gir-window lisp-window) window-title
-              (gethash (gui-window:window-hkey new-sim-window) (gui-app:windows lisp-app)) lisp-window))))
+        (setf (gui-window:gir-window lisp-window) window-title)
+        (setf (gethash (gui-window:window-hkey new-sim-window) (gui-app:windows lisp-app)) lisp-window))))
 
 (defun window-creation-from-simulation (window-title lisp-window)
   (assert (symbolp window-title))

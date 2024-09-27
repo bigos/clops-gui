@@ -53,8 +53,8 @@
 
 ;;; ============================ window child widgets ==========================
 (defmethod add-child ((lisp-window lisp-window) (box gui-box:box))
-  (setf (gui-box:parent box) lisp-window
-        (gethash (sxhash box) (all-widgets lisp-window)) box)
+  (setf (gui-box:parent box) lisp-window)
+  (setf (gethash (sxhash box) (all-widgets lisp-window)) box)
   (pushnew box (children lisp-window))
   (gui-box:recalculate-absolute box))
 
