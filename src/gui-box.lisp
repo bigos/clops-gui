@@ -61,11 +61,12 @@
 
 (defmethod central-point ((box box))
   ;; absolute central point
-  (let ((half-width  (/ (width box)  2))
-        (half-height (/ (height box) 2)))
+  (labels
+      ((half (n)
+         (/ n 2) ))
     (list
-     (~> box top-left absolute-x (+ _ half-width))
-     (~> box top-left absolute-y (+ _ half-height)))))
+     (~> box top-left absolute-x (+ _ (half (width box))))
+     (~> box top-left absolute-y (+ _ (half (height box)))))))
 
 (defmethod recalculate-absolute-root ((box box))
   (if (and (typep (parent box) 'gui-window:lisp-window))
