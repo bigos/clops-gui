@@ -36,3 +36,15 @@ sudo apt install libgtk-4-dev
 
 *** moving to app
 file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
+
+** coding conventions
+http://www.mohamedelafrit.com/education/ENSEIRB/lisp/standards.pdf
+
+https://ccrma.stanford.edu/CCRMA/Courses/AlgoComp/cm/doc/contrib/lispstyle.html
+https://lisp-lang.org/style-guide/
+
+https://github.com/bbatsov/emacs-lisp-style-guide
+
+https://www.cliki.net/naming+conventions
+
+https://softwareengineering.stackexchange.com/questions/363084/use-labels-or-nested-flet
