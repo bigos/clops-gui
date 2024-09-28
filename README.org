@@ -38,6 +38,11 @@ sudo apt install libgtk-4-dev
 file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
 
 ** coding conventions
+
+discussion about prepending functions with %
+https://www.reddit.com/r/Common_Lisp/comments/jgj9lu/naming_conventions/
+
+*** links
 http://www.mohamedelafrit.com/education/ENSEIRB/lisp/standards.pdf
 
 https://ccrma.stanford.edu/CCRMA/Courses/AlgoComp/cm/doc/contrib/lispstyle.html
