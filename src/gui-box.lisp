@@ -41,7 +41,7 @@
   (setf (children parent-box)
         (remove child-box (children parent-box))))
 
-;;; unused
+;;; unused but worth keeping
 (defmethod move ((box box) xdelta ydelta)
   (setf (~> box top-left x) (+ (~> box top-left x) xdelta)
         (~> box top-left y) (+ (~> box top-left y) ydelta))
