@@ -38,13 +38,14 @@
   (gethash (gui-window:window-hkey window)
            (windows app)))
 
-(defun window-assert (window)
+;;; prefix with % for private functions
+(defun %window-assert (window)
   (assert (or (typep window 'gir::object-instance)
               (typep window 'sb-sys:system-area-pointer)
               (typep window 'symbol))))
 
 (defmethod window-remove ((app lisp-app) (window T))
-  (window-assert window)
+  (%window-assert window)
   (if (remhash (gui-window:window-hkey window) (windows app))
       (warn "success, window removed ~S" window)
       (warn "strange, window not removed ~S" window)))
