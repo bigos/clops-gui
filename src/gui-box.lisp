@@ -29,9 +29,8 @@
   (setf (recalculate box) t))
 
 (defmethod add-child ((parent-box box) (child-box box))
-  (setf
-   (parent child-box) parent-box
-   (gethash (sxhash child-box) (gui-window:all-widgets (root-window child-box))) child-box)
+  (setf (parent child-box) parent-box)
+  (setf (gethash (sxhash child-box) (gui-window:all-widgets (root-window child-box))) child-box)
 
   (recalculate-absolute child-box)
   (push child-box (children parent-box)))
@@ -104,18 +103,16 @@
                 (~> box top-left absolute-y) (+ parent-top-left-absolute-y (~> box top-left y))))
 
         ;; bottom right
-        (let ((bw (~> box width))
-              (bh (~> box height)))
-          (if (typep (~> box bottom-right) 'coordinates)
-              (setf (~> box bottom-right x)          (~> box top-left x          (+ _ bw))
-                    (~> box bottom-right absolute-x) (~> box top-left absolute-x (+ _ bw))
-                    (~> box bottom-right y)          (~> box top-left y          (+ _ bh))
-                    (~> box bottom-right absolute-y) (~> box top-left absolute-y (+ _ bh)))
-              (setf (~> box bottom-right) (make-instance 'coordinates
-                                                         :x          (~> box top-left x          (+ _ bw))
-                                                         :absolute-x (~> box top-left absolute-x (+ _ bw))
-                                                         :y          (~> box top-left y          (+ _ bh))
-                                                         :absolute-y (~> box top-left absolute-y (+ _ bh)))))))))
+        (if (typep (~> box bottom-right) 'coordinates)
+            (setf (~> box bottom-right x)          (~> box top-left x          (+ _ (~> box width)))
+                  (~> box bottom-right absolute-x) (~> box top-left absolute-x (+ _ (~> box width)))
+                  (~> box bottom-right y)          (~> box top-left y          (+ _ (~> box height)))
+                  (~> box bottom-right absolute-y) (~> box top-left absolute-y (+ _ (~> box height))))
+            (setf (~> box bottom-right) (make-instance 'coordinates
+                                                       :x          (~> box top-left x          (+ _ (~> box width)))
+                                                       :absolute-x (~> box top-left absolute-x (+ _ (~> box width)))
+                                                       :y          (~> box top-left y          (+ _ (~> box height)))
+                                                       :absolute-y (~> box top-left absolute-y (+ _ (~> box height)))))))))
 
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
