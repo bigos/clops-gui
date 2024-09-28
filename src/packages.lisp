@@ -151,3 +151,9 @@
    y
    ;; add more
    ))
+
+(defpackage #:gui-color
+  (:use #:cl)
+  (:export
+   set-rgba
+   ))
