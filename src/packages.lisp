@@ -25,6 +25,7 @@
    current-motion
    current-motion-window-p
    gtk4-app
+   make-lisp-app
    mouse-button
    mouse-button-pressed
    mouse-button-released
@@ -121,6 +122,8 @@
    box-color
    central-point
    children
+   coordinates
+   height
    mouse-over-score
    mouse-overp
    move-to
@@ -130,6 +133,8 @@
    resize
    text
    text-box
+   top-left
+   width
    x
    y
    ;; add more
