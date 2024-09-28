@@ -42,6 +42,9 @@ file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
 discussion about prepending functions with %
 https://www.reddit.com/r/Common_Lisp/comments/jgj9lu/naming_conventions/
 
+And some programmers will name particularly low-level functions with names that start with % or even %%.
+https://gigamonkeys.com/book/syntax-and-semantics
+
 *** links
 http://www.mohamedelafrit.com/education/ENSEIRB/lisp/standards.pdf
 
