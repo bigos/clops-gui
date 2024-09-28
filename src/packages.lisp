@@ -68,6 +68,7 @@
    *initial-title*
    *initial-window-height*
    *initial-window-width*
+   *timeout-period*
    close-all-windows-and-quit
    present-about-dialog
    window
@@ -131,6 +132,7 @@
    recalculate-absolute
    remove-child
    resize
+   root-window
    text
    text-box
    top-left
