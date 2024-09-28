@@ -43,9 +43,6 @@
   (:import-from :defclass-std
                 defclass/std)
   (:export
-   *client-fn-draw-objects*
-   *client-fn-menu-bar*
-   *timeout-period*
    add-child
    all-widgets
    children
@@ -53,12 +50,12 @@
    gir-window
    lisp-window
    most-current-widget
-   new-window-for-app
    redraw-canvas
    set-rgba
    window-hkey
    window-resize
    ))
+
 (defpackage #:gui-window-gtk
   (:use #:cl)
   (:import-from :serapeum
@@ -66,15 +63,11 @@
   (:import-from :defclass-std
                 defclass/std)
   (:export
-   *client-fn-draw-objects*
    *client-fn-menu-bar*
    *initial-title*
    *initial-window-height*
    *initial-window-width*
-   *timeout-period*
    close-all-windows-and-quit
-   gir-window
-   new-window-for-app
    present-about-dialog
    window
    window-creation-from-menu
