@@ -41,6 +41,7 @@
   (setf (children parent-box)
         (remove child-box (children parent-box))))
 
+;;; unused
 (defmethod move ((box box) xdelta ydelta)
   (setf (~> box top-left x) (+ (~> box top-left x) xdelta)
         (~> box top-left y) (+ (~> box top-left y) ydelta))
@@ -67,14 +68,14 @@
      (~> box top-left absolute-x (+ _ (half (width box))))
      (~> box top-left absolute-y (+ _ (half (height box)))))))
 
-(defun new-coordinates (box)
+(defun %new-coordinates (box)
   (make-instance 'coordinates
                  :x          (~> box top-left x          (+ _ (~> box width)))
                  :absolute-x (~> box top-left absolute-x (+ _ (~> box width)))
                  :y          (~> box top-left y          (+ _ (~> box height)))
                  :absolute-y (~> box top-left absolute-y (+ _ (~> box height)))))
 
-(defmethod recalculate-absolute-root ((box box))
+(defmethod %recalculate-absolute-root ((box box))
   (if (and (typep (parent box) 'gui-window:lisp-window))
       (progn
         ;; top left absolutes same as x y
@@ -83,14 +84,14 @@
         ;; bottom right absolutes same as x+width y+height
         (let ((cax (~> box top-left x (+ _ (~> box width))))
               (cay (~> box top-left y (+ _ (~> box height)))))
-          (setf (~> box bottom-right) (new-coordinates box))))
+          (setf (~> box bottom-right) (%new-coordinates box))))
       (error "It should not be invoked unless the parent is a lisp-window")))
 
 (defmethod recalculate-absolute ((box box))
   ;;(warn "type of box ~S and parent ~S" (type-of box) (type-of (parent box)))
   (if (typep (parent box) 'gui-window:lisp-window)
       ;;(warn "going to recalculate root")
-      (recalculate-absolute-root box)
+      (%recalculate-absolute-root box)
 
       (progn
         ;; ensure parent top left present
@@ -111,17 +112,18 @@
                   (~> box bottom-right absolute-x) (~> box top-left absolute-x (+ _ (~> box width)))
                   (~> box bottom-right y)          (~> box top-left y          (+ _ (~> box height)))
                   (~> box bottom-right absolute-y) (~> box top-left absolute-y (+ _ (~> box height))))
-            (setf (~> box bottom-right) (new-coordinates box))))))
+            (setf (~> box bottom-right) (%new-coordinates box))))))
 
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
       (parent box)
       (root-window (parent box))))
 
+;;; unused
 (defmethod parent-boxes ((box box))
-  (loop for po = box then (gui-box:parent po)
-        until (typep po 'gui-window:lisp-window)
-        collect po))
+    (loop for po = box then (gui-box:parent po)
+          until (typep po 'gui-window:lisp-window)
+          collect po))
 
 ;;; mouse over has all positives
 (defmethod mouse-over-score ((box box))
@@ -145,13 +147,7 @@
       (and (<= (~> box top-left absolute-x) (car mouse-at) (~> box bottom-right absolute-x))
            (<= (~> box top-left absolute-y) (cdr mouse-at) (~> box bottom-right absolute-y))))))
 
-(defmethod absolute-coordinates ((box box))
-  (list (~> box top-left absolute-x)
-        (~> box top-left absolute-y)
-        (~> box bottom-right absolute-x)
-        (~> box bottom-right absolute-y)))
-
-(defmethod box-mouse ((box box))
+(defmethod %box-mouse ((box box))
   (if (mouse-overp box)
       (if (zerop (~> gui-app:*lisp-app* gui-app:mouse-button))
           :mouse-over
@@ -159,7 +155,7 @@
       :mouse-out))
 
 (defmethod box-color ((box box))
-  (case (box-mouse box)
+  (case (%box-mouse box)
     (:mouse-out "lime")
     (:mouse-over "yellow")
     (:mouse-pressed "red")))
