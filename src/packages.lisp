@@ -123,30 +123,23 @@
   (:import-from :defclass-std
                 defclass/std)
   (:export
-   absolute-coordinates
    absolute-x
    absolute-y
    add-child
    box
    box-color
+   box:text
    central-point
    children
-   coordinates
-   height
    mouse-over-score
    mouse-overp
-   mouse-score
    move-to
    parent
-   parent-boxes
    recalculate-absolute
    remove-child
    resize
-   root-window
    text
    text-box
-   top-left
-   width
    x
    y
    ;; add more
