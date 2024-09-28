@@ -119,12 +119,6 @@
       (parent box)
       (root-window (parent box))))
 
-;;; unused
-(defmethod parent-boxes ((box box))
-    (loop for po = box then (gui-box:parent po)
-          until (typep po 'gui-window:lisp-window)
-          collect po))
-
 ;;; mouse over has all positives
 (defmethod mouse-over-score ((box box))
   (if (equal (~> gui-app:*lisp-app* gui-app:current-motion)
