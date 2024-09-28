@@ -8,7 +8,6 @@
    prepare-item-simple
    prepare-radio-action
    prepare-section
-   prepare-section
    prepare-submenu
    ))
 
