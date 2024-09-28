@@ -67,6 +67,13 @@
      (~> box top-left absolute-x (+ _ (half (width box))))
      (~> box top-left absolute-y (+ _ (half (height box)))))))
 
+(defun new-coordinates (box)
+  (make-instance 'coordinates
+                 :x          (~> box top-left x          (+ _ (~> box width)))
+                 :absolute-x (~> box top-left absolute-x (+ _ (~> box width)))
+                 :y          (~> box top-left y          (+ _ (~> box height)))
+                 :absolute-y (~> box top-left absolute-y (+ _ (~> box height)))))
+
 (defmethod recalculate-absolute-root ((box box))
   (if (and (typep (parent box) 'gui-window:lisp-window))
       (progn
@@ -76,11 +83,7 @@
         ;; bottom right absolutes same as x+width y+height
         (let ((cax (~> box top-left x (+ _ (~> box width))))
               (cay (~> box top-left y (+ _ (~> box height)))))
-          (setf (~> box bottom-right) (make-instance 'coordinates
-                                                     :x          (~> box top-left x          (+ _ (~> box width)))
-                                                     :absolute-x (~> box top-left absolute-x (+ _ (~> box width)))
-                                                     :y          (~> box top-left y          (+ _ (~> box height)))
-                                                     :absolute-y (~> box top-left absolute-y (+ _ (~> box height)))))))
+          (setf (~> box bottom-right) (new-coordinates box))))
       (error "It should not be invoked unless the parent is a lisp-window")))
 
 (defmethod recalculate-absolute ((box box))
@@ -108,11 +111,7 @@
                   (~> box bottom-right absolute-x) (~> box top-left absolute-x (+ _ (~> box width)))
                   (~> box bottom-right y)          (~> box top-left y          (+ _ (~> box height)))
                   (~> box bottom-right absolute-y) (~> box top-left absolute-y (+ _ (~> box height))))
-            (setf (~> box bottom-right) (make-instance 'coordinates
-                                                       :x          (~> box top-left x          (+ _ (~> box width)))
-                                                       :absolute-x (~> box top-left absolute-x (+ _ (~> box width)))
-                                                       :y          (~> box top-left y          (+ _ (~> box height)))
-                                                       :absolute-y (~> box top-left absolute-y (+ _ (~> box height)))))))))
+            (setf (~> box bottom-right) (new-coordinates box))))))
 
 (defmethod root-window ((box box))
   (if (typep (parent box) 'gui-window:lisp-window)
