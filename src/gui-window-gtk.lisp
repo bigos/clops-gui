@@ -243,7 +243,7 @@
 (defun window (lisp-window)
       (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
                                        :flags gio:+application-flags-flags-none+)))
-        (setf gui-app:*lisp-app* (gui-app::make-lisp-app app))
+        (setf gui-app:*lisp-app* (gui-app:make-lisp-app app))
         (window-creation-from-main app *initial-title* *client-fn-menu-bar* lisp-window)
 
         (let ((status (gtk:application-run app nil)))

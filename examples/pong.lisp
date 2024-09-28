@@ -22,7 +22,7 @@
 (defun experiment-first-window ()
   (setf
    gui-drawing:*client-fn-draw-objects*  'pong::draw-window
-   gui-app:*lisp-app* (gui-app::make-lisp-app))
+   gui-app:*lisp-app* (gui-app:make-lisp-app))
 
   (assert (zerop (hash-table-count (gui-app:all-windows))))
   (let ((lisp-window (make-instance 'pong-window)))

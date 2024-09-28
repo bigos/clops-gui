@@ -32,7 +32,7 @@
   (warn "starting experiment")
   (setf
    *model* (make-instance 'model)
-   gui-app:*lisp-app* (gui-app::make-lisp-app))
+   gui-app:*lisp-app* (gui-app:make-lisp-app))
   (assert (zerop (hash-table-count (gui-app:all-windows))))
   (let ((lisp-window (make-instance 'gui-window:lisp-window)))
     (gui-window-gtk:window-creation-from-simulation :testing lisp-window)

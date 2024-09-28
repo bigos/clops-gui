@@ -211,7 +211,7 @@
 (defun experiment-first-window ()
   (setf gui-drawing:*client-fn-draw-objects*  'todo-list::draw-window)
 
-  (setf gui-app:*lisp-app* (gui-app::make-lisp-app))
+  (setf gui-app:*lisp-app* (gui-app:make-lisp-app))
   (assert (zerop (hash-table-count (gui-app:all-windows))))
 
   (let ((lisp-window (make-instance 'todo-window)))
