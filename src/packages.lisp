@@ -8,6 +8,7 @@
    prepare-item-simple
    prepare-radio-action
    prepare-section
+   prepare-section
    prepare-submenu
    ))
 
@@ -20,13 +21,11 @@
   (:export
    *lisp-app*
    all-windows
-   all-windows
    current-focus
    current-focus-window
    current-motion
    current-motion-window-p
    gtk4-app
-   make-lisp-app
    mouse-button
    mouse-button-pressed
    mouse-button-released
@@ -128,7 +127,6 @@
    add-child
    box
    box-color
-   box:text
    central-point
    children
    mouse-over-score
