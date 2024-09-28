@@ -24,7 +24,7 @@
    current-focus
    current-focus-window
    current-motion
-   current-motion-window
+   current-motion-window-p
    gtk4-app
    make-lisp-app
    mouse-button

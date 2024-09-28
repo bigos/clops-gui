@@ -153,7 +153,7 @@
       (gui-window:set-rgba "red")
       (gui-window:set-rgba "#002244AA"))
   (cairo:move-to 10 50)
-  (when (gui-app:current-motion-window gui-app:*lisp-app* window)
+  (when (gui-app:current-motion-window-p gui-app:*lisp-app* window)
     (cairo:show-text (format nil "~A" (gui-app:mouse-coordinates gui-app:*lisp-app*))))
 
   (cairo:select-font-face "Ubuntu Mono" :normal :normal)
@@ -167,7 +167,7 @@
   (cairo:select-font-face "Ubuntu Mono" :italic :bold)
 
   (cairo:move-to 10 100)
-  (let ((cmotion    (gui-app:current-motion-window gui-app:*lisp-app* window)))
+  (let ((cmotion    (gui-app:current-motion-window-p gui-app:*lisp-app* window)))
     (if cmotion
         (gui-window:set-rgba "green")
         (gui-window:set-rgba "red"))

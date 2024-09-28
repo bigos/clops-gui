@@ -18,7 +18,7 @@
 (defun all-windows ()
     (windows *lisp-app*))
 
-(defmethod current-motion-window ((lisp-app lisp-app) (window t))
+(defmethod current-motion-window-p ((lisp-app lisp-app) (window t))
   (let ((m (gui-window:window-hkey (current-motion lisp-app)))
         (w (gui-window:window-hkey window)))
     (eq m w)))
