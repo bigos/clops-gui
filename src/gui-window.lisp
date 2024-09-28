@@ -21,6 +21,9 @@
      (gtk4:widget-queue-draw
       (serapeum:~> window gir-window gtk4:widget-first-child gtk4:widget-first-child)))))
 
+(defmethod window-resize (w h win)
+  (setf (dimensions (gui-app:window-get gui-app:*lisp-app* win)) (cons w h)))
+
 (defmethod window-hkey ((window gir::object-instance))
   (cffi:pointer-address (gir::this-of window)))
 (defmethod window-hkey ((window symbol))
@@ -29,9 +32,6 @@
 (defmethod window-hkey ((window lisp-window))
   (window-hkey
    (gir-window window)))
-
-(defmethod window-resize (w h win)
-  (setf (dimensions (gui-app:window-get gui-app:*lisp-app* win)) (cons w h)))
 
 ;;; ============================ window child widgets ==========================
 (defmethod add-child ((lisp-window lisp-window) (box gui-box:box))
