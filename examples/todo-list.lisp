@@ -17,45 +17,46 @@
 (in-package #:todo-list)
 
 ;;; === utilities ==============================================================
-(defun slot-names (obj)
-  (~> obj
-      class-of
-      sb-mop:class-slots
-      (mapcar #'sb-mop:slot-definition-name  _)))
+(progn ;; slot names and printing object
+  (defun slot-names (obj)
+    (~> obj
+        class-of
+        sb-mop:class-slots
+        (mapcar #'sb-mop:slot-definition-name  _)))
 
-(defun slot-names-and-classes (obj)
-  (loop for the-slot in (slot-names obj)
-        collect (if (slot-boundp obj the-slot)
-                    (cons the-slot (type-of (slot-value obj the-slot)))
-                    the-slot)))
+  (defun slot-names-and-classes (obj)
+      (loop for the-slot in (slot-names obj)
+            collect (if (slot-boundp obj the-slot)
+                        (cons the-slot (type-of (slot-value obj the-slot)))
+                        the-slot)))
 
-(defun slot-values-except (obj exceptions)
-  (loop for the-slot in (slot-names obj)
-        collect (if (slot-boundp obj the-slot)
-                    (if (member the-slot exceptions)
-                        (list the-slot
-                              :ignored
-                              (type-of (slot-value obj the-slot)))
-                        (cons the-slot
-                              (slot-value obj the-slot)))
-                    the-slot)))
+  (defun slot-values-except (obj exceptions)
+      (loop for the-slot in (slot-names obj)
+            collect (if (slot-boundp obj the-slot)
+                        (if (member the-slot exceptions)
+                            (list the-slot
+                                  :ignored
+                                  (type-of (slot-value obj the-slot)))
+                            (cons the-slot
+                                  (slot-value obj the-slot)))
+                        the-slot)))
 
-(defmethod print-object ((object gui-box:coordinates) stream)
-  (print-unreadable-object (object stream :identity t :type t)
-    (format stream "rel: ~Sx~S, abs: ~Sx~S"
-            (gui-box:x object)
-            (gui-box:y object)
-            (gui-box:absolute-x object)
-            (gui-box:absolute-y object))))
+  (defmethod print-object ((object gui-box:coordinates) stream)
+      (print-unreadable-object (object stream :identity t :type t)
+        (format stream "rel: ~Sx~S, abs: ~Sx~S"
+                (gui-box:x object)
+                (gui-box:y object)
+                (gui-box:absolute-x object)
+                (gui-box:absolute-y object))))
 
-(defmethod print-object ((object gui-box:box) stream)
-  (print-unreadable-object (object stream :identity t :type t)
-    (format stream "obj: ~S"
-            (slot-values-except object '(gui-box:parent
-                                         gui-box:children)))))
+  (defmethod print-object ((object gui-box:box) stream)
+      (print-unreadable-object (object stream :identity t :type t)
+        (format stream "obj: ~S"
+                (slot-values-except object '(gui-box:parent
+                                             gui-box:children))))))
 
 (defun make-coordinates (x y)
-    (make-instance 'gui-box:coordinates :x x :y y))
+  (make-instance 'gui-box:coordinates :x x :y y))
 
 ;;; === classes =================================================================
 (defclass/std todo-window (gui-window:lisp-window)
