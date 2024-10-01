@@ -55,3 +55,7 @@ https://softwareengineering.stackexchange.com/questions/363084/use-labels-or-nes
 
 *** moving to app
 file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
+
+*** remove gui-box from gui-window
+[[file:src/gui-window.lisp::(defmethod add-child]] and the method below need to be
+somehow moved to gui-box
