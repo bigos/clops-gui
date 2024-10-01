@@ -31,12 +31,6 @@ also install development libraries
 sudo apt install libgtk-4-dev
 #+end_example
 
-
-** notes
-
-*** moving to app
-file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
-
 ** coding conventions
 
 discussion about prepending functions with %
@@ -56,3 +50,8 @@ https://github.com/bbatsov/emacs-lisp-style-guide
 https://www.cliki.net/naming+conventions
 
 https://softwareengineering.stackexchange.com/questions/363084/use-labels-or-nested-flet
+
+** notes
+
+*** moving to app
+file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
