@@ -52,6 +52,7 @@
 
 ;;; ======================== window mouse handling =============================
 (defmethod mouse-motion-enter ((window gui-window:lisp-window)  x y)
+  ;; (swank:inspect-in-emacs (list *lisp-app* 'setting-the-windows-args window x y))
   (setf (gui-app:mouse-coordinates gui-app:*lisp-app*) (cons x y))
   (setf (gui-app:current-motion    gui-app:*lisp-app*) window))
 
