@@ -5,7 +5,7 @@
 ;;; load ===================================================================
 ;; (load "~/Programming/Lisp/clops-gui/examples/minimal.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui) :silent )
+(ql:quickload '(:clops-gui) :silent T)
 
 ;;; package ================================================================
 (defpackage #:minimal
@@ -22,11 +22,18 @@
 ;;; drawing ====================================================================
 (defmethod draw-window ((window minimal-window))
   ;; paint background
-  (let ((cv 0.13)) (cairo:set-source-rgb  cv cv cv))
+  (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
   (cairo:select-font-face "Ubuntu Mono" :italic :bold)
-  (cairo:select-font-size 15)
+  (cairo:set-font-size 10)
+  (cairo:move-to 10 10)
+  (gui-window:set-rgba "black")
+  (cairo:show-text (format nil "try moving the mouse over the window and outside of it"))
+
+
+  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
+  (cairo:set-font-size 15)
   (cairo:move-to 10 100)
   (let ((cmotion    (gui-app:current-motion-window-p gui-app:*lisp-app* window)))
     (if cmotion
@@ -49,34 +56,37 @@
 
 ;;; events =====================================================================
 (defmethod process-event ((lisp-window minimal-window) event &rest args)
+  (unless (eq event :timeout)
+    (warn "event ~S ~S" event args))
+
   (case event
     (:timeout
-          ;; do nothing yet
+     ;; do nothing yet
      )
     ((:motion :motion-enter)
-          ;; we use simple case with one window so we ignore the window argument
+     ;; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y)) args
        (gui-app:mouse-motion-enter lisp-window x y)))
     (:motion-leave
-          (gui-app:mouse-motion-leave))
+     (gui-app:mouse-motion-leave))
     (:focus-enter)
     (:focus-leave)
     (:pressed
-          (destructuring-bind ((button x y)) args
-            (declare (ignore button))
-            ))
+     (destructuring-bind ((button x y)) args
+       (declare (ignore button))
+       ))
     (:released
-          (gui-app:mouse-button-released))
+     (gui-app:mouse-button-released))
     (:scroll)
     (:resize
-          (destructuring-bind ((w h)) args
-            (gui-window:window-resize w h lisp-window)))
+     (destructuring-bind ((w h)) args
+       (gui-window:window-resize w h lisp-window)))
     (:key-pressed
-          (destructuring-bind ((entered key-name key-code mods)) args
-            (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
-            ))
+     (destructuring-bind ((entered key-name key-code mods)) args
+       (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
+       ))
     (otherwise
-          (warn "not handled event ~S ~S" event args)))
+     (warn "not handled event ~S ~S" event args)))
 
   ;; redrawing ------------------------------
   (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
@@ -93,4 +103,4 @@
 
   (gui-window-gtk:window (make-instance 'minimal-window)))
 
-;; (main)
+(main)
