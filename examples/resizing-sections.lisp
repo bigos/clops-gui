@@ -17,10 +17,11 @@
 
 (in-package #:resizing-sections)
 
-(defclass/std resizing-sections-window (gui-window:lisp-window) (()))
-
+;;; classes ====================================================================
 
 ;;; drawing ====================================================================
+(defclass/std resizing-sections-window (gui-window:lisp-window) (()))
+
 (defmethod draw-window ((window resizing-sections-window))
   ;; paint background
   (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
