@@ -47,7 +47,12 @@
 
 ;;; utilities !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+;; TODO add print-object and better inspector
+
 ;;; classes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;;; existing classes gui-app and gui-window
+
+;; TODO add classes for new implementation of boxes
 
 ;;; interfaces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -56,6 +61,7 @@
 ;;; drawing is a component used by GTK to draw on canvas
 ;;; events is a component for responding to GTK events
 
+;;; description of another component and its implementation will go here
 
 ;;; drawing ====================================================================
 (defclass/std resizing-sections-window (gui-window:lisp-window) (()))
