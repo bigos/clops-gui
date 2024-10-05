@@ -1,5 +1,8 @@
 (declaim (optimize (speed 0) (safety 2) (debug 3)))
 
+;; also roam for githubkasken
+;; file:~/Documents/Roams/githubkasten/org-roam/20240808235036-order_of_development.org::8
+
 ;;;; Example of resizing-sections window
 
 ;;; load ===================================================================
