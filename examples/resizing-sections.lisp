@@ -19,12 +19,48 @@
    :defclass/std))
 
 (in-package #:resizing-sections)
+;;; musing =====================================================================
 
-;;; classes ====================================================================
+;; ** define classes
+;; and think how they relate to each other
+
+;; ** define interfaces
+;; and think how clients can create and manipulate instances
+;; think about defgenerics and *WHAT* operations they perform
+
+;; ** define implementations
+;; and think *HOW* to perform the operations
+
+;; *** interface
+;; is the middleman between two distinct components
+;; defines how components communicate using requests and responses
+;; allows to talk to abstraction of the other component
+
+;; *** component
+;; **** external vs internal
+;; has external part exposed to the client, that should be stable
+;; and internal (private)
+;; The key is to find which parts should not be exposed to the external client
+;; **** responsibilities
+;; component may have specific responsibilities
+;; interface defined the behaviour of the component from the standpoint of the client
+
+;;; utilities !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+;;; classes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+;;; interfaces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+;;; components !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+;;; drawing is a component used by GTK to draw on canvas
+;;; events is a component for responding to GTK events
+
 
 ;;; drawing ====================================================================
 (defclass/std resizing-sections-window (gui-window:lisp-window) (()))
 
+;; In main function we tell to use draw-window to draw on canvas
 (defmethod draw-window ((window resizing-sections-window))
   ;; paint background
   (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
@@ -60,6 +96,7 @@
       (cairo:fill-path))))
 
 ;;; events =====================================================================
+;;; in main function we tell to use process-event to respond to GTK events
 (defmethod process-event ((lisp-window resizing-sections-window) event &rest args)
   (unless (eq event :timeout)
     (warn "event ~S ~S" event args))
