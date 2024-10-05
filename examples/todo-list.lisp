@@ -126,7 +126,7 @@
          (last-clicked (~> todo-box last-clicked)))
     (if last-clicked
       (progn
-        (gui-box:remove-child todo-box last-clicked)
+        (gui-box:remove-child last-clicked)
         (warn "removed last clicked")
         (when (> (items todo-box) 0)
           (decf (items todo-box)))

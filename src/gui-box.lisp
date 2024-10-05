@@ -35,11 +35,12 @@
   (recalculate-absolute child-box)
   (push child-box (children parent-box)))
 
-(defmethod remove-child ((parent-box box) (child-box box))
+(defmethod remove-child ((child-box box))
   (remhash (sxhash child-box) (gui-window:all-widgets (root-window child-box)))
 
-  (setf (children parent-box)
-        (remove child-box (children parent-box))))
+  (let ((parent-box (parent child-box)))
+    (setf (children parent-box)
+          (remove child-box (children parent-box)))))
 
 ;;; unused but worth keeping
 (defmethod move ((box box) xdelta ydelta)
