@@ -154,7 +154,7 @@
 (defmethod to-rectangle ((rect rect-base))
   (let ((rs (resizing-point rect)))
     (let ((x (- (x rs)
-                (right rect)))
+                (left rect)))
           (y (- (y rs)
                 (up rect)))
           (width (+ (right rect)
@@ -173,6 +173,14 @@
 ;;; constructors ---------------------------------------------------------------
 (defun make-point (x y)
   (make-instance 'point :x x :y y))
+
+(defun make-rect (rp up right down left)
+  (make-instance 'rect
+                 :resizing-point (make-point (car rp) (cdr rp))
+                 :up up
+                 :right right
+                 :down down
+                 :left left))
 
 ;;; zzzzzz ----------------------------------------------------------------
 (defmethod add-child ((lisp-window gui-window:lisp-window) (box rect-window))
@@ -198,11 +206,11 @@
                                       :down  nil
                                       :left 0)))
     (add-child window window-widget)
-    (let ((widget-a1 (make-instance 'rect))
-          (widget-a2 (make-instance 'rect))
-          (widget-a3 (make-instance 'rect))
-          (widget-a2b1 (make-instance 'rect))
-          (widget-a2b2 (make-instance 'rect)))
+    (let ((widget-a1   (make-rect '(0 .   10) 0 50 50 0))
+          (widget-a2   (make-rect '(100 . 10) 0 50 50 0))
+          (widget-a3   (make-rect '(200 . 10) 0 50 50 0))
+          (widget-a2b1 (make-rect '(110 . 20) 0 10 10 0))
+          (widget-a2b2 (make-rect '(140 . 20) 0 10 10 0)))
       (add-child window-widget widget-a1)
       (add-child window-widget widget-a2)
       (add-child window-widget widget-a3)
@@ -225,6 +233,27 @@
         (describe window-widget))))
 
 ;;; rendering ==================================================================
+(defmethod render ((widget rect))
+  (warn "zzz ~s" (class-of widget))
+
+  (gui-color:set-rgba
+   (if (>= 30 (right widget))
+       "#00BB00FF"
+       "#aaaa00FF"))
+  (let ((rd (to-rectangle widget)))
+    (apply 'cairo:rectangle rd)
+    (cairo:fill-path))
+
+  (gui-window:set-rgba "red")
+  (cairo:arc (x (resizing-point widget))
+             (y (resizing-point widget))
+             5
+             0 (* 2 pi))
+
+  (cairo:fill-path)
+
+  (call-next-method))
+
 (defmethod render ((widget T))
   (warn "going to render ~s" (class-of widget))
 
