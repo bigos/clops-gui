@@ -66,7 +66,8 @@
    (up)
    (right)
    (down)
-   (left)))
+   (left)
+   (children)))
 
 ;; rect-window - first widget in a window
 ;; belongs to gui-window
@@ -175,8 +176,17 @@
 
 ;;; zzzzzz ----------------------------------------------------------------
 (defmethod add-child ((lisp-window gui-window:lisp-window) (box rect-window))
-  (setf (lisp-window box) lisp-window)
-  (pushnew box (gui-window:children lisp-window)))
+  (if (null (gui-window:children lisp-window))
+      (progn
+        (setf (lisp-window box) lisp-window)
+        (pushnew box (gui-window:children lisp-window)))
+      (error "you can not add more than one widget to the window")))
+
+(defmethod add-child ((parent-widget rect-base) (child-widget rect-base))
+  (pushnew child-widget (children parent-widget)))
+
+(defmethod add-child ((parent-widget rect) (child-widget rect))
+  (pushnew child-widget (children parent-widget)))
 
 (defmethod initialize-instance :after ((window resizing-sections-window) &rest initargs &key)
   (declare (ignore initargs))
@@ -187,16 +197,28 @@
                                       :right nil ;we do not have window yet
                                       :down  nil
                                       :left 0)))
-    (if (null (gui-window:children window))
-        (add-child window window-widget)
-        (error "You can not add more than one widget to the window"))))
+    (add-child window window-widget)
+    (let ((widget-a1 (make-instance 'rect))
+          (widget-a2 (make-instance 'rect))
+          (widget-a3 (make-instance 'rect))
+          (widget-a2b1 (make-instance 'rect))
+          (widget-a2b2 (make-instance 'rect)))
+      (add-child window-widget widget-a1)
+      (add-child window-widget widget-a2)
+      (add-child window-widget widget-a3)
+
+      (add-child widget-a2 widget-a2b1)
+      (add-child widget-a2 widget-a2b2))))
+
+(defmethod window-resize  :before (w h (window resizing-sections-window))
+  (let ((window-widget (car (gui-window:children window))))
+    (assert (typep window-widget 'rect-window))
+    (assert (zerop (up window-widget)))
+    (assert (zerop (left window-widget)))))
 
 (defmethod window-resize  (w h (window resizing-sections-window))
   (warn "resizing ~S" (class-of window))
   (let ((window-widget (car (gui-window:children window))))
-    (assert (typep window-widget 'rect-window))
-    (assert (zerop (up window-widget)))
-    (assert (zerop (left window-widget)))
     (setf (right window-widget) w)
     (setf (down window-widget) h)
     (if t
@@ -206,7 +228,7 @@
 (defmethod render ((widget T))
   (warn "going to render ~s" (class-of widget))
 
-  (loop for c in (gui-window:children widget)
+  (loop for c in (children widget)
         do (render c)))
 
 ;;; drawing ====================================================================
