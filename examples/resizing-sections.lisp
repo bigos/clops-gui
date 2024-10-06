@@ -72,7 +72,7 @@
 ;; has meny rects
 ;; resizes only with the window, does not move
 (defclass/std rect-window (rect-base)
-  ())
+  (lisp-window :doc gui-widow:lisp-window wrapping the GTK window :type lisp-window))
 
 
 ;; rect - normal widget
@@ -106,6 +106,20 @@
 ;;; events is a component for responding to GTK events
 
 ;;; description of another component and its implementation will go here
+
+;;; constructors ---------------------------------------------------------------
+(defun make-point (x y)
+  (make-instance 'point :x x :y y))
+
+(defmethod initialize-instance :after ((window resizing-sections-window) &rest initargs &key)
+  ;; add child
+  (let ((window-widget (make-instance 'rect-window
+                                      :resizing-point (make-point 0 0)
+                                      :up 0
+                                      :right (car (dimensions window))
+                                      :down  (cdr (dimensions window))
+                                      :left 0)))
+    (add-child window window-widget)))
 
 ;;; drawing ====================================================================
 
