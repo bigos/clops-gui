@@ -119,7 +119,17 @@
                                       :right (car (dimensions window))
                                       :down  (cdr (dimensions window))
                                       :left 0)))
-    (add-child window window-widget)))
+    (if (null (children window))
+        (add-child window window-widget)
+        (error "You can not add more than one widget to the window"))))
+
+(defmethod winndow-resize :after (w h (window resizing-sections-window))
+  (let ((window-widget (car (children (window)))))
+    (assert (typep window-widget 'rect-window))
+    (assert (zerop (up (window-widget))))
+    (assert (zerop (left (window-widget))))
+    (setf (right (window-widget)) w)
+    (setf (down (window-widget)) h)))
 
 ;;; drawing ====================================================================
 
