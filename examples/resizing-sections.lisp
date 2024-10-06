@@ -36,6 +36,8 @@
 ;; defines how components communicate using requests and responses
 ;; allows to talk to abstraction of the other component
 
+;; *** utilities and print-object
+
 ;; *** component
 ;; **** external vs internal
 ;; has external part exposed to the client, that should be stable
@@ -45,67 +47,6 @@
 ;; component may have specific responsibilities
 ;; interface defined the behaviour of the component from the standpoint of the client
 
-;;; utilities !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-;; TODO add print-object and better inspector
-
-(progn ;; slot names and printing object
-  (defun slot-names (obj)
-    (~> obj
-        class-of
-        sb-mop:class-slots
-        (mapcar #'sb-mop:slot-definition-name  _)))
-
-  (defun slot-names-and-classes (obj)
-      (loop for the-slot in (slot-names obj)
-            collect (if (slot-boundp obj the-slot)
-                        (cons the-slot (type-of (slot-value obj the-slot)))
-                        the-slot)))
-
-  (defun slot-values-except (obj exceptions)
-      (loop for the-slot in (slot-names obj)
-            collect (if (slot-boundp obj the-slot)
-                        (if (member the-slot exceptions)
-                            (list the-slot
-                                  :ignored
-                                  (type-of (slot-value obj the-slot)))
-                            (cons the-slot
-                                  (slot-value obj the-slot)))
-                        the-slot)))
-
-  (defmethod print-object ((object point) stream)
-    (print-unreadable-object (object stream :identity t :type t)
-      (format stream "rel: ~Sx~S"
-              (x object)
-              (y object))))
-
-  (defmethod print-object ((object gui-box:coordinates) stream)
-      (print-unreadable-object (object stream :identity t :type t)
-        (format stream "rel: ~Sx~S, abs: ~Sx~S"
-                (gui-box:x object)
-                (gui-box:y object)
-                (gui-box:absolute-x object)
-                (gui-box:absolute-y object))))
-
-  (defmethod print-object ((object gui-box:box) stream)
-      (print-unreadable-object (object stream :identity t :type t)
-        (format stream "obj: ~S"
-                (slot-values-except object '(gui-box:parent
-                                             gui-box:children)))))
-
-
-  ;; (defmethod print-object ((object resizing-sections-window) stream)
-  ;;   (print-unreadable-object (object stream :identity t :type t)
-  ;;     (format stream "obj: ~S"
-  ;;             (slot-values-except object '()))))
-
-  ;; (defmethod print-object ((object rect-window) stream)
-  ;;   (print-unreadable-object (object stream :identity t :type t)
-  ;;     (format stream "obj: ~S"
-  ;;             (slot-values-except object '()))))
-
-  ;; end of progn
-  )
 
 ;;; classes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -146,6 +87,68 @@
 (defgeneric to-rectangle (rect)
   (:documentation "convert rect to x,y,width, height used by cairo"))
 
+;;; utilities !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+;; TODO add print-object and better inspector
+
+(progn ;; slot names and printing object
+    (defun slot-names (obj)
+      (~> obj
+          class-of
+          sb-mop:class-slots
+          (mapcar #'sb-mop:slot-definition-name  _)))
+
+  (defun slot-names-and-classes (obj)
+    (loop for the-slot in (slot-names obj)
+          collect (if (slot-boundp obj the-slot)
+                      (cons the-slot (type-of (slot-value obj the-slot)))
+                      the-slot)))
+
+  (defun slot-values-except (obj exceptions)
+    (loop for the-slot in (slot-names obj)
+          collect (if (slot-boundp obj the-slot)
+                      (if (member the-slot exceptions)
+                          (list the-slot
+                                :ignored
+                                (type-of (slot-value obj the-slot)))
+                          (cons the-slot
+                                (slot-value obj the-slot)))
+                      the-slot)))
+
+  (defmethod print-object ((object point) stream)
+    (print-unreadable-object (object stream :identity t :type t)
+      (format stream "~Sx~S"
+              (x object)
+              (y object))))
+
+  (defmethod print-object ((object gui-box:coordinates) stream)
+    (print-unreadable-object (object stream :identity t :type t)
+      (format stream "rel: ~Sx~S, abs: ~Sx~S"
+              (gui-box:x object)
+              (gui-box:y object)
+              (gui-box:absolute-x object)
+              (gui-box:absolute-y object))))
+
+  (defmethod print-object ((object gui-box:box) stream)
+    (print-unreadable-object (object stream :identity t :type t)
+      (format stream "obj: ~S"
+              (slot-values-except object '(gui-box:parent
+                                           gui-box:children)))))
+
+
+  ;; (defmethod print-object ((object resizing-sections-window) stream)
+  ;;   (print-unreadable-object (object stream :identity t :type t)
+  ;;     (format stream "obj: ~S"
+  ;;             (slot-values-except object '()))))
+
+  ;; (defmethod print-object ((object rect-window) stream)
+  ;;   (print-unreadable-object (object stream :identity t :type t)
+  ;;     (format stream "obj: ~S"
+  ;;             (slot-values-except object '()))))
+
+  ;; end of progn
+  )
+
 ;;; defmethods !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 (defmethod to-rectangle ((rect rect-base))
   (let ((rs (resizing-point rect)))
@@ -170,6 +173,7 @@
 (defun make-point (x y)
   (make-instance 'point :x x :y y))
 
+;;; zzzzzz ----------------------------------------------------------------
 (defmethod add-child ((lisp-window gui-window:lisp-window) (box rect-window))
   (setf (lisp-window box) lisp-window)
   (pushnew box (gui-window:children lisp-window)))
@@ -195,31 +199,19 @@
     (assert (zerop (left window-widget)))
     (setf (right window-widget) w)
     (setf (down window-widget) h)
-    (swank:inspect-in-emacs window-widget)))
+    (if t
+        (describe window-widget))))
+
+;;; rendering ==================================================================
+(defmethod render ((widget T))
+  (warn "going to render ~s" (class-of widget))
+
+  (loop for c in (gui-window:children widget)
+        do (render c)))
 
 ;;; drawing ====================================================================
-;; In main function we tell to use draw-window to draw on canvas
-(defmethod draw-window ((window resizing-sections-window))
-  ;; paint background
-  (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
-  (cairo:paint)
 
-  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
-  (cairo:set-font-size 10)
-  (cairo:move-to 10 10)
-  (gui-window:set-rgba "black")
-  (cairo:show-text (format nil "Try to resize the window and see how the elements respond to resizing"))
-
-
-  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
-  (cairo:set-font-size 15)
-  (cairo:move-to 10 100)
-  (let ((cmotion    (gui-app:current-motion-window-p gui-app:*lisp-app* window)))
-    (if cmotion
-        (gui-window:set-rgba "green")
-        (gui-window:set-rgba "red"))
-    (cairo:show-text (format nil "dimensions ~s" (gui-window:children window))))
-
+(defun draw-mouse-square (window)
   ;; pink square follows the mouse
   (let ((app gui-app:*lisp-app*))
     (when (and (eq (gui-app:current-motion app)
@@ -232,6 +224,43 @@
        25
        25)
       (cairo:fill-path))))
+
+(defun draw-text-1 (window)
+  (declare (ignore window))
+  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
+  (cairo:set-font-size 10)
+  (cairo:move-to 10 10)
+
+  (gui-window:set-rgba "black")
+
+  (cairo:show-text (format nil "Try to resize the window and see how the elements respond to resizing")))
+
+(defun draw-text-2 (window)
+  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
+  (cairo:set-font-size 15)
+  (cairo:move-to 10 100)
+
+  (let ((cmotion    (gui-app:current-motion-window-p gui-app:*lisp-app* window)))
+    (if cmotion
+        (gui-window:set-rgba "green")
+        (gui-window:set-rgba "red"))
+
+    (cairo:show-text (format nil "dimensions ~s" (gui-window:children window)))))
+
+;; In main function we tell to use draw-window to draw on canvas
+(defmethod draw-window ((window resizing-sections-window))
+  ;; paint background
+  (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
+  (cairo:paint)
+
+  (draw-text-1 window)
+  (draw-text-2 window)
+
+  ;; render window children
+  (loop for c in (gui-window:children window)
+        do (render c))
+
+  (draw-mouse-square window))
 
 ;;; events =====================================================================
 ;;; in main function we tell to use process-event to respond to GTK events
