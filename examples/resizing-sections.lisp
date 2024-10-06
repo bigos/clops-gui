@@ -73,6 +73,12 @@
                                   (slot-value obj the-slot)))
                         the-slot)))
 
+  (defmethod print-object ((object point) stream)
+    (print-unreadable-object (object stream :identity t :type t)
+      (format stream "rel: ~Sx~S"
+              (x object)
+              (y object))))
+
   (defmethod print-object ((object gui-box:coordinates) stream)
       (print-unreadable-object (object stream :identity t :type t)
         (format stream "rel: ~Sx~S, abs: ~Sx~S"
@@ -164,7 +170,8 @@
 (defun make-point (x y)
   (make-instance 'point :x x :y y))
 
-(defmethod add-child ((lisp-window gui-window:lisp-window) (box rect-base))
+(defmethod add-child ((lisp-window gui-window:lisp-window) (box rect-window))
+  (setf (lisp-window box) lisp-window)
   (pushnew box (gui-window:children lisp-window)))
 
 (defmethod initialize-instance :after ((window resizing-sections-window) &rest initargs &key)
