@@ -54,6 +54,17 @@
 
 ;; TODO add classes for new implementation of boxes
 
+;; rect-base - class for widgets
+
+;; rect-window - first widget in a window
+;; belongs to gui-window
+;; has meny rects
+
+;; rect - normal widget
+;; belongs to rect-window or rect
+;; different rects may have diffferent properties that decide how it is resized and
+;; how children are made to resize, also handles wrapping and truncating of content
+
 ;;; interfaces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ;;; components !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
