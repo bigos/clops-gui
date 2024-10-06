@@ -72,7 +72,7 @@
 ;; has meny rects
 ;; resizes only with the window, does not move
 (defclass/std rect-window (rect-base)
-  (lisp-window :doc gui-widow:lisp-window wrapping the GTK window :type lisp-window))
+  ((lisp-window :doc "gui-widow:lisp-window wrapping the GTK window" :type gui-window:lisp-window)))
 
 
 ;; rect - normal widget
@@ -85,7 +85,7 @@
 
 ;;; interfaces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 (defgeneric to-rectangle (rect)
-  :documentation "convert rect to x,y,width, height used by cairo")
+  (:documentation "convert rect to x,y,width, height used by cairo"))
 
 ;;; defmethods !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 (defmethod to-rectangle ((rect rect-base))
@@ -124,6 +124,7 @@
         (error "You can not add more than one widget to the window"))))
 
 (defmethod winndow-resize :after (w h (window resizing-sections-window))
+  (wearn "resizing ~S" (class-of window))
   (let ((window-widget (car (children (window)))))
     (assert (typep window-widget 'rect-window))
     (assert (zerop (up (window-widget))))
