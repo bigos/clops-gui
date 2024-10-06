@@ -49,8 +49,57 @@
 
 ;; TODO add print-object and better inspector
 
+(progn ;; slot names and printing object
+  (defun slot-names (obj)
+    (~> obj
+        class-of
+        sb-mop:class-slots
+        (mapcar #'sb-mop:slot-definition-name  _)))
+
+  (defun slot-names-and-classes (obj)
+      (loop for the-slot in (slot-names obj)
+            collect (if (slot-boundp obj the-slot)
+                        (cons the-slot (type-of (slot-value obj the-slot)))
+                        the-slot)))
+
+  (defun slot-values-except (obj exceptions)
+      (loop for the-slot in (slot-names obj)
+            collect (if (slot-boundp obj the-slot)
+                        (if (member the-slot exceptions)
+                            (list the-slot
+                                  :ignored
+                                  (type-of (slot-value obj the-slot)))
+                            (cons the-slot
+                                  (slot-value obj the-slot)))
+                        the-slot)))
+
+  (defmethod print-object ((object gui-box:coordinates) stream)
+      (print-unreadable-object (object stream :identity t :type t)
+        (format stream "rel: ~Sx~S, abs: ~Sx~S"
+                (gui-box:x object)
+                (gui-box:y object)
+                (gui-box:absolute-x object)
+                (gui-box:absolute-y object))))
+
+  (defmethod print-object ((object gui-box:box) stream)
+      (print-unreadable-object (object stream :identity t :type t)
+        (format stream "obj: ~S"
+                (slot-values-except object '(gui-box:parent
+                                             gui-box:children)))))
+
+
+  (defmethod print-object ((object resizing-sections-window) stream)
+    (print-unreadable-object (object stream :identity t :type t)
+      (format stream "obj: ~S"
+              (slot-values-except object '()))))
+
+  ;; end of progn
+  )
+
 ;;; classes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 ;;; existing classes gui-app and gui-window
+(defclass/std resizing-sections-window (gui-window:lisp-window) (()))
 
 ;; TODO add classes for new implementation of boxes
 
@@ -74,7 +123,6 @@
 (defclass/std rect-window (rect-base)
   ((lisp-window :doc "gui-widow:lisp-window wrapping the GTK window" :type gui-window:lisp-window)))
 
-
 ;; rect - normal widget
 ;; belongs to rect-window or rect
 ;; different rects may have diffferent properties that decide how it is resized and
@@ -90,9 +138,9 @@
 ;;; defmethods !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 (defmethod to-rectangle ((rect rect-base))
   (let ((rs (resizing-point rect)))
-    (let ((x (- (x (rs))
+    (let ((x (- (x rs)
                 (right rect)))
-          (y (- (y (rs))
+          (y (- (y rs)
                 (up rect)))
           (width (+ (right rect)
                     (left rect)))
@@ -111,31 +159,33 @@
 (defun make-point (x y)
   (make-instance 'point :x x :y y))
 
+(defmethod add-child ((lisp-window gui-window:lisp-window) (box rect-base))
+  (pushnew box (gui-window:children lisp-window)))
+
 (defmethod initialize-instance :after ((window resizing-sections-window) &rest initargs &key)
+  (declare (ignore initargs))
   ;; add child
   (let ((window-widget (make-instance 'rect-window
                                       :resizing-point (make-point 0 0)
                                       :up 0
-                                      :right (car (dimensions window))
-                                      :down  (cdr (dimensions window))
+                                      :right nil ;we do not have window yet
+                                      :down  nil
                                       :left 0)))
-    (if (null (children window))
+    (if (null (gui-window:children window))
         (add-child window window-widget)
         (error "You can not add more than one widget to the window"))))
 
-(defmethod winndow-resize :after (w h (window resizing-sections-window))
-  (wearn "resizing ~S" (class-of window))
-  (let ((window-widget (car (children (window)))))
+(defmethod window-resize  (w h (window resizing-sections-window))
+  (warn "resizing ~S" (class-of window))
+  (let ((window-widget (car (gui-window:children window))))
     (assert (typep window-widget 'rect-window))
-    (assert (zerop (up (window-widget))))
-    (assert (zerop (left (window-widget))))
-    (setf (right (window-widget)) w)
-    (setf (down (window-widget)) h)))
+    (assert (zerop (up window-widget)))
+    (assert (zerop (left window-widget)))
+    (setf (right window-widget) w)
+    (setf (down window-widget) h)
+    (swank:inspect-in-emacs window-widget)))
 
 ;;; drawing ====================================================================
-
-(defclass/std resizing-sections-window (gui-window:lisp-window) (()))
-
 ;; In main function we tell to use draw-window to draw on canvas
 (defmethod draw-window ((window resizing-sections-window))
   ;; paint background
@@ -156,7 +206,7 @@
     (if cmotion
         (gui-window:set-rgba "green")
         (gui-window:set-rgba "red"))
-    (cairo:show-text (format nil "dimensions ~A" (gui-window:dimensions window))))
+    (cairo:show-text (format nil "dimensions ~s" (gui-window:children window))))
 
   ;; pink square follows the mouse
   (let ((app gui-app:*lisp-app*))
@@ -191,14 +241,14 @@
     (:focus-leave)
     (:pressed
      (destructuring-bind ((button x y)) args
-       (declare (ignore button))
+       (declare (ignore button x y))
        ))
     (:released
      (gui-app:mouse-button-released))
     (:scroll)
     (:resize
      (destructuring-bind ((w h)) args
-       (gui-window:window-resize w h lisp-window)))
+       (window-resize w h lisp-window)))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
@@ -221,4 +271,4 @@
 
   (gui-window-gtk:window (make-instance 'resizing-sections-window)))
 
-(main)
+;; (main)
