@@ -88,10 +88,15 @@
                                              gui-box:children)))))
 
 
-  (defmethod print-object ((object resizing-sections-window) stream)
-    (print-unreadable-object (object stream :identity t :type t)
-      (format stream "obj: ~S"
-              (slot-values-except object '()))))
+  ;; (defmethod print-object ((object resizing-sections-window) stream)
+  ;;   (print-unreadable-object (object stream :identity t :type t)
+  ;;     (format stream "obj: ~S"
+  ;;             (slot-values-except object '()))))
+
+  ;; (defmethod print-object ((object rect-window) stream)
+  ;;   (print-unreadable-object (object stream :identity t :type t)
+  ;;     (format stream "obj: ~S"
+  ;;             (slot-values-except object '()))))
 
   ;; end of progn
   )
