@@ -90,10 +90,14 @@
 ;;; defmethods !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 (defmethod to-rectangle ((rect rect-base))
   (let ((rs (resizing-point rect)))
-    (let ((x (- (x (rs)) (right rect)))
-          (y (- (y (rs)) (up rect)))
-          (width (+ (right rect) (left rect)))
-          (height (+ (up rect) (down rect))))
+    (let ((x (- (x (rs))
+                (right rect)))
+          (y (- (y (rs))
+                (up rect)))
+          (width (+ (right rect)
+                    (left rect)))
+          (height (+ (up rect)
+                     (down rect))))
       (list x y width height))))
 
 ;;; components !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
