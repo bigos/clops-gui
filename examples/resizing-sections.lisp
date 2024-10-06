@@ -54,18 +54,47 @@
 
 ;; TODO add classes for new implementation of boxes
 
-;; rect-base - class for widgets
+(defclass/std point ()
+  ((x)
+   (y)))
+
+;; rect-base - base class for widgets
+(defclass/std rect-base ()
+  ((resizing-point :doc "point around which resizing will perform" :type point)
+   ;; distances to the edge from the resizing point
+   (up)
+   (right)
+   (down)
+   (left)))
 
 ;; rect-window - first widget in a window
 ;; belongs to gui-window
 ;; has meny rects
+;; resizes only with the window, does not move
+(defclass/std rect-window (rect-base)
+  ())
+
 
 ;; rect - normal widget
 ;; belongs to rect-window or rect
 ;; different rects may have diffferent properties that decide how it is resized and
 ;; how children are made to resize, also handles wrapping and truncating of content
+(defclass/std rect (rect-base)
+  ())
+
 
 ;;; interfaces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+(defgeneric to-rectangle (rect)
+  :documentation "convert rect to x,y,width, height used by cairo")
+
+;;; defmethods !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+(defmethod to-rectangle ((rect rect-base))
+  (let ((rs (resizing-point rect)))
+    (let ((x (- (x (rs)) (right rect)))
+          (y (- (y (rs)) (up rect)))
+          (width (+ (right rect) (left rect)))
+          (height (+ (up rect) (down rect))))
+      (list x y width height))))
 
 ;;; components !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -75,6 +104,7 @@
 ;;; description of another component and its implementation will go here
 
 ;;; drawing ====================================================================
+
 (defclass/std resizing-sections-window (gui-window:lisp-window) (()))
 
 ;; In main function we tell to use draw-window to draw on canvas
