@@ -232,6 +232,18 @@
     (if t
         (describe window-widget))))
 
+(defmethod move-top-widgets ((window gui-window:lisp-window))
+  (let ((ww (first (gui-window:children window))))
+    (let ((ax (~> ww children)))
+      (let ((al (elt ax 2))
+            (ac (elt ax 1))
+            (ar (elt ax 0))
+            (window-center (/ (right ww) 2))
+            (window-right  (right ww)))
+        (setf (resizing-point al) (make-point (+ 0 10) 10))
+        (setf (resizing-point ac) (make-point window-center 60))
+        (setf (resizing-point ar) (make-point (- window-right 10) 10))))))
+
 ;;; rendering ==================================================================
 (defmethod render ((widget rect))
   (warn "zzz ~s" (class-of widget))
@@ -240,6 +252,7 @@
    (if (>= 30 (right widget))
        "#00BB00A0"
        "#aaaa00A0"))
+  ;; figure out to draw childrent at relative coordinates
   (let ((rd (to-rectangle widget)))
     (apply 'cairo:rectangle rd)
     (cairo:fill-path))
@@ -343,7 +356,8 @@
     (:scroll)
     (:resize
      (destructuring-bind ((w h)) args
-       (window-resize w h lisp-window)))
+       (window-resize w h lisp-window)
+       (move-top-widgets lisp-window)))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
