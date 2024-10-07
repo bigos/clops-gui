@@ -57,7 +57,10 @@
 
 (defclass/std point ()
   ((x)
-   (y)))
+   (y)
+   (absolute-x)
+   (absolute-y)
+   (parent)))
 
 ;; rect-base - base class for widgets
 (defclass/std rect-base ()
@@ -178,8 +181,12 @@
 ;;; description of another component and its implementation will go here
 
 ;;; constructors ---------------------------------------------------------------
-(defun make-point (x y)
-    (make-instance 'point :x x :y y))
+(defun make-point (x y parent)
+    (make-instance 'point :x x
+                          :y y
+                          :parent parent ; parent resizing point
+                          :absolute-x (when parent (+ x (x parent)))
+                          :absolute-y (when parent (+ y (y parent)))))
 
 (defun make-rect (rp up right down left)
   (make-instance 'rect
@@ -207,7 +214,7 @@
   (declare (ignore initargs))
   ;; add child
   (let ((window-widget (make-instance 'rect-window
-                                      :resizing-point (make-point 0 0)
+                                      :resizing-point (make-point 0 0 nil)
                                       :up 0
                                       :right nil ;we do not have window yet
                                       :down  nil
