@@ -163,6 +163,13 @@
                      (down rect))))
       (list x y width height))))
 
+(defmethod top-left ((rect rect-base))
+  "Return cons of top let absolute coordinates"
+  (error "implement correctly")
+  (cons
+   (- (x (resizing-point rect) (left rec)))
+   (- (y (resizing-point rect) (up   rec)))))
+
 ;;; components !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ;;; drawing is a component used by GTK to draw on canvas
@@ -172,7 +179,7 @@
 
 ;;; constructors ---------------------------------------------------------------
 (defun make-point (x y)
-  (make-instance 'point :x x :y y))
+    (make-instance 'point :x x :y y))
 
 (defun make-rect (rp up right down left)
   (make-instance 'rect
@@ -260,7 +267,7 @@
   (gui-window:set-rgba "red")
   (cairo:arc (x (resizing-point widget))
              (y (resizing-point widget))
-             5
+             3
              0 (* 2 pi))
 
   (cairo:fill-path)
