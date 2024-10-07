@@ -207,10 +207,10 @@
                                       :left 0)))
     (add-child window window-widget)
     (let ((widget-a1   (make-rect '(0 .   10) 0 50 50 0))
-          (widget-a2   (make-rect '(100 . 10) 0 50 50 0))
-          (widget-a3   (make-rect '(200 . 10) 0 50 50 0))
+          (widget-a2   (make-rect '(150 . 60) 30 30 30 30))
+          (widget-a3   (make-rect '(300 . 10) 0 0 50 50))
           (widget-a2b1 (make-rect '(110 . 20) 0 10 10 0))
-          (widget-a2b2 (make-rect '(140 . 20) 0 10 10 0)))
+          (widget-a2b2 (make-rect '(130 . 30) 0 10 10 0)))
       (add-child window-widget widget-a1)
       (add-child window-widget widget-a2)
       (add-child window-widget widget-a3)
@@ -238,8 +238,8 @@
 
   (gui-color:set-rgba
    (if (>= 30 (right widget))
-       "#00BB00FF"
-       "#aaaa00FF"))
+       "#00BB00A0"
+       "#aaaa00A0"))
   (let ((rd (to-rectangle widget)))
     (apply 'cairo:rectangle rd)
     (cairo:fill-path))
@@ -296,7 +296,10 @@
         (gui-window:set-rgba "green")
         (gui-window:set-rgba "red"))
 
-    (cairo:show-text (format nil "dimensions ~s" (gui-window:children window)))))
+    (let ((ff (first (gui-window:children window))))
+
+      (cairo:show-text (format nil "dimensions ~s" (list (right ff) (down ff))
+                               )))))
 
 ;; In main function we tell to use draw-window to draw on canvas
 (defmethod draw-window ((window resizing-sections-window))
