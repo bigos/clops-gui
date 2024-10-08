@@ -181,12 +181,9 @@
 ;;; description of another component and its implementation will go here
 
 ;;; constructors ---------------------------------------------------------------
-(defun make-point (x y parent)
+(defun make-point (x y)
     (make-instance 'point :x x
-                          :y y
-                          :parent parent ; parent resizing point
-                          :absolute-x (when parent (+ x (x parent)))
-                          :absolute-y (when parent (+ y (y parent)))))
+                          :y y))
 
 (defun make-rect (rp up right down left)
   (make-instance 'rect
@@ -197,6 +194,7 @@
                  :left left))
 
 ;;; zzzzzz ----------------------------------------------------------------
+
 (defmethod add-child ((lisp-window gui-window:lisp-window) (box rect-window))
   (if (null (gui-window:children lisp-window))
       (progn
@@ -204,17 +202,45 @@
         (pushnew box (gui-window:children lisp-window)))
       (error "you can not add more than one widget to the window")))
 
+(defmethod add-child :before ((parent-widget rect-base) (child-widget rect-base))
+  ;; validate presence of required fields
+  (unless (typep parent-widget 'rect-window)
+    (assert (~> parent-widget resizing-point parent)))
+  (assert (~> parent-widget resizing-point absolute-x))
+  (assert (~> parent-widget resizing-point absolute-y)))
+
 (defmethod add-child ((parent-widget rect-base) (child-widget rect-base))
+  (setf (~> child-widget resizing-point parent) (~> parent-widget resizing-point))
+
+  (setf (absolute-x (resizing-point child-widget)) (+ (~> parent-widget resizing-point absolute-x)
+                                                      (~> child-widget resizing-point x)))
+  (assert (~> child-widget resizing-point absolute-x) nil "just after")
+
+
+  (setf (absolute-y (resizing-point child-widget)) (+ (~> parent-widget resizing-point absolute-y)
+                                                      (~> child-widget resizing-point y)))
   (pushnew child-widget (children parent-widget)))
 
-(defmethod add-child ((parent-widget rect) (child-widget rect))
-  (pushnew child-widget (children parent-widget)))
+;;; TODO fix the assertion here
+(defmethod add-child :after ((parent-widget rect-base) (child-widget rect-base))
+  ;; validate presence of required fields
+  (assert (~> child-widget resizing-point absolute-x) nil "failed in after method")
+  (assert (~> child-widget resizing-point absolute-y)))
+
+;; (defmethod add-child ((parent-widget rect) (child-widget rect))
+;;   (setf (~> child-widget resizing-point parent) (~> parent-widget resizing-point))
+;;   (pushnew child-widget (children parent-widget)))
 
 (defmethod initialize-instance :after ((window resizing-sections-window) &rest initargs &key)
   (declare (ignore initargs))
   ;; add child
   (let ((window-widget (make-instance 'rect-window
-                                      :resizing-point (make-point 0 0 nil)
+                                      :resizing-point (make-instance 'point
+                                                                     :x 0
+                                                                     :y 0
+                                                                     :parent nil
+                                                                     :absolute-x 0
+                                                                     :absolute-y 0)
                                       :up 0
                                       :right nil ;we do not have window yet
                                       :down  nil
@@ -230,7 +256,9 @@
       (add-child window-widget widget-a3)
 
       (add-child widget-a2 widget-a2b1)
-      (add-child widget-a2 widget-a2b2))))
+      (add-child widget-a2 widget-a2b2))
+    (swank:inspect-in-emacs window-widget :wait T)
+    ))
 
 (defmethod window-resize  :before (w h (window resizing-sections-window))
   (let ((window-widget (car (gui-window:children window))))
