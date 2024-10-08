@@ -172,13 +172,6 @@
                      (down rect))))
       (list x y width height))))
 
-(defmethod top-left ((rect rect-base))
-  "Return cons of top let absolute coordinates"
-  (error "implement correctly")
-  (cons
-   (- (x (resizing-point rect) (left rec)))
-   (- (y (resizing-point rect) (up   rec)))))
-
 ;;; components !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ;;; drawing is a component used by GTK to draw on canvas
@@ -269,7 +262,6 @@
     (warn "added widgets, final inspect")
   ;  (swank:inspect-in-emacs window-widget :wait T)
     ))
-
 (defmethod window-resize  :before (w h (window resizing-sections-window))
   (let ((window-widget (car (gui-window:children window))))
     (assert (typep window-widget 'rect-window))
