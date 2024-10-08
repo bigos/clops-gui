@@ -156,9 +156,15 @@
 ;;; defmethods !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 (defmethod to-rectangle ((rect rect-base))
   (let ((rs (resizing-point rect)))
-    (let ((x (- (x rs)
+    (when (parent rs)
+      (when (null (absolute-x rs))
+        (setf (absolute-x rs) (+ (absolute-x (parent rs)) (x rs))))
+      (when (null (absolute-y rs))
+        (setf (absolute-y rs) (+ (absolute-y (parent rs)) (y rs)))))
+
+    (let ((x (- (absolute-x rs)
                 (left rect)))
-          (y (- (y rs)
+          (y (- (absolute-y rs)
                 (up rect)))
           (width (+ (right rect)
                     (left rect)))
@@ -194,6 +200,15 @@
                  :left left))
 
 ;;; zzzzzz ----------------------------------------------------------------
+(defmethod adjust-absolute ((widget rect-base))
+
+  (setf (absolute-x (resizing-point widget)) (+ (~> widget resizing-point parent absolute-x)
+                                                      (~> widget resizing-point x)))
+  (assert (~> widget resizing-point absolute-x) nil "just after")
+
+
+  (setf (absolute-y (resizing-point widget)) (+ (~> widget resizing-point parent absolute-y)
+                                                      (~> widget resizing-point y))))
 
 (defmethod add-child ((lisp-window gui-window:lisp-window) (box rect-window))
   (if (null (gui-window:children lisp-window))
@@ -212,13 +227,7 @@
 (defmethod add-child ((parent-widget rect-base) (child-widget rect-base))
   (setf (~> child-widget resizing-point parent) (~> parent-widget resizing-point))
 
-  (setf (absolute-x (resizing-point child-widget)) (+ (~> parent-widget resizing-point absolute-x)
-                                                      (~> child-widget resizing-point x)))
-  (assert (~> child-widget resizing-point absolute-x) nil "just after")
-
-
-  (setf (absolute-y (resizing-point child-widget)) (+ (~> parent-widget resizing-point absolute-y)
-                                                      (~> child-widget resizing-point y)))
+  (adjust-absolute child-widget)
   (pushnew child-widget (children parent-widget)))
 
 ;;; TODO fix the assertion here
@@ -257,7 +266,8 @@
 
       (add-child widget-a2 widget-a2b1)
       (add-child widget-a2 widget-a2b2))
-    (swank:inspect-in-emacs window-widget :wait T)
+    (warn "added widgets, final inspect")
+  ;  (swank:inspect-in-emacs window-widget :wait T)
     ))
 
 (defmethod window-resize  :before (w h (window resizing-sections-window))
@@ -282,9 +292,17 @@
             (ar (elt ax 0))
             (window-center (/ (right ww) 2))
             (window-right  (right ww)))
-        (setf (resizing-point al) (make-point (+ 0 10) 10))
-        (setf (resizing-point ac) (make-point window-center 60))
-        (setf (resizing-point ar) (make-point (- window-right 10) 10))))))
+
+        (setf (~> al resizing-point x) 10)
+        (setf (~> al resizing-point y) 10)
+        (adjust-absolute al)
+        (setf (~> ac resizing-point x) window-center )
+        (setf (~> ac resizing-point y) 60)
+        (adjust-absolute ac)
+        (setf (~> ar resizing-point x) (- window-right 10))
+        (setf (~> ar resizing-point y) 10)
+        (adjust-absolute ar)
+        ))))
 
 ;;; rendering ==================================================================
 (defmethod render ((widget rect))
