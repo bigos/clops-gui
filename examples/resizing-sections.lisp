@@ -297,6 +297,10 @@
         ))))
 
 ;;; rendering ==================================================================
+
+(defmethod render :before ((widget rect))
+  (adjust-absolute widget))
+
 (defmethod render ((widget rect))
   (warn "zzz ~s" (class-of widget))
 
@@ -310,8 +314,8 @@
     (cairo:fill-path))
 
   (gui-window:set-rgba "red")
-  (cairo:arc (x (resizing-point widget))
-             (y (resizing-point widget))
+  (cairo:arc (absolute-x (resizing-point widget))
+             (absolute-y (resizing-point widget))
              3
              0 (* 2 pi))
 
