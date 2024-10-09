@@ -251,8 +251,8 @@
     (let ((widget-a1   (make-rect '(0 .   10) 0 50 50 0))
           (widget-a2   (make-rect '(150 . 60) 30 30 30 30))
           (widget-a3   (make-rect '(300 . 10) 0 0 50 50))
-          (widget-a2b1 (make-rect '(110 . 20) 0 10 10 0))
-          (widget-a2b2 (make-rect '(130 . 30) 0 10 10 0)))
+          (widget-a2b1 (make-rect '(-20 . -20) 0 10 10 0))
+          (widget-a2b2 (make-rect '(10 . 10) 0 10 10 0)))
       (add-child window-widget widget-a1)
       (add-child window-widget widget-a2)
       (add-child window-widget widget-a3)
@@ -306,7 +306,7 @@
 
   (gui-color:set-rgba
    (if (>= 30 (right widget))
-       "#00BB00A0"
+       "#00BB0080"
        "#aaaa00A0"))
   ;; figure out to draw childrent at relative coordinates
   (let ((rd (to-rectangle widget)))
