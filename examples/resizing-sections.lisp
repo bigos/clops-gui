@@ -194,12 +194,9 @@
 
 ;;; zzzzzz ----------------------------------------------------------------
 (defmethod adjust-absolute ((widget rect-base))
-
+  ;; I wonder if this is only needed on add, move and scale
   (setf (absolute-x (resizing-point widget)) (+ (~> widget resizing-point parent absolute-x)
-                                                      (~> widget resizing-point x)))
-  (assert (~> widget resizing-point absolute-x) nil "just after")
-
-
+                                                (~> widget resizing-point x)))
   (setf (absolute-y (resizing-point widget)) (+ (~> widget resizing-point parent absolute-y)
                                                       (~> widget resizing-point y))))
 
@@ -219,8 +216,8 @@
 
 (defmethod add-child ((parent-widget rect-base) (child-widget rect-base))
   (setf (~> child-widget resizing-point parent) (~> parent-widget resizing-point))
-
   (adjust-absolute child-widget)
+
   (pushnew child-widget (children parent-widget)))
 
 ;;; TODO fix the assertion here
@@ -287,13 +284,10 @@
 
         (setf (~> al resizing-point x) 10)
         (setf (~> al resizing-point y) 10)
-        (adjust-absolute al)
         (setf (~> ac resizing-point x) window-center )
         (setf (~> ac resizing-point y) 60)
-        (adjust-absolute ac)
         (setf (~> ar resizing-point x) (- window-right 10))
         (setf (~> ar resizing-point y) 10)
-        (adjust-absolute ar)
         ))))
 
 ;;; rendering ==================================================================
