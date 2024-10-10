@@ -195,10 +195,10 @@
 ;;; zzzzzz ----------------------------------------------------------------
 (defmethod adjust-absolute ((widget rect-base))
   ;; I wonder if this is only needed on add, move and scale
-  (setf (absolute-x (resizing-point widget)) (+ (~> widget resizing-point parent absolute-x)
-                                                (~> widget resizing-point x)))
-  (setf (absolute-y (resizing-point widget)) (+ (~> widget resizing-point parent absolute-y)
-                                                      (~> widget resizing-point y))))
+  (setf (~> widget resizing-point absolute-x) (+ (~> widget resizing-point parent absolute-x)
+                                                 (~> widget resizing-point x)))
+  (setf (~> widget resizing-point absolute-y) (+ (~> widget resizing-point parent absolute-y)
+                                                 (~> widget resizing-point y))))
 
 (defmethod add-child ((lisp-window gui-window:lisp-window) (box rect-window))
   (if (null (gui-window:children lisp-window))
