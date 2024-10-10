@@ -200,12 +200,12 @@
   (setf (~> widget resizing-point absolute-y) (+ (~> widget resizing-point parent absolute-y)
                                                  (~> widget resizing-point y))))
 
+(defmethod add-child :before((lisp-window gui-window:lisp-window) (box rect-window))
+  (assert (null (gui-window:children lisp-window))))
+
 (defmethod add-child ((lisp-window gui-window:lisp-window) (box rect-window))
-  (if (null (gui-window:children lisp-window))
-      (progn
-        (setf (lisp-window box) lisp-window)
-        (pushnew box (gui-window:children lisp-window)))
-      (error "you can not add more than one widget to the window")))
+  (setf (lisp-window box) lisp-window)
+  (pushnew box (gui-window:children lisp-window)))
 
 (defmethod add-child :before ((parent-widget rect-base) (child-widget rect-base))
   ;; validate presence of required fields
