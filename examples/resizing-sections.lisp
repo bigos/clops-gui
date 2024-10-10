@@ -91,16 +91,19 @@
 (defgeneric to-rectangle (rect)
   (:documentation "convert rect to x,y,width, height used by cairo"))
 
+(defgeneric add-child (parent child-widget)
+  (:documentation "add child to parent container"))
+
 ;;; utilities !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ;; TODO add print-object and better inspector
 
 (progn ;; slot names and printing object
-    (defun slot-names (obj)
-      (~> obj
-          class-of
-          sb-mop:class-slots
-          (mapcar #'sb-mop:slot-definition-name  _)))
+      (defun slot-names (obj)
+        (~> obj
+            class-of
+            sb-mop:class-slots
+            (mapcar #'sb-mop:slot-definition-name  _)))
 
   (defun slot-names-and-classes (obj)
     (loop for the-slot in (slot-names obj)
@@ -219,15 +222,10 @@
   (pushnew child-widget (children parent-widget))
   (adjust-absolute child-widget))
 
-;;; TODO fix the assertion here
 (defmethod add-child :after ((parent-widget rect-base) (child-widget rect-base))
   ;; validate presence of required fields
-  (assert (~> child-widget resizing-point absolute-x) nil "failed in after method")
+  (assert (~> child-widget resizing-point absolute-x))
   (assert (~> child-widget resizing-point absolute-y)))
-
-;; (defmethod add-child ((parent-widget rect) (child-widget rect))
-;;   (setf (~> child-widget resizing-point parent) (~> parent-widget resizing-point))
-;;   (pushnew child-widget (children parent-widget)))
 
 (defmethod initialize-instance :after ((window resizing-sections-window) &rest initargs &key)
   (declare (ignore initargs))
@@ -258,11 +256,12 @@
     (warn "added widgets, final inspect")
   ;  (swank:inspect-in-emacs window-widget :wait T)
     ))
+
 (defmethod window-resize  :before (w h (window resizing-sections-window))
-  (let ((window-widget (car (gui-window:children window))))
-    (assert (typep window-widget 'rect-window))
-    (assert (zerop (up window-widget)))
-    (assert (zerop (left window-widget)))))
+    (let ((window-widget (car (gui-window:children window))))
+      (assert (typep window-widget 'rect-window))
+      (assert (zerop (up window-widget)))
+      (assert (zerop (left window-widget)))))
 
 (defmethod window-resize  (w h (window resizing-sections-window))
   (warn "resizing ~S" (class-of window))
