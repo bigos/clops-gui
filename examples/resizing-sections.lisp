@@ -194,34 +194,27 @@
   (setf (absolute-y (resizing-point widget)) (+ (~> widget resizing-point parent absolute-y)
                                                       (~> widget resizing-point y))))
 
+(defmethod add-child :before ((lisp-window gui-window:lisp-window) (box rect-window))
+  (assert (null (gui-window:children lisp-window))))
+
 (defmethod add-child ((lisp-window gui-window:lisp-window) (box rect-window))
-  (if (null (gui-window:children lisp-window))
-      (progn
-        (setf (lisp-window box) lisp-window)
-        (pushnew box (gui-window:children lisp-window)))
-      (error "you can not add more than one widget to the window")))
+  (setf (lisp-window box) lisp-window)
+  (pushnew box (gui-window:children lisp-window)))
 
 (defmethod add-child :before ((parent-widget rect-base) (child-widget rect-base))
   ;; validate presence of required fields
   (unless (typep parent-widget 'rect-window)
-    (assert (~> parent-widget resizing-point parent)))
-  (assert (~> parent-widget resizing-point absolute-x))
-  (assert (~> parent-widget resizing-point absolute-y)))
+    (assert (~> parent-widget resizing-point parent))))
 
 (defmethod add-child ((parent-widget rect-base) (child-widget rect-base))
   (setf (~> child-widget resizing-point parent) (~> parent-widget resizing-point))
   (pushnew child-widget (children parent-widget)))
 
-;;; TODO fix the assertion here
 (defmethod add-child :after ((parent-widget rect-base) (child-widget rect-base))
   (adjust-absolute child-widget)
   ;; validate presence of required fields
   (assert (~> child-widget resizing-point absolute-x))
   (assert (~> child-widget resizing-point absolute-y)))
-
-;; (defmethod add-child ((parent-widget rect) (child-widget rect))
-;;   (setf (~> child-widget resizing-point parent) (~> parent-widget resizing-point))
-;;   (pushnew child-widget (children parent-widget)))
 
 (defmethod initialize-instance :after ((window resizing-sections-window) &rest initargs &key)
   (declare (ignore initargs))
@@ -252,11 +245,12 @@
     (warn "added widgets, final inspect")
   ;  (swank:inspect-in-emacs window-widget :wait T)
     ))
+
 (defmethod window-resize  :before (w h (window resizing-sections-window))
-  (let ((window-widget (car (gui-window:children window))))
-    (assert (typep window-widget 'rect-window))
-    (assert (zerop (up window-widget)))
-    (assert (zerop (left window-widget)))))
+    (let ((window-widget (car (gui-window:children window))))
+      (assert (typep window-widget 'rect-window))
+      (assert (zerop (up window-widget)))
+      (assert (zerop (left window-widget)))))
 
 (defmethod window-resize  (w h (window resizing-sections-window))
   (warn "resizing ~S" (class-of window))
