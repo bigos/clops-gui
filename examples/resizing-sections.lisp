@@ -186,7 +186,7 @@
                  :down down
                  :left left))
 
-;;; zzzzzz ----------------------------------------------------------------
+;;; add child ------------------------------------------------------------------
 (defmethod adjust-absolute ((widget rect-base))
   ;; I wonder if this is only needed on add, move and scale
   (setf (absolute-x (resizing-point widget)) (+ (~> widget resizing-point parent absolute-x)
@@ -216,6 +216,7 @@
   (assert (~> child-widget resizing-point absolute-x))
   (assert (~> child-widget resizing-point absolute-y)))
 
+;;; zzzzzzz --------------------------------------------------------------------
 (defmethod initialize-instance :after ((window resizing-sections-window) &rest initargs &key)
   (declare (ignore initargs))
   ;; add child
@@ -243,7 +244,7 @@
       (add-child widget-a2 widget-a2b1)
       (add-child widget-a2 widget-a2b2))
     (warn "added widgets, final inspect")
-  ;  (swank:inspect-in-emacs window-widget :wait T)
+                                        ;  (swank:inspect-in-emacs window-widget :wait T)
     ))
 
 (defmethod window-resize  :before (w h (window resizing-sections-window))
