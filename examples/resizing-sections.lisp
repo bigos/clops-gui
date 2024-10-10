@@ -99,11 +99,11 @@
 ;; TODO add print-object and better inspector
 
 (progn ;; slot names and printing object
-      (defun slot-names (obj)
-        (~> obj
-            class-of
-            sb-mop:class-slots
-            (mapcar #'sb-mop:slot-definition-name  _)))
+  (defun slot-names (obj)
+    (~> obj
+        class-of
+        sb-mop:class-slots
+        (mapcar #'sb-mop:slot-definition-name  _)))
 
   (defun slot-names-and-classes (obj)
     (loop for the-slot in (slot-names obj)
