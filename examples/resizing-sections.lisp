@@ -216,9 +216,8 @@
 
 (defmethod add-child ((parent-widget rect-base) (child-widget rect-base))
   (setf (~> child-widget resizing-point parent) (~> parent-widget resizing-point))
-  (adjust-absolute child-widget)
-
-  (pushnew child-widget (children parent-widget)))
+  (pushnew child-widget (children parent-widget))
+  (adjust-absolute child-widget))
 
 ;;; TODO fix the assertion here
 (defmethod add-child :after ((parent-widget rect-base) (child-widget rect-base))
