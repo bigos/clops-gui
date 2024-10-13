@@ -270,15 +270,15 @@
        (setf (~> widget resizing-point x) 10)
        (setf (~> widget resizing-point y) 10))
       (:a2
-       (let ((ac widget))
-         (setf (~> ac resizing-point x) (/ (width parent) 2) )
-         (setf (~> ac resizing-point y) 60)
-         (setf (~> ac down) (~> parent height (* _ 0.80)))))
+       (setf (~> widget resizing-point x) (/ (width parent) 2) )
+       (setf (~> widget resizing-point y) 60)
+
+       (setf (~> widget down) (~> parent height (* _ 0.80))))
       (:a3
-       (let ((ar widget))
-         (setf (~> ar resizing-point x) (- (width parent) 10))
-         (setf (~> ar resizing-point y) 10)
-         (setf (~> ar left) (~> parent width (* _ 0.40)))))
+       (setf (~> widget resizing-point x) (- (width parent) 10))
+       (setf (~> widget resizing-point y) 10)
+
+       (setf (~> widget left) (~> parent width (* _ 0.40))))
       (:a2b1)
       (:a2b2))))
 
