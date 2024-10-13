@@ -295,12 +295,12 @@
     (apply 'cairo:rectangle rd)
     (cairo:fill-path))
 
+  ;; resizing point circle
   (gui-window:set-rgba "red")
   (cairo:arc (absolute-x (resizing-point widget))
              (absolute-y (resizing-point widget))
              3
              0 (* 2 pi))
-
   (cairo:fill-path)
 
   (call-next-method))
