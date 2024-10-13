@@ -91,6 +91,9 @@
 (defgeneric to-rectangle (rect)
   (:documentation "convert rect to x,y,width, height used by cairo"))
 
+(defgeneric width (rect))
+(defgeneric height (rect))
+
 ;;; utilities !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ;; TODO add print-object and better inspector
@@ -154,7 +157,11 @@
   )
 
 ;;; defmethods !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+(defmethod width ((widget rect-base))
+  (+ (right widget) (left widget)))
 
+(defmethod height ((widget rect-base))
+  (+ (up widget) (down widget)))
 ;;; components !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ;;; drawing is a component used by GTK to draw on canvas
@@ -164,8 +171,8 @@
 
 ;;; constructors ---------------------------------------------------------------
 (defun make-point (x y)
-    (make-instance 'point :x x
-                          :y y))
+  (make-instance 'point :x x
+                        :y y))
 
 (defun make-rect (id rp up right down left)
   (make-instance 'rect
@@ -264,14 +271,14 @@
        (setf (~> widget resizing-point y) 10))
       (:a2
        (let ((ac widget))
-         (setf (~> ac resizing-point x) (/ (right parent) 2) )
+         (setf (~> ac resizing-point x) (/ (width parent) 2) )
          (setf (~> ac resizing-point y) 60)
-         (setf (~> ac down) (~> parent down (* _ 0.80)))))
+         (setf (~> ac down) (~> parent height (* _ 0.80)))))
       (:a3
        (let ((ar widget))
-         (setf (~> ar resizing-point x) (- (right parent) 10))
+         (setf (~> ar resizing-point x) (- (width parent) 10))
          (setf (~> ar resizing-point y) 10)
-         (setf (~> ar left) (~> parent right (* _ 0.40)))))
+         (setf (~> ar left) (~> parent width (* _ 0.40)))))
       (:a2b1)
       (:a2b2))))
 
