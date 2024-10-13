@@ -82,7 +82,7 @@
 ;; rect - normal widget
 ;; belongs to rect-window or rect
 ;; different rects may have diffferent properties that decide how it is resized and
-;; how children are made to resize, also handles wrapping and truncating of content
+;; hrow children are made to resize, also handles wrapping and truncating of content
 (defclass/std rect (rect-base)
   ())
 
@@ -263,8 +263,10 @@
         (setf (~> al resizing-point y) 10)
         (setf (~> ac resizing-point x) window-center )
         (setf (~> ac resizing-point y) 60)
+        (setf (~> ac down) (~> ww down (* _ 0.80)))
         (setf (~> ar resizing-point x) (- window-right 10))
         (setf (~> ar resizing-point y) 10)
+        (setf (~> ar left) (~> ww right (* _ 0.40)))
         ))))
 
 ;;; rendering ==================================================================
@@ -290,7 +292,7 @@
    (if (>= 30 (right widget))
        "#00BB0080"
        "#aaaa00A0"))
-  ;; figure out to draw childrent at relative coordinates
+  ;; rectangle at absolute coordinates
   (let ((rd (to-rectangle widget)))
     (apply 'cairo:rectangle rd)
     (cairo:fill-path))
