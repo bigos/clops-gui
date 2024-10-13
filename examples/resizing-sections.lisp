@@ -154,17 +154,6 @@
   )
 
 ;;; defmethods !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-(defmethod to-rectangle ((rect rect-base))
-  (let ((rs (resizing-point rect)))
-    (let ((x (- (absolute-x rs)
-                (left rect)))
-          (y (- (absolute-y rs)
-                (up rect)))
-          (width (+ (right rect)
-                    (left rect)))
-          (height (+ (up rect)
-                     (down rect))))
-      (list x y width height))))
 
 ;;; components !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -279,6 +268,17 @@
         ))))
 
 ;;; rendering ==================================================================
+(defmethod to-rectangle ((rect rect-base))
+  (let ((rs (resizing-point rect)))
+    (let ((x (- (absolute-x rs)
+                (left rect)))
+          (y (- (absolute-y rs)
+                (up rect)))
+          (width (+ (right rect)
+                    (left rect)))
+          (height (+ (up rect)
+                     (down rect))))
+      (list x y width height))))
 
 (defmethod render :before ((widget rect))
   (adjust-absolute widget))
