@@ -84,7 +84,7 @@
 ;; different rects may have diffferent properties that decide how it is resized and
 ;; hrow children are made to resize, also handles wrapping and truncating of content
 (defclass/std rect (rect-base)
-  ())
+  ((id :doc "we need ability to tell the identity of the object")))
 
 
 ;;; interfaces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -167,8 +167,9 @@
     (make-instance 'point :x x
                           :y y))
 
-(defun make-rect (rp up right down left)
+(defun make-rect (id rp up right down left)
   (make-instance 'rect
+                 :id id
                  :resizing-point (make-point (car rp) (cdr rp))
                  :up up
                  :right right
@@ -221,11 +222,11 @@
                                       :down  nil
                                       :left 0)))
     (add-child window window-widget)
-    (let ((widget-a1   (make-rect '(0 .   10) 0 50 50 0))
-          (widget-a2   (make-rect '(150 . 60) 30 30 30 30))
-          (widget-a3   (make-rect '(300 . 10) 0 0 50 50))
-          (widget-a2b1 (make-rect '(-20 . -20) 0 10 10 0))
-          (widget-a2b2 (make-rect '(10 . 10) 0 10 10 0)))
+    (let ((widget-a1   (make-rect :a1   '(0 .   10)  0 50 50 0))
+          (widget-a2   (make-rect :a2   '(150 . 60)  30 30 30 30))
+          (widget-a3   (make-rect :a3   '(300 . 10)  0 0 50 50))
+          (widget-a2b1 (make-rect :a2b1 '(-20 . -20) 0 10 10 0))
+          (widget-a2b2 (make-rect :a2b2 '(10 . 10)   0 10 10 0)))
       (add-child window-widget widget-a1)
       (add-child window-widget widget-a2)
       (add-child window-widget widget-a3)
@@ -250,37 +251,46 @@
     (if t
         (describe window-widget))))
 
-(defmethod move-top-widgets ((window gui-window:lisp-window))
-  (let ((ww (first (gui-window:children window))))
-    (let ((ax (~> ww children)))
-      (let ((al (elt ax 2))
-            (ac (elt ax 1))
-            (ar (elt ax 0))
-            (window-center (/ (right ww) 2))
-            (window-right  (right ww)))
+;;; moving =====================================================================
 
-        (setf (~> al resizing-point x) 10)
-        (setf (~> al resizing-point y) 10)
-        (setf (~> ac resizing-point x) window-center )
-        (setf (~> ac resizing-point y) 60)
-        (setf (~> ac down) (~> ww down (* _ 0.80)))
-        (setf (~> ar resizing-point x) (- window-right 10))
-        (setf (~> ar resizing-point y) 10)
-        (setf (~> ar left) (~> ww right (* _ 0.40)))
-        ))))
+(defmethod move-widget ((parents T) (widget rect-window))
+  (warn "doing nothing in rect-window moving"))
+
+(defmethod move-widget ((parents T) (widget rect))
+  (let ((parent (first parents)))
+    (ecase (~> widget id)
+      (:a1
+       (setf (~> widget resizing-point x) 10)
+       (setf (~> widget resizing-point y) 10))
+      (:a2
+       (let ((ac widget))
+         (setf (~> ac resizing-point x) (/ (right parent) 2) )
+         (setf (~> ac resizing-point y) 60)
+         (setf (~> ac down) (~> parent down (* _ 0.80)))))
+      (:a3
+       (let ((ar widget))
+         (setf (~> ar resizing-point x) (- (right parent) 10))
+         (setf (~> ar resizing-point y) 10)
+         (setf (~> ar left) (~> parent right (* _ 0.40)))))
+      (:a2b1)
+      (:a2b2))))
+
+(defmethod move-widget :after ((parents T) (widget T))
+  (loop for c in (~> widget children)
+        do (move-widget (cons widget parents) c)))
 
 ;;; rendering ==================================================================
 (defmethod to-rectangle ((rect rect-base))
-  (let ((rs (resizing-point rect)))
-    (let ((x (- (absolute-x rs)
-                (left rect)))
-          (y (- (absolute-y rs)
-                (up rect)))
-          (width (+ (right rect)
-                    (left rect)))
-          (height (+ (up rect)
-                     (down rect))))
-      (list x y width height))))
+    (let ((rs (resizing-point rect)))
+      (let ((x (- (absolute-x rs)
+                  (left rect)))
+            (y (- (absolute-y rs)
+                  (up rect)))
+            (width (+ (right rect)
+                      (left rect)))
+            (height (+ (up rect)
+                       (down rect))))
+        (list x y width height))))
 
 (defmethod render :before ((widget rect))
   (adjust-absolute widget))
@@ -397,7 +407,12 @@
     (:resize
      (destructuring-bind ((w h)) args
        (window-resize w h lisp-window)
-       (move-top-widgets lisp-window)))
+
+       (move-widget (list lisp-window)
+                    (first (gui-window:children lisp-window)))
+
+       ;; (move-widgets lisp-window)
+       ))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
