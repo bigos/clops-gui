@@ -273,14 +273,16 @@
        (setf (~> widget resizing-point x) (/ (width parent) 2) )
        (setf (~> widget resizing-point y) 60)
 
-       (setf (~> widget down) (~> parent height (* _ 0.80))))
+       (setf (~> widget down) (~> parent height (- _ (+ 50 (up widget))))))
       (:a3
        (setf (~> widget resizing-point x) (- (width parent) 10))
        (setf (~> widget resizing-point y) 10)
 
        (setf (~> widget left) (~> parent width (* _ 0.40))))
       (:a2b1)
-      (:a2b2))))
+      (:a2b2
+       (setf (~> widget resizing-point y) (- (height parent) 50))
+       ))))
 
 (defmethod move-widget :after ((parents T) (widget T))
   (loop for c in (~> widget children)
