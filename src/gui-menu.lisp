@@ -1,3 +1,4 @@
+(declaim (optimize (speed 0) (safety 3) (debug 3)))
 ;; =================== package gui-menu ========================================
 ;; https://docs.gtk.org/gio/ctor.MenuItem.new_section.html ; ===================
 
