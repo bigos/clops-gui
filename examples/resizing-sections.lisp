@@ -213,6 +213,9 @@
   (assert (~> child-widget resizing-point absolute-x))
   (assert (~> child-widget resizing-point absolute-y)))
 
+(defmethod find-child ((parent-widget rect-base) (child-id T))
+  (first (remove-if-not (lambda (c) (eq (id c) child-id)) (children parent-widget))))
+
 ;;; zzzzzzz --------------------------------------------------------------------
 (defmethod initialize-instance :after ((window resizing-sections-window) &rest initargs &key)
   (declare (ignore initargs))
@@ -266,7 +269,7 @@
 (defmethod move-widget ((parents T) (widget rect))
   (let ((parent (first parents)))
     ;; find sibling :a2
-    (let ((pc2 (first (remove-if-not (lambda (c) (eq (id c) :a2)) (children parent)))))
+    (let ((pc2 (find-child parent :a2)))
       (ecase (~> widget id)
         (:a1
          (setf (~> widget resizing-point x) 10)
@@ -280,6 +283,7 @@
          (warn "a3 widget - parent ~S - children.prev ~S" parent pc2)
          (setf (~> widget resizing-point x) (- (width parent) 10))
          (setf (~> widget resizing-point y) 10)
+
 
          (setf (~> widget left) (~> parent width (* _ 0.40))))
         (:a2b1)
