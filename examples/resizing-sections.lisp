@@ -265,24 +265,27 @@
 
 (defmethod move-widget ((parents T) (widget rect))
   (let ((parent (first parents)))
-    (ecase (~> widget id)
-      (:a1
-       (setf (~> widget resizing-point x) 10)
-       (setf (~> widget resizing-point y) 10))
-      (:a2
-       (setf (~> widget resizing-point x) (/ (width parent) 2) )
-       (setf (~> widget resizing-point y) 60)
+    ;; find sibling :a2
+    (let ((pc2 (first (remove-if-not (lambda (c) (eq (id c) :a2)) (children parent)))))
+      (ecase (~> widget id)
+        (:a1
+         (setf (~> widget resizing-point x) 10)
+         (setf (~> widget resizing-point y) 10))
+        (:a2
+         (setf (~> widget resizing-point x) (/ (width parent) 2) )
+         (setf (~> widget resizing-point y) 60)
 
-       (setf (~> widget down) (~> parent height (- _ (+ 50 (up widget))))))
-      (:a3
-       (setf (~> widget resizing-point x) (- (width parent) 10))
-       (setf (~> widget resizing-point y) 10)
+         (setf (~> widget down) (~> parent height (- _ (+ 50 (up widget))))))
+        (:a3
+         (warn "a3 widget - parent ~S - children.prev ~S" parent pc2)
+         (setf (~> widget resizing-point x) (- (width parent) 10))
+         (setf (~> widget resizing-point y) 10)
 
-       (setf (~> widget left) (~> parent width (* _ 0.40))))
-      (:a2b1)
-      (:a2b2
-       (setf (~> widget resizing-point y) (- (height parent) 50))
-       ))))
+         (setf (~> widget left) (~> parent width (* _ 0.40))))
+        (:a2b1)
+        (:a2b2
+         (setf (~> widget resizing-point y) (- (height parent) 50))
+         )))))
 
 (defmethod move-widget :after ((parents T) (widget T))
   (loop for c in (~> widget children)
