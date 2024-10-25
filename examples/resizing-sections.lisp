@@ -234,7 +234,7 @@
     (add-child window window-widget)
     (let ((widget-a1   (make-rect :a1   '(0 .   10)  0 50 50 0))
           (widget-a2   (make-rect :a2   '(150 . 60)  30 30 30 30))
-          (widget-a3   (make-rect :a3   '(300 . 10)  0 0 50 50))
+          (widget-a3   (make-rect :a3   '(300 . 10)  0 0 50 350))
           (widget-a2b1 (make-rect :a2b1 '(-20 . -20) 0 10 10 0))
           (widget-a2b2 (make-rect :a2b2 '(10 . 10)   0 10 10 0)))
       (add-child window-widget widget-a1)
@@ -285,7 +285,10 @@
          (setf (~> widget resizing-point y) 10)
 
 
-         (setf (~> widget left) (~> parent width (* _ 0.40))))
+         (setf (~> widget left) (-
+                                 (~> widget resizing-point absolute-x)
+                                 (~> pc2 resizing-point absolute-x)
+                                 50)))
         (:a2b1)
         (:a2b2
          (setf (~> widget resizing-point y) (- (height parent) 50))
