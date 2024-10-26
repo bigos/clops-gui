@@ -286,8 +286,8 @@
 
 
          (setf (~> widget left) (-
-                                 (~> widget resizing-point absolute-x)
-                                 (~> pc2 resizing-point absolute-x)
+                                 (~> widget resizing-point x)
+                                 (~> pc2 resizing-point x)
                                  50)))
         (:a2b1)
         (:a2b2
