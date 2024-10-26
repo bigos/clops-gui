@@ -273,7 +273,12 @@
       (ecase (~> widget id)
         (:a1
          (setf (~> widget resizing-point x) 10)
-         (setf (~> widget resizing-point y) 10))
+         (setf (~> widget resizing-point y) 10)
+
+         (setf (~> widget right) (-
+                                  (~> pc2 resizing-point x)
+                                  (~> widget resizing-point x)
+                                  50)))
         (:a2
          (setf (~> widget resizing-point x) (/ (width parent) 2) )
          (setf (~> widget resizing-point y) 60)
