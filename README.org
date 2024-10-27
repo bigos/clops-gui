@@ -59,3 +59,13 @@ file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
 *** remove gui-box from gui-window
 [[file:src/gui-window.lisp::(defmethod add-child]] and the method below need to be
 somehow moved to gui-box
+
+** Great ideas
+
+*** Archy
+https://en.wikipedia.org/wiki/Archy_(software)
+
+#+begin_quote
+Archy has been compared as similar to the Emacs text editor, although its design
+begins from a clean slate.
+#+end_quote
