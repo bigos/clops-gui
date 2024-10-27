@@ -218,7 +218,7 @@
 
 ;;; zzzzzzz --------------------------------------------------------------------
 (defmethod initialize-instance :after ((window resizing-sections-window) &rest initargs &key)
-  (declare (ignore initargs))
+    (declare (ignore initargs))
   ;; add child
   (let ((window-widget (make-instance 'rect-window
                                       :resizing-point (make-instance 'point
@@ -233,7 +233,7 @@
                                       :left 0)))
     (add-child window window-widget)
     (let ((widget-a1   (make-rect :a1   '(0 .   10)  0 50 50 0))
-          (widget-a2   (make-rect :a2   '(150 . 60)  30 30 30 30))
+          (widget-a2   (make-rect :a2   '(150 . 30)  30 30 30 30))
           (widget-a3   (make-rect :a3   '(300 . 10)  0 0 50 50))
           (widget-a4   (make-rect :a4   '(180 . 80)  0 50 50 0))
           (widget-a2b1 (make-rect :a2b1 '(-20 . -20) 0 10 10 0))
@@ -283,9 +283,9 @@
                                   50)))
         (:a2
          (setf (~> widget resizing-point x) (/ (width parent) 2) )
-         (setf (~> widget resizing-point y) 60)
+         (setf (~> widget resizing-point y) 40)
 
-         (setf (~> widget down) (~> parent height (- _ (+ 50 (up widget))))))
+         (setf (~> widget down) (~> parent height (- _ (+ 70 (up widget))))))
         (:a3
          (warn "a3 widget - parent ~S - children.prev ~S" parent pc2)
          (setf (~> widget resizing-point x) (- (width parent) 10))
@@ -301,8 +301,9 @@
          (setf (~> widget resizing-point y) 80)
 
          (setf (~> widget right) (width (find-child parent :a3)))
-         (setf (~> widget down) (- (height (find-child parent :a2))
-                                   50)))
+         (setf (~> widget down) (- (height parent)
+                                   80
+                                   60)))
         (:a2b1)
         (:a2b2
          (setf (~> widget resizing-point y) (- (height parent) 50))
