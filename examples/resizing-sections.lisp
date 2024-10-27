@@ -236,12 +236,15 @@
           (widget-a2   (make-rect :a2   '(150 . 30)  30 30 30 30))
           (widget-a3   (make-rect :a3   '(300 . 10)  0 0 50 50))
           (widget-a4   (make-rect :a4   '(180 . 80)  0 50 50 0))
+          (widget-a5   (make-rect :a5   '(0 . 340)   0 50 50 0))
           (widget-a2b1 (make-rect :a2b1 '(-20 . -20) 0 10 10 0))
           (widget-a2b2 (make-rect :a2b2 '(10 . 10)   0 10 10 0)))
       (add-child window-widget widget-a1)
       (add-child window-widget widget-a2)
       (add-child window-widget widget-a3)
       (add-child window-widget widget-a4)
+      (add-child window-widget widget-a5)
+
 
       (add-child widget-a2 widget-a2b1)
       (add-child widget-a2 widget-a2b2))
@@ -304,6 +307,14 @@
          (setf (~> widget down) (- (height parent)
                                    80
                                    60)))
+        (:a5
+         (setf (~> widget resizing-point x) 10)
+         (setf (~> widget resizing-point y) (- (height parent)
+                                               50))
+
+         (setf (~> widget right) (- (width parent) 20))
+         (setf (~> widget down) 40)
+         )
         (:a2b1)
         (:a2b2
          (setf (~> widget resizing-point y) (- (height parent) 50))
