@@ -313,8 +313,7 @@
                                                20))
 
          (setf (~> widget right) (- (width parent) 20))
-         (setf (~> widget down) 40)
-         )
+         (setf (~> widget down) 40))
         (:a2b1)
         (:a2b2
          (setf (~> widget resizing-point y) (- (height parent) 50))
