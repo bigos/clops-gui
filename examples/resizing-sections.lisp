@@ -288,29 +288,32 @@
          (setf (~> widget resizing-point x) (/ (width parent) 2) )
          (setf (~> widget resizing-point y) 40)
 
-         (setf (~> widget down) (~> parent height (- _ (+ 70 (up widget))))))
+         (setf (~> widget down) (~> parent height (- _ (+ 70 (up widget)))))
+         (progn
+           (move-widget parents (find-child parent :a1))
+           (move-widget parents (find-child parent :a3))
+           (move-widget parents (find-child parent :a4))
+           (move-widget parents (find-child parent :a5))))
         (:a3
          (setf (~> widget resizing-point x) (- (width parent) 10))
          (setf (~> widget resizing-point y) 10)
 
 
-         (setf (~> widget left) (- (/ (width parent) 2) 60)))
+         (setf (~> widget left) (- (~> pc2 resizing-point x)
+                                   (~> pc2 width))))
         (:a4
-         (setf (~> widget resizing-point x) (+ (/ (width parent) 2) 50) )
+         (setf (~> widget resizing-point x) (+ (~> pc2 resizing-point x) 50) )
          (setf (~> widget resizing-point y) 80)
 
          (setf (~> widget right) (- (/ (width parent) 2) 60))
-         (setf (~> widget down) (- (height parent)
-                                   80
-                                   60)))
+         (setf (~> widget down) (- (~> pc2 height) 70)))
         (:a5
          (setf (~> widget resizing-point x) 10)
-         (setf (~> widget resizing-point y) (- (height parent)
-                                               50))
+         (setf (~> widget resizing-point y) (+ (~> pc2 height)
+                                               20))
 
          (setf (~> widget right) (- (width parent) 20))
-         (setf (~> widget down) 40)
-         )
+         (setf (~> widget down) 40))
         (:a2b1)
         (:a2b2
          (setf (~> widget resizing-point y) (- (height parent) 50))
