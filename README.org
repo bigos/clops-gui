@@ -52,6 +52,7 @@ https://www.cliki.net/naming+conventions
 https://softwareengineering.stackexchange.com/questions/363084/use-labels-or-nested-flet
 
 *** linting
+ not so good, rather disappointing
 
 #+begin_example
 CL-USER> (ql:quickload :sblint)
