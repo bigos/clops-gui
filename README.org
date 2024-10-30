@@ -51,6 +51,14 @@ https://www.cliki.net/naming+conventions
 
 https://softwareengineering.stackexchange.com/questions/363084/use-labels-or-nested-flet
 
+*** linting
+
+#+begin_example
+CL-USER> (ql:quickload :sblint)
+CL-USER> (sblint:run-lint-directory "~/Programming/Lisp/clops-gui/")
+#+end_example
+
+
 ** notes
 
 *** moving to app
