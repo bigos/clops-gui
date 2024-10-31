@@ -9,6 +9,7 @@
 ;; (load "~/Programming/Lisp/clops-gui/examples/resizing-sections.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
 (ql:quickload '(:clops-gui) :silent nil)
+(ql:quickload '(:access))
 
 ;;; package ================================================================
 (defpackage #:resizing-sections
