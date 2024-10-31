@@ -52,8 +52,7 @@
 ;;; classes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ;;; existing classes gui-app and gui-window
-(defclass/std resizing-sections-window (gui-window:lisp-window)
-  ((widgets :std nil)))
+(defclass/std resizing-sections-window (gui-window:lisp-window) (()))
 
 ;; TODO add classes for new implementation of boxes
 
