@@ -48,11 +48,12 @@
 ;; component may have specific responsibilities
 ;; interface defined the behaviour of the component from the standpoint of the client
 
-
+(defparameter *model* nil)
 ;;; classes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ;;; existing classes gui-app and gui-window
-(defclass/std resizing-sections-window (gui-window:lisp-window) (()))
+(defclass/std resizing-sections-window (gui-window:lisp-window)
+  ((widgets :std nil)))
 
 ;; TODO add classes for new implementation of boxes
 
@@ -248,7 +249,9 @@
       (add-child window-widget widget-a5)
 
       (add-child widget-a2 widget-a2b1)
-      (add-child widget-a2 widget-a2b2))
+      (add-child widget-a2 widget-a2b2)
+
+      (setf (access:accesses *model* '(:widget-a2 :type :alist)) widget-a2))
     (warn "added widgets, final inspect")
                                         ;  (swank:inspect-in-emacs window-widget :wait T)
     ))
