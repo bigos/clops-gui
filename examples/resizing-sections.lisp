@@ -346,9 +346,12 @@
   (warn "zzz ~s" (class-of widget))
 
   (gui-color:set-rgba
-   (if (>= 30 (right widget))
-       "#00BB0080"
-       "#aaaa00A0"))
+   (if (eql :a2 (id widget))
+       (progn
+         "#AA2211A0")
+       (if (>= 30 (right widget))
+           "#00BB0080"
+           "#aaaa00A0")))
   ;; rectangle at absolute coordinates
   (let ((rd (to-rectangle widget)))
     (apply 'cairo:rectangle rd)
