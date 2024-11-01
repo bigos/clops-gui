@@ -251,8 +251,9 @@
 
       (add-child widget-a2 widget-a2b1)
       (add-child widget-a2 widget-a2b2)
-
-      (setf (access:accesses *model* '(:widget-a2 :type :alist)) widget-a2))
+      (warn "!!!!!!!!!!!!! model before ~S" *model*)
+      (setf (access:accesses *model* '(:widget-a2 :type :alist)) widget-a2)
+      (warn "!!!!!!!!!!!!! model after ~S" *model*))
     (warn "added widgets, final inspect")
                                         ;  (swank:inspect-in-emacs window-widget :wait T)
     ))
@@ -328,24 +329,43 @@
   (loop for c in (~> widget children)
         do (move-widget (cons widget parents) c)))
 
+(defmethod resizify ((lisp-window resizing-sections-window) key-name)
+  (warn "resizifying ~S" key-name)
+  (let ((widget (access:accesses *model* '(:widget-a2 :type :alist)))
+        (step 5))
+    (warn "============= Widget ~S" widget)
+    (warn "!!!!!!!!!!!!! model in action ~S" *model*)
+
+  (when (and widget
+             (~> widget down)
+             (~> widget right))
+    (cond ((equal key-name "Up")
+           (setf (~> widget down) (- (~> widget down) step)))
+          ((equal key-name "Right")
+           (setf (~> widget down) (+ (~> widget right) step)))
+          ((equal key-name "Down")
+           (setf (~> widget down) (+ (~> widget down) step)))
+          ((equal key-name "Left")
+           (setf (~> widget down) (- (~> widget right) step)))))))
+
 ;;; rendering ==================================================================
 (defmethod to-rectangle ((rect rect-base))
-    (let ((rs (resizing-point rect)))
-      (let ((x (- (absolute-x rs)
-                  (left rect)))
-            (y (- (absolute-y rs)
-                  (up rect)))
-            (width (+ (right rect)
-                      (left rect)))
-            (height (+ (up rect)
-                       (down rect))))
-        (list x y width height))))
+  (let ((rs (resizing-point rect)))
+    (let ((x (- (absolute-x rs)
+                (left rect)))
+          (y (- (absolute-y rs)
+                (up rect)))
+          (width (+ (right rect)
+                    (left rect)))
+          (height (+ (up rect)
+                     (down rect))))
+      (list x y width height))))
 
 (defmethod render :before ((widget rect))
   (adjust-absolute widget))
 
 (defmethod render ((widget rect))
-  (warn "zzz ~s" (class-of widget))
+  ;; (warn "zzz ~s" (class-of widget))
 
   (let ((mouse-coordinates (~> gui-app:*lisp-app* gui-app:mouse-coordinates)))
 
@@ -377,8 +397,6 @@
     (call-next-method)))
 
 (defmethod render ((widget T))
-  (warn "going to render ~s" (class-of widget))
-
   (loop for c in (children widget)
         do (render c)))
 
@@ -499,7 +517,11 @@
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
-       ))
+       (when (or (equal key-name "Up")
+                 (equal key-name "Right")
+                 (equal key-name "Down")
+                 (equal key-name "Left"))
+         (resizify lisp-window key-name))))
     (otherwise
      (warn "not handled event ~S ~S" event args)))
 
