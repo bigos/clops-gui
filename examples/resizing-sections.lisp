@@ -163,6 +163,8 @@
 
 (defmethod height ((widget rect-base))
   (+ (up widget) (down widget)))
+
+
 ;;; components !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ;;; drawing is a component used by GTK to draw on canvas
@@ -345,33 +347,58 @@
 (defmethod render ((widget rect))
   (warn "zzz ~s" (class-of widget))
 
-  (gui-color:set-rgba
-   (if (eql :a2 (id widget))
-       (progn
-         "#AA2211A0")
-       (if (>= 30 (right widget))
-           "#00BB0080"
-           "#aaaa00A0")))
-  ;; rectangle at absolute coordinates
-  (let ((rd (to-rectangle widget)))
-    (apply 'cairo:rectangle rd)
-    (cairo:fill-path))
+  (let ((mouse-coordinates (~> gui-app:*lisp-app* gui-app:mouse-coordinates)))
 
-  ;; resizing point circle
-  (gui-window:set-rgba "red")
-  (cairo:arc (absolute-x (resizing-point widget))
-             (absolute-y (resizing-point widget))
-             3
-             0 (* 2 pi))
-  (cairo:fill-path)
+    (gui-color:set-rgba
+     (if (eql :a2 (id widget))
+         (if (over-widget widget mouse-coordinates)
+             "#22AA11A0"
+             "#AA2211A0")
+         (if (>= 30 (right widget))
+             "#00BB0080"
+             "#aaaa00A0")))
+    ;; rectangle at absolute coordinates
+    (let ((rd (to-rectangle widget)))
+      (apply 'cairo:rectangle rd)
+      (cairo:fill-path))
 
-  (call-next-method))
+    ;; resizing point circle
+    (gui-window:set-rgba "red")
+    (cairo:arc (absolute-x (resizing-point widget))
+               (absolute-y (resizing-point widget))
+               3
+               0 (* 2 pi))
+    (cairo:fill-path)
+
+    (call-next-method)))
 
 (defmethod render ((widget T))
   (warn "going to render ~s" (class-of widget))
 
   (loop for c in (children widget)
         do (render c)))
+
+(defmethod over-widget ((rect rect) mouse-coordinates)
+  (let ((rs (resizing-point rect))
+        (mx (car mouse-coordinates))
+        (my (cdr mouse-coordinates)))
+    (let ((tx (- (absolute-x rs)
+                 (left rect)))
+          (ty (- (absolute-y rs)
+                 (up rect)))
+          (bx (+ (absolute-x rs)
+                 (right rect)))
+          (by (+ (absolute-y rs)
+                 (down rect))))
+      (warn "hmm ~S"
+            (list tx ty bx by))
+      (warn "mouse coordinates ~S" mouse-coordinates)
+      (warn "widget object ~S" rect)
+      (and mouse-coordinates
+           (>= mx tx)
+           (>= my ty)
+           (<= mx bx)
+           (<= my by)))))
 
 ;;; drawing ====================================================================
 
@@ -481,7 +508,8 @@
    gui-events:*client-fn-process-event* 'resizing-sections::process-event
    gui-window-gtk:*initial-window-width*    600
    gui-window-gtk:*initial-window-height*   400
-   gui-window-gtk:*initial-title*           "Resizing Sections")
+   gui-window-gtk:*initial-title*           "Resizing Sections"
+   (access:accesses *model* '(:number-1 :type :alist)) 1)
 
   (gui-window-gtk:window (make-instance 'resizing-sections-window)))
 
