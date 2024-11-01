@@ -352,7 +352,11 @@
     (gui-color:set-rgba
      (if (eql :a2 (id widget))
          (if (over-widget widget mouse-coordinates)
-             "#22AA11A0"
+             (cond
+               ((zerop (gui-app:mouse-button gui-app:*lisp-app*))
+                "#4422FFA0")
+               (t
+                "#2222AAA0"))
              "#AA2211A0")
          (if (>= 30 (right widget))
              "#00BB0080"
@@ -476,7 +480,9 @@
     (:focus-leave)
     (:pressed
      (destructuring-bind ((button x y)) args
-       (declare (ignore button x y))
+       (warn "mouse button ~S ~S ~S" button x y)
+       (gui-app:mouse-button-pressed button)
+
        ))
     (:released
      (gui-app:mouse-button-released))
