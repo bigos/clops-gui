@@ -510,8 +510,6 @@
      (destructuring-bind ((w h)) args
        (window-resize w h lisp-window)
 
-       (move-widget (list lisp-window)
-                    (first (gui-window:children lisp-window)))
 
        ;; (move-widgets lisp-window)
        ))
@@ -527,6 +525,8 @@
      (warn "not handled event ~S ~S" event args)))
 
   ;; redrawing ------------------------------
+  (move-widget (list lisp-window)
+               (first (gui-window:children lisp-window)))
   (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
 
 ;;; main =======================================================================
