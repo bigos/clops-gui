@@ -342,11 +342,12 @@
     (cond ((equal key-name "Up")
            (setf (~> widget down) (- (~> widget down) step)))
           ((equal key-name "Right")
-           (setf (~> widget down) (+ (~> widget right) step)))
+           (setf (~> widget right) (+ (~> widget right) step)))
           ((equal key-name "Down")
            (setf (~> widget down) (+ (~> widget down) step)))
           ((equal key-name "Left")
-           (setf (~> widget down) (- (~> widget right) step)))))))
+           (setf (~> widget right) (- (~> widget right) step))))
+    (warn "resized >>> ~S ~S >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" (~> widget right) (~> widget down)))))
 
 ;;; rendering ==================================================================
 (defmethod to-rectangle ((rect rect-base))
