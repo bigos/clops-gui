@@ -280,7 +280,7 @@
 (defmethod move-widget ((parents T) (widget rect))
   (let ((parent (first parents)))
     ;; find sibling :a2
-    (let ((pc2 (find-child parent :a2)))
+    (let ((pc2 (access:accesses *model* '(:widget-a2 :type :alist))))
       (ecase (~> widget id)
         (:a1
          (setf (~> widget resizing-point x) 10)
@@ -308,7 +308,7 @@
          (setf (~> widget left) (- (~> pc2 resizing-point x)
                                    (~> pc2 width))))
         (:a4
-         (setf (~> widget resizing-point x) (+ (~> pc2 resizing-point x) 50) )
+         (setf (~> widget resizing-point x) (+ (~> pc2 resizing-point x) (~> pc2 width) -10))
          (setf (~> widget resizing-point y) 80)
 
          (setf (~> widget right) (- (/ (width parent) 2) 60))
