@@ -294,7 +294,6 @@
          (setf (~> widget resizing-point x) (/ (width parent) 2) )
          (setf (~> widget resizing-point y) 40)
 
-         (setf (~> widget down) (~> parent height (- _ (+ 70 (up widget)))))
          (progn
            (move-widget parents (find-child parent :a1))
            (move-widget parents (find-child parent :a3))
