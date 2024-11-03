@@ -88,6 +88,8 @@
     (otherwise
      (warn "not handled event ~S ~S" event args)))
 
+  ;; moving widgets -------------------------
+  ;; (warn "implement moving widgets in response to actions)
   ;; redrawing ------------------------------
   (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
 
