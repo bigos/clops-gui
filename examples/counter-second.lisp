@@ -18,6 +18,8 @@
 
 (in-package #:counter-second)
 
+;;; code =======================================================================
+(defparameter *model* nil)
 (defclass/std counter-second-window (gui-window:lisp-window) (()))
 
 ;;; drawing ====================================================================
@@ -41,6 +43,11 @@
         (gui-window:set-rgba "green")
         (gui-window:set-rgba "red"))
     (cairo:show-text (format nil "motion ~A" cmotion)))
+
+  (cairo:set-font-size 30)
+  (cairo:move-to 10 150)
+  (gui-window:set-rgba "blue")
+  (cairo:show-text (format nil "~A" (access:accesses *model* '(:counter :type :alist))))
 
   ;; pink square follows the mouse
   (let ((app gui-app:*lisp-app*))
@@ -96,6 +103,9 @@
 
 ;;; main =======================================================================
 (defun main ()
+  ;; initialize model
+  (setf (access:accesses *model* '(:counter :type :alist)) 0)
+
   (setf
    gui-drawing:*client-fn-draw-objects*  'counter-second::draw-window
    gui-window-gtk:*client-fn-menu-bar*      nil
