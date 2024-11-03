@@ -237,7 +237,7 @@
                          :left 0)))
     (add-child window window-widget)
     (let ((widget-a1   (make-rect :a1   '(0 .   10)  0 50 50 0))
-          (widget-a2   (make-rect :a2   '(150 . 30)  30 30 30 30))
+          (widget-a2   (make-rect :a2   '(150 . 30)  30 30 150 30))
           (widget-a3   (make-rect :a3   '(300 . 10)  0 0 55 250))
           (widget-a4   (make-rect :a4   '(280 . 80)  0 50 50 0))
           (widget-a5   (make-rect :a5   '(0 . 340)   0 50 50 0))
@@ -467,16 +467,16 @@
       (cairo:show-text (format nil "dimensions ~s" (list (right ff) (down ff))
                                )))))
 (defun draw-text-3 (window)
+  (declare (ignore window))
+
   (cairo:select-font-face "Ubuntu Mono" :italic :bold)
   (cairo:set-font-size 15)
 
-  (let ((cmotion    (gui-app:current-motion-window-p gui-app:*lisp-app* window)))
-    (gui-window:set-rgba "black")
-    (cairo:move-to 10 120)
-    (cairo:show-text (format nil "Please use arrow keys to move"))
-    (cairo:move-to 10 140)
-    (cairo:show-text (format nil "the central block"))
-    ))
+  (gui-window:set-rgba "black")
+  (cairo:move-to 10 120)
+  (cairo:show-text (format nil "Please use arrow keys to move"))
+  (cairo:move-to 10 140)
+  (cairo:show-text (format nil "the central block")))
 
 ;; In main function we tell to use draw-window to draw on canvas
 (defmethod draw-window ((window resizing-sections-window))
