@@ -6,7 +6,7 @@
 ;;; load ===================================================================
 ;; (load "~/Programming/Lisp/clops-gui/examples/counter-second.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui) :silent T)
+(ql:quickload '(:clops-gui access) :silent T)
 
 ;;; package ================================================================
 (defpackage #:counter-second
