@@ -1,26 +1,27 @@
+;;;
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
 
-;;;; Example of minimal window
+;;;; Example of counter-second window
 
 ;;; load ===================================================================
-;; (load "~/Programming/Lisp/clops-gui/examples/minimal.lisp")
+;; (load "~/Programming/Lisp/clops-gui/examples/counter-second.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
 (ql:quickload '(:clops-gui) :silent T)
 
 ;;; package ================================================================
-(defpackage #:minimal
+(defpackage #:counter-second
   (:use #:cl)
   (:import-from :serapeum
                 :~>)
   (:import-from :defclass-std
                 :defclass/std))
 
-(in-package #:minimal)
+(in-package #:counter-second)
 
-(defclass/std minimal-window (gui-window:lisp-window) (()))
+(defclass/std counter-second-window (gui-window:lisp-window) (()))
 
 ;;; drawing ====================================================================
-(defmethod draw-window ((window minimal-window))
+(defmethod draw-window ((window counter-second-window))
   ;; paint background
   (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
@@ -55,7 +56,7 @@
       (cairo:fill-path))))
 
 ;;; events =====================================================================
-(defmethod process-event ((lisp-window minimal-window) event &rest args)
+(defmethod process-event ((lisp-window counter-second-window) event &rest args)
   (unless (eq event :timeout)
     (warn "event ~S ~S" event args))
 
@@ -96,13 +97,13 @@
 ;;; main =======================================================================
 (defun main ()
   (setf
-   gui-drawing:*client-fn-draw-objects*  'minimal::draw-window
+   gui-drawing:*client-fn-draw-objects*  'counter-second::draw-window
    gui-window-gtk:*client-fn-menu-bar*      nil
-   gui-events:*client-fn-process-event* 'minimal::process-event
+   gui-events:*client-fn-process-event* 'counter-second::process-event
    gui-window-gtk:*initial-window-width*    600
    gui-window-gtk:*initial-window-height*   400
-   gui-window-gtk:*initial-title*           "Minimal")
+   gui-window-gtk:*initial-title*           "Counter Second")
 
-  (gui-window-gtk:window (make-instance 'minimal-window)))
+  (gui-window-gtk:window (make-instance 'counter-second-window)))
 
 (main)
