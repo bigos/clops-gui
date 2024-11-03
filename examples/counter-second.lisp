@@ -6,7 +6,7 @@
 ;;; load ===================================================================
 ;; (load "~/Programming/Lisp/clops-gui/examples/counter-second.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui access) :silent T)
+(ql:quickload '(:clops-gui :access) :silent T)
 
 ;;; package ================================================================
 (defpackage #:counter-second
@@ -57,7 +57,7 @@
 
 ;;; events =====================================================================
 (defmethod process-event ((lisp-window counter-second-window) event &rest args)
-  (unless (eq event :timeout)
+  (unless (member event '(:timeout :motion))
     (warn "event ~S ~S" event args))
 
   (case event
@@ -74,7 +74,7 @@
     (:focus-leave)
     (:pressed
      (destructuring-bind ((button x y)) args
-       (declare (ignore button))
+       (declare (ignore button x y))
        ))
     (:released
      (gui-app:mouse-button-released))
