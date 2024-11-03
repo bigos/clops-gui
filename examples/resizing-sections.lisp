@@ -462,6 +462,17 @@
 
       (cairo:show-text (format nil "dimensions ~s" (list (right ff) (down ff))
                                )))))
+(defun draw-text-3 (window)
+  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
+  (cairo:set-font-size 15)
+
+  (let ((cmotion    (gui-app:current-motion-window-p gui-app:*lisp-app* window)))
+    (gui-window:set-rgba "black")
+    (cairo:move-to 10 120)
+    (cairo:show-text (format nil "Please use arrow keys to move"))
+    (cairo:move-to 10 140)
+    (cairo:show-text (format nil "the central block"))
+    ))
 
 ;; In main function we tell to use draw-window to draw on canvas
 (defmethod draw-window ((window resizing-sections-window))
@@ -471,6 +482,7 @@
 
   (draw-text-1 window)
   (draw-text-2 window)
+  (draw-text-3 window)
 
   ;; render window children
   (loop for c in (gui-window:children window)
