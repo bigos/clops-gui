@@ -21,9 +21,38 @@
 (defparameter *model* nil)
 (defclass/std counter-second-window (gui-window:lisp-window) (()))
 
+;;; model functions
+(defun draw-rectangle-a (model color)
+  (gui-window:set-rgba color)
+  (cairo:rectangle (access:accesses model '(:txa :type :alist))
+                   (access:accesses model '(:tya :type :alist))
+                   (-
+                    (access:accesses model '(:bxa :type :alist))
+                    (access:accesses model '(:txa :type :alist)))
+                   (-
+                    (access:accesses model '(:bya :type :alist))
+                    (access:accesses model '(:tya :type :alist))))
+  (cairo:fill-path))
+
+(defun draw-rectangle-b (model color)
+  (gui-window:set-rgba color)
+  (cairo:rectangle (access:accesses model '(:txb :type :alist))
+                   (access:accesses model '(:tyb :type :alist))
+                   (-
+                    (access:accesses model '(:bxb :type :alist))
+                    (access:accesses model '(:txb :type :alist)))
+                   (-
+                    (access:accesses model '(:byb :type :alist))
+                    (access:accesses model '(:tyb :type :alist))))
+  (cairo:fill-path))
+
+(defun update-mouse-location (model x y))
+(defun update-mouse-press (model x y button))
+(defun update-mouse-release (model))
+
 ;;; drawing ====================================================================
 (defmethod draw-window ((window counter-second-window))
-  ;; paint background
+    ;; paint background
   (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
@@ -47,28 +76,8 @@
   (gui-window:set-rgba "blue")
   (cairo:show-text (format nil "~A" (access:accesses *model* '(:counter :type :alist))))
 
-  (gui-window:set-rgba "yellow")
-  (cairo:rectangle (access:accesses *model* '(:txa :type :alist))
-                   (access:accesses *model* '(:tya :type :alist))
-                   (-
-                    (access:accesses *model* '(:bxa :type :alist))
-                    (access:accesses *model* '(:txa :type :alist)))
-                   (-
-                    (access:accesses *model* '(:bya :type :alist))
-                    (access:accesses *model* '(:tya :type :alist))))
-  (cairo:fill-path)
-
-
-  (gui-window:set-rgba "orange")
-  (cairo:rectangle (access:accesses *model* '(:txb :type :alist))
-                   (access:accesses *model* '(:tyb :type :alist))
-                   (-
-                    (access:accesses *model* '(:bxb :type :alist))
-                    (access:accesses *model* '(:txb :type :alist)))
-                   (-
-                    (access:accesses *model* '(:byb :type :alist))
-                    (access:accesses *model* '(:tyb :type :alist))))
-  (cairo:fill-path))
+  (draw-rectangle-a *model* "yellow")
+  (draw-rectangle-b *model* "orange"))
 
 (defmethod draw-window :after ((window counter-second-window))
   ;; pink square follows the mouse
@@ -96,6 +105,7 @@
     ((:motion :motion-enter)
      ;; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y)) args
+       (update-mouse-location *model* x y)
        (gui-app:mouse-motion-enter lisp-window x y)))
     (:motion-leave
      (gui-app:mouse-motion-leave))
@@ -104,8 +114,10 @@
     (:pressed
      (destructuring-bind ((button x y)) args
        (declare (ignore button x y))
+       (update-mouse-press *model* x y button)
        ))
     (:released
+     (update-mouse-release *model*)
      (gui-app:mouse-button-released))
     (:scroll)
     (:resize
