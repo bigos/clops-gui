@@ -45,7 +45,30 @@
   (cairo:set-font-size 30)
   (cairo:move-to 10 150)
   (gui-window:set-rgba "blue")
-  (cairo:show-text (format nil "~A" (access:accesses *model* '(:counter :type :alist)))))
+  (cairo:show-text (format nil "~A" (access:accesses *model* '(:counter :type :alist))))
+
+  (gui-window:set-rgba "yellow")
+  (cairo:rectangle (access:accesses *model* '(:txa :type :alist))
+                   (access:accesses *model* '(:tya :type :alist))
+                   (-
+                    (access:accesses *model* '(:bxa :type :alist))
+                    (access:accesses *model* '(:txa :type :alist)))
+                   (-
+                    (access:accesses *model* '(:bya :type :alist))
+                    (access:accesses *model* '(:tya :type :alist))))
+  (cairo:fill-path)
+
+
+  (gui-window:set-rgba "orange")
+  (cairo:rectangle (access:accesses *model* '(:txb :type :alist))
+                   (access:accesses *model* '(:tyb :type :alist))
+                   (-
+                    (access:accesses *model* '(:bxb :type :alist))
+                    (access:accesses *model* '(:txb :type :alist)))
+                   (-
+                    (access:accesses *model* '(:byb :type :alist))
+                    (access:accesses *model* '(:tyb :type :alist))))
+  (cairo:fill-path))
 
 (defmethod draw-window :after ((window counter-second-window))
   ;; pink square follows the mouse
@@ -103,7 +126,19 @@
 ;;; main =======================================================================
 (defun main ()
   ;; initialize model
-  (setf (access:accesses *model* '(:counter :type :alist)) 0)
+  (setf
+   (access:accesses *model* '(:counter :type :alist)) 0
+   (access:accesses *model* '(:txa :type :alist)) 10
+   (access:accesses *model* '(:tya :type :alist)) 200
+   (access:accesses *model* '(:bxa :type :alist)) 60
+   (access:accesses *model* '(:bya :type :alist)) 220
+
+   (access:accesses *model* '(:txb :type :alist)) 110
+   (access:accesses *model* '(:tyb :type :alist)) 200
+   (access:accesses *model* '(:bxb :type :alist)) 160
+   (access:accesses *model* '(:byb :type :alist)) 220
+
+   )
 
   (setf
    gui-drawing:*client-fn-draw-objects*  'counter-second::draw-window
