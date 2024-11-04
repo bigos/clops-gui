@@ -1,4 +1,3 @@
-;;;
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
 
 ;;;; Example of counter-second window
@@ -34,11 +33,10 @@
   (gui-window:set-rgba "black")
   (cairo:show-text (format nil "try moving the mouse over the window and outside of it"))
 
-
   (cairo:select-font-face "Ubuntu Mono" :italic :bold)
   (cairo:set-font-size 15)
   (cairo:move-to 10 100)
-  (let ((cmotion    (gui-app:current-motion-window-p gui-app:*lisp-app* window)))
+  (let ((cmotion (gui-app:current-motion-window-p gui-app:*lisp-app* window)))
     (if cmotion
         (gui-window:set-rgba "green")
         (gui-window:set-rgba "red"))
@@ -47,8 +45,9 @@
   (cairo:set-font-size 30)
   (cairo:move-to 10 150)
   (gui-window:set-rgba "blue")
-  (cairo:show-text (format nil "~A" (access:accesses *model* '(:counter :type :alist))))
+  (cairo:show-text (format nil "~A" (access:accesses *model* '(:counter :type :alist)))))
 
+(defmethod draw-window :after ((window counter-second-window))
   ;; pink square follows the mouse
   (let ((app gui-app:*lisp-app*))
     (when (and (eq (gui-app:current-motion app)
