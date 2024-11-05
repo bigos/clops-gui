@@ -18,41 +18,50 @@
 (in-package #:counter-second)
 
 ;;; code =======================================================================
-(defparameter *model* nil)
+(defstruct model
+  (txa nil)
+  (tya nil)
+  (bxa nil)
+  (bya nil)
+  (txb nil)
+  (tyb nil)
+  (bxb nil)
+  (byb nil))
+
+(defparameter *model* (make-model))
 (defclass/std counter-second-window (gui-window:lisp-window) (()))
 
 ;;; model functions
 (defun draw-rectangle-a (model color)
   (gui-window:set-rgba color)
-  (cairo:rectangle (access:accesses model '(:txa :type :alist))
-                   (access:accesses model '(:tya :type :alist))
-                   (-
-                    (access:accesses model '(:bxa :type :alist))
-                    (access:accesses model '(:txa :type :alist)))
-                   (-
-                    (access:accesses model '(:bya :type :alist))
-                    (access:accesses model '(:tya :type :alist))))
+
   (cairo:fill-path))
 
 (defun draw-rectangle-b (model color)
   (gui-window:set-rgba color)
-  (cairo:rectangle (access:accesses model '(:txb :type :alist))
-                   (access:accesses model '(:tyb :type :alist))
-                   (-
-                    (access:accesses model '(:bxb :type :alist))
-                    (access:accesses model '(:txb :type :alist)))
-                   (-
-                    (access:accesses model '(:byb :type :alist))
-                    (access:accesses model '(:tyb :type :alist))))
+
   (cairo:fill-path))
 
-(defun update-mouse-location (model x y))
+(defun mouse-overp (model x y id)
+  )
+
+(defun update-mouse-location (model x y)
+  (when (or (null x) (null y)) (error "null coordinates are not acceptable"))
+  (if (mouse-overp model x y :a)
+      (update-mouse-over model :a)
+      (update-mouse-out model :a))
+
+  (if (mouse-overp model x y :b)
+      (update-mouse-over model :b)
+      (update-mouse-out model :b)))
+
 (defun update-mouse-press (model x y button))
 (defun update-mouse-release (model))
-
+(defun update-mouse-over (model id))
+(defun update-mouse-out (model id))
 ;;; drawing ====================================================================
 (defmethod draw-window ((window counter-second-window))
-    ;; paint background
+      ;; paint background
   (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
@@ -74,7 +83,7 @@
   (cairo:set-font-size 30)
   (cairo:move-to 10 150)
   (gui-window:set-rgba "blue")
-  (cairo:show-text (format nil "~A" (access:accesses *model* '(:counter :type :alist))))
+  (cairo:show-text (format nil "~A" :zzzzzzzzzzzz))
 
   (draw-rectangle-a *model* "yellow")
   (draw-rectangle-b *model* "orange"))
@@ -126,6 +135,7 @@
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
+       (warn "model ~S" *model*)
        ))
     (otherwise
      (warn "not handled event ~S ~S" event args)))
@@ -138,19 +148,7 @@
 ;;; main =======================================================================
 (defun main ()
   ;; initialize model
-  (setf
-   (access:accesses *model* '(:counter :type :alist)) 0
-   (access:accesses *model* '(:txa :type :alist)) 10
-   (access:accesses *model* '(:tya :type :alist)) 200
-   (access:accesses *model* '(:bxa :type :alist)) 60
-   (access:accesses *model* '(:bya :type :alist)) 220
 
-   (access:accesses *model* '(:txb :type :alist)) 110
-   (access:accesses *model* '(:tyb :type :alist)) 200
-   (access:accesses *model* '(:bxb :type :alist)) 160
-   (access:accesses *model* '(:byb :type :alist)) 220
-
-   )
 
   (setf
    gui-drawing:*client-fn-draw-objects*  'counter-second::draw-window
