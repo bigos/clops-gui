@@ -28,7 +28,7 @@
   (bxb nil)
   (byb nil))
 
-(defparameter *model* (make-model))
+(defparameter *model* nil)
 (defclass/std counter-second-window (gui-window:lisp-window) (()))
 
 ;;; model functions
@@ -148,7 +148,11 @@
 ;;; main =======================================================================
 (defun main ()
   ;; initialize model
-
+  (setf *model* (make-model
+                 :txa 10 :tya 200
+                 :bxa 60 :bya 210
+                 :txb 110 :tyb 200
+                 :bxb 160 :byb 210))
 
   (setf
    gui-drawing:*client-fn-draw-objects*  'counter-second::draw-window
@@ -160,4 +164,4 @@
 
   (gui-window-gtk:window (make-instance 'counter-second-window)))
 
-(main)
+;; (main)
