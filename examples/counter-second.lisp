@@ -90,13 +90,13 @@
 (defun update-mouse-release (model))
 (defun update-mouse-over (model id)
   (ecase id
-    (:a (setf (model-a-mouseover *model*) t))
-    (:b (setf (model-b-mouseover *model*) t))))
+    (:a (setf (model-a-mouseover model) t))
+    (:b (setf (model-b-mouseover model) t))))
 
 (defun update-mouse-out (model id)
   (ecase id
-    (:a (setf (model-a-mouseover *model*) nil))
-    (:b (setf (model-b-mouseover *model*) nil))))
+    (:a (setf (model-a-mouseover model) nil))
+    (:b (setf (model-b-mouseover model) nil))))
 
 ;;; drawing ====================================================================
 (defmethod draw-window ((window counter-second-window))
