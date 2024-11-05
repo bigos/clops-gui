@@ -19,6 +19,9 @@
 
 ;;; code =======================================================================
 (defstruct model
+  (counted 0)
+  (a-mouseover nil)
+  (b-mouseover nil)
   (txa nil)
   (tya nil)
   (bxa nil)
@@ -33,17 +36,39 @@
 
 ;;; model functions
 (defun draw-rectangle-a (model color)
-  (gui-window:set-rgba color)
-
+  (gui-window:set-rgba
+   (if (model-a-mouseover model)
+       "red"
+       color))
+  (cairo:rectangle (model-txa model)
+                   (model-tya model)
+                   (- (model-bxa model) (model-txa model))
+                   (- (model-bya model) (model-tya model)))
   (cairo:fill-path))
 
 (defun draw-rectangle-b (model color)
-  (gui-window:set-rgba color)
+  (gui-window:set-rgba
+   (if (model-b-mouseover model)
+       "red"
+       color))
+  (cairo:rectangle (model-txb model)
+                   (model-tyb model)
+                   (- (model-bxb model) (model-txb model))
+                   (- (model-byb model) (model-tyb model)))
 
   (cairo:fill-path))
 
 (defun mouse-overp (model x y id)
-  )
+  (ecase id
+    (:a (and (>= x (model-txa model))
+             (<= x (model-bxa model))
+             (>= y (model-tya model))
+             (<= y (model-bya model))))
+
+    (:b (and (>= x (model-txb model))
+             (<= x (model-bxb model))
+             (>= y (model-tyb model))
+             (<= y (model-byb model))))))
 
 (defun update-mouse-location (model x y)
   (when (or (null x) (null y)) (error "null coordinates are not acceptable"))
@@ -55,13 +80,27 @@
       (update-mouse-over model :b)
       (update-mouse-out model :b)))
 
-(defun update-mouse-press (model x y button))
+(defun update-mouse-press (model x y button)
+  (when (model-a-mouseover model)
+    (incf (model-counted model)))
+
+  (when (model-b-mouseover model)
+    (decf (model-counted model))))
+
 (defun update-mouse-release (model))
-(defun update-mouse-over (model id))
-(defun update-mouse-out (model id))
+(defun update-mouse-over (model id)
+  (ecase id
+    (:a (setf (model-a-mouseover *model*) t))
+    (:b (setf (model-b-mouseover *model*) t))))
+
+(defun update-mouse-out (model id)
+  (ecase id
+    (:a (setf (model-a-mouseover *model*) nil))
+    (:b (setf (model-b-mouseover *model*) nil))))
+
 ;;; drawing ====================================================================
 (defmethod draw-window ((window counter-second-window))
-      ;; paint background
+        ;; paint background
   (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
@@ -83,7 +122,7 @@
   (cairo:set-font-size 30)
   (cairo:move-to 10 150)
   (gui-window:set-rgba "blue")
-  (cairo:show-text (format nil "~A" :zzzzzzzzzzzz))
+  (cairo:show-text (format nil "~A" (model-counted *model*)))
 
   (draw-rectangle-a *model* "yellow")
   (draw-rectangle-b *model* "orange"))
@@ -150,9 +189,9 @@
   ;; initialize model
   (setf *model* (make-model
                  :txa 10 :tya 200
-                 :bxa 60 :bya 210
+                 :bxa 60 :bya 220
                  :txb 110 :tyb 200
-                 :bxb 160 :byb 210))
+                 :bxb 160 :byb 220))
 
   (setf
    gui-drawing:*client-fn-draw-objects*  'counter-second::draw-window
