@@ -117,9 +117,11 @@
   (let ((lisp-window (experiment-first-window))
         (events '((:RESIZE ((600 400))) (:KEY-RELEASED (("" "Return" 36 NIL)))
                   (:TIMEOUT (NIL)) (:MOTION-ENTER ((194.0d0 390.0d0)))
-                  (:MOTION ((39.44886779785156d0 346.9728088378906d0)))
-                  (:PRESSED ((1 39.44886779785156d0 346.9728088378906d0)))
-                  (:RELEASED ((1 39.44886779785156d0 346.9728088378906d0)))
+                  (:MOTION ((39.4 210.1)))
+                  (:PRESSED ((1 39.4 210.1)))
+                  (:RELEASED ((1 39.4 210.1)))
+                  (:PRESSED ((1 39.4 210.1)))
+                  (:RELEASED ((1 39.4 210.1)))
              )))
     (loop for event in events
           for e = (car event)
