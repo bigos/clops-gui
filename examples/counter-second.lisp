@@ -113,7 +113,7 @@
 (defun experiment ()
   "Experiment for testing"
   (warn "starting experiments")
-
+  (init-model)
   (let ((lisp-window (experiment-first-window))
         (events '((:RESIZE ((600 400))) (:KEY-RELEASED (("" "Return" 36 NIL)))
                   (:TIMEOUT (NIL)) (:MOTION-ENTER ((194.0d0 390.0d0)))
@@ -131,7 +131,8 @@
              (funcall 'process-event
                       lisp-window
                       e
-                      eargs ))))
+                      eargs )))
+  (warn "finished experiments"))
 
 ;;; drawing ====================================================================
 (defmethod draw-window ((window counter-second-window))
@@ -220,13 +221,15 @@
   (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
 
 ;;; main =======================================================================
-(defun main ()
-  ;; initialize model
+(defun init-model ()
   (setf *model* (make-model
                  :txa 10 :tya 200
                  :bxa 60 :bya 220
                  :txb 110 :tyb 200
-                 :bxb 160 :byb 220))
+                 :bxb 160 :byb 220)))
+
+(defun main ()
+  (init-model)
 
   (setf
    gui-drawing:*client-fn-draw-objects*  'counter-second::draw-window
