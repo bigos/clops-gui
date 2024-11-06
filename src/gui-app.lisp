@@ -7,7 +7,8 @@
 ;;; ========================== windows =========================================
 
 (defclass/std lisp-app ()
-  ((gtk4-app :type gir::object-instance)
+  ((gtk4-app
+    :type (or gir::object-instance null))
    (windows :std (make-hash-table))
    (current-motion)
    (current-focus)    ; it is not reliable for the last created window
