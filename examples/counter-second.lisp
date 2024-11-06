@@ -123,7 +123,7 @@
                   (:RELEASED ((1 39.4 210.1)))
                   (:PRESSED ((1 39.4 210.1)))
                   (:RELEASED ((1 39.4 210.1)))
-                  (:assert (eq 1 (model-counted *model*)) nil "~s is wroong" 1)
+                  (:assert (eq 2 (model-counted *model*)))
 
              )))
     (loop for event in events
@@ -135,10 +135,7 @@
                                lisp-window
                                event))
              (if (eq e :assert)
-                 (assert (eval (second event))
-                         (eval (third event))
-                         (eval (fourth event))
-                         (eval (cddddr event)))
+                 (assert (eval (second event)))
                  (funcall 'process-event
                           lisp-window
                           e
