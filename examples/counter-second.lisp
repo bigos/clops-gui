@@ -98,9 +98,44 @@
     (:a (setf (model-a-mouseover model) nil))
     (:b (setf (model-b-mouseover model) nil))))
 
+;;; === experiment ==============================================================
+(defun experiment-first-window ()
+  (setf gui-drawing:*client-fn-draw-objects*  'counter-second::draw-window)
+
+  (setf gui-app:*lisp-app* (gui-app:make-lisp-app))
+  (assert (zerop (hash-table-count (gui-app:all-windows))))
+
+  (let ((lisp-window (make-instance 'counter-second-window)))
+    (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
+    (assert (eq 1 (hash-table-count (gui-app:all-windows))))
+    lisp-window))
+
+(defun experiment ()
+  "Experiment for testing"
+  (warn "starting experiments")
+
+  (let ((lisp-window (experiment-first-window))
+        (events '((:RESIZE ((600 400))) (:KEY-RELEASED (("" "Return" 36 NIL)))
+                  (:TIMEOUT (NIL)) (:MOTION-ENTER ((194.0d0 390.0d0)))
+                  (:MOTION ((39.44886779785156d0 346.9728088378906d0)))
+                  (:PRESSED ((1 39.44886779785156d0 346.9728088378906d0)))
+                  (:RELEASED ((1 39.44886779785156d0 346.9728088378906d0)))
+             )))
+    (loop for event in events
+          for e = (car event)
+          for eargs = (caadr event)
+          do
+             (break "data ~s" (list
+                               gui-app:*lisp-app*
+                               lisp-window))
+             (funcall 'process-event
+                      lisp-window
+                      e
+                      eargs ))))
+
 ;;; drawing ====================================================================
 (defmethod draw-window ((window counter-second-window))
-        ;; paint background
+  ;; paint background
   (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
