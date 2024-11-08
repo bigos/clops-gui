@@ -18,57 +18,57 @@
 (in-package #:counter-second)
 
 ;;; code =======================================================================
-(defstruct model
-  (counted 0)
-  (a-mouseover nil)
-  (b-mouseover nil)
-  (txa nil)
-  (tya nil)
-  (bxa nil)
-  (bya nil)
-  (txb nil)
-  (tyb nil)
-  (bxb nil)
-  (byb nil))
+(defclass/std model ()
+    ((counted :std 0)
+     (a-mouseover :std nil)
+     (b-mouseover :std nil)
+     (rect-a  :type rect)
+     (rect-b  :type rect)))
 
 (defparameter *model* nil)
+
 (defclass/std counter-second-window (gui-window:lisp-window) (()))
+
+(defclass/std rect ()
+  ((tx)
+   (ty)
+   (bx)
+   (by)))
 
 ;;; model functions
 (defun draw-rectangle-a (model color)
   (gui-window:set-rgba
-   (if (model-a-mouseover model)
+   (if (a-mouseover model)
        "red"
        color))
-  (cairo:rectangle (model-txa model)
-                   (model-tya model)
-                   (- (model-bxa model) (model-txa model))
-                   (- (model-bya model) (model-tya model)))
+  (cairo:rectangle (~> model rect-a tx)
+                   (~> model rect-a ty)
+                   (~> model rect-a width)
+                   (~> model rect-a height))
   (cairo:fill-path))
 
 (defun draw-rectangle-b (model color)
   (gui-window:set-rgba
-   (if (model-b-mouseover model)
+   (if (b-mouseover model)
        "red"
        color))
-  (cairo:rectangle (model-txb model)
-                   (model-tyb model)
-                   (- (model-bxb model) (model-txb model))
-                   (- (model-byb model) (model-tyb model)))
-
+  (cairo:rectangle (~> model rect-b tx)
+                   (~> model rect-b ty)
+                   (~> model rect-b width)
+                   (~> model rect-b height))
   (cairo:fill-path))
 
 (defun mouse-overp (model x y id)
   (ecase id
-    (:a (and (>= x (model-txa model))
-             (<= x (model-bxa model))
-             (>= y (model-tya model))
-             (<= y (model-bya model))))
+    (:a (and (>= x (~> model rect-a tx))
+             (<= x (~> model rect-a bx))
+             (>= y (~> model rect-a ty))
+             (<= y (~> model rect-a by))))
 
-    (:b (and (>= x (model-txb model))
-             (<= x (model-bxb model))
-             (>= y (model-tyb model))
-             (<= y (model-byb model))))))
+    (:b (and (>= x (~> model rect-b tx))
+             (<= x (~> model rect-b bx))
+             (>= y (~> model rect-b ty))
+             (<= y (~> model rect-b by))))))
 
 (defun update-mouse-location (model x y)
   (when (or (null x) (null y)) (error "null coordinates are not acceptable"))
@@ -81,22 +81,28 @@
       (update-mouse-out model :b)))
 
 (defun update-mouse-press (model x y button)
-  (when (model-a-mouseover model)
-    (incf (model-counted model)))
+  (when (a-mouseover model)
+    (incf (counted model)))
 
-  (when (model-b-mouseover model)
-    (decf (model-counted model))))
+  (when (b-mouseover model)
+    (decf (counted model))))
 
 (defun update-mouse-release (model))
 (defun update-mouse-over (model id)
   (ecase id
-    (:a (setf (model-a-mouseover model) t))
-    (:b (setf (model-b-mouseover model) t))))
+    (:a (setf (a-mouseover model) t))
+    (:b (setf (b-mouseover model) t))))
 
 (defun update-mouse-out (model id)
   (ecase id
-    (:a (setf (model-a-mouseover model) nil))
-    (:b (setf (model-b-mouseover model) nil))))
+    (:a (setf (a-mouseover model) nil))
+    (:b (setf (b-mouseover model) nil))))
+
+(defmethod width ((rect rect))
+  (- (~> rect bx) (~> rect tx)))
+
+(defmethod height ((rect rect))
+  (- (~> rect by) (~> rect ty)))
 
 ;;; === experiment ==============================================================
 (defun experiment-first-window ()
@@ -118,12 +124,12 @@
         (events '((:RESIZE ((600 400))) (:KEY-RELEASED (("" "Return" 36 NIL)))
                   (:TIMEOUT (NIL)) (:MOTION-ENTER ((194.0d0 390.0d0)))
                   (:MOTION ((39.4 210.1)))
-                  (:assert (zerop (model-counted *model*)))
+                  (:assert (zerop (counted *model*)))
                   (:PRESSED ((1 39.4 210.1)))
                   (:RELEASED ((1 39.4 210.1)))
                   (:PRESSED ((1 39.4 210.1)))
                   (:RELEASED ((1 39.4 210.1)))
-                  (:assert (eq 2 (model-counted *model*)))
+                  (:assert (eq 2 (counted *model*)))
 
              )))
     (loop for event in events
@@ -166,7 +172,7 @@
   (cairo:set-font-size 30)
   (cairo:move-to 10 150)
   (gui-window:set-rgba "blue")
-  (cairo:show-text (format nil "~A" (model-counted *model*)))
+  (cairo:show-text (format nil "~A" (counted *model*)))
 
   (draw-rectangle-a *model* "yellow")
   (draw-rectangle-b *model* "orange"))
@@ -230,11 +236,9 @@
 
 ;;; main =======================================================================
 (defun init-model ()
-  (setf *model* (make-model
-                 :txa 10 :tya 200
-                 :bxa 60 :bya 220
-                 :txb 110 :tyb 200
-                 :bxb 160 :byb 220)))
+  (setf *model* (make-instance 'model
+                 :rect-a (make-instance 'rect :tx 10  :ty 200 :bx 60  :by 220)
+                 :rect-b (make-instance 'rect :tx 110 :ty 200 :bx 160 :by 220))))
 
 (defun main ()
   (init-model)
