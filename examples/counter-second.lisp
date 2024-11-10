@@ -18,14 +18,14 @@
 (in-package #:counter-second)
 
 ;;; code =======================================================================
-(defclass/std model ()
-    ((counted :std 0)
-     (a-mouseover :std nil)
-     (b-mouseover :std nil)
-     (rect-a  :type rect)
-     (rect-b  :type rect)))
-
 (defparameter *model* nil)
+
+(defclass/std model ()
+  ((counted :std 0)
+   (a-mouseover :std nil)
+   (b-mouseover :std nil)
+   (rect-a  :type rect)
+   (rect-b  :type rect)))
 
 (defclass/std counter-second-window (gui-window:lisp-window) (()))
 
@@ -36,39 +36,30 @@
    (by)))
 
 ;;; model functions
-(defun draw-rectangle-a (model color)
-  (gui-window:set-rgba
-   (if (a-mouseover model)
-       "red"
-       color))
-  (cairo:rectangle (~> model rect-a tx)
-                   (~> model rect-a ty)
-                   (~> model rect-a width)
-                   (~> model rect-a height))
-  (cairo:fill-path))
 
-(defun draw-rectangle-b (model color)
-  (gui-window:set-rgba
-   (if (b-mouseover model)
-       "red"
-       color))
-  (cairo:rectangle (~> model rect-b tx)
-                   (~> model rect-b ty)
-                   (~> model rect-b width)
-                   (~> model rect-b height))
+(defun draw-rectangle (model id color)
+  (gui-window:set-rgba (if (or (and (a-mouseover model) (eq id :a))
+                               (and (b-mouseover model) (eq id :b)))
+                           "red"
+                           color))
+
+  (let ((rect (ecase id
+                (:a (~> model rect-a))
+                (:b (~> model rect-b)))))
+    (cairo:rectangle (~> rect tx)
+                     (~> rect ty)
+                     (~> rect width)
+                     (~> rect height)))
   (cairo:fill-path))
 
 (defun mouse-overp (model x y id)
-  (ecase id
-    (:a (and (>= x (~> model rect-a tx))
-             (<= x (~> model rect-a bx))
-             (>= y (~> model rect-a ty))
-             (<= y (~> model rect-a by))))
-
-    (:b (and (>= x (~> model rect-b tx))
-             (<= x (~> model rect-b bx))
-             (>= y (~> model rect-b ty))
-             (<= y (~> model rect-b by))))))
+  (let ((rect (ecase id
+                (:a (~> model rect-a))
+                (:b (~> model rect-b)))))
+    (and (>= x (~> rect tx))
+         (<= x (~> rect bx))
+         (>= y (~> rect ty))
+         (<= y (~> rect by)))))
 
 (defun update-mouse-location (model x y)
   (when (or (null x) (null y)) (error "null coordinates are not acceptable"))
@@ -90,9 +81,9 @@
 (defun update-mouse-release (model))
 
 (defun update-mouse-over (model id)
-    (ecase id
-      (:a (setf (a-mouseover model) t))
-      (:b (setf (b-mouseover model) t))))
+  (ecase id
+    (:a (setf (a-mouseover model) t))
+    (:b (setf (b-mouseover model) t))))
 
 (defun update-mouse-out (model id)
   (ecase id
@@ -176,8 +167,8 @@
   (gui-window:set-rgba "blue")
   (cairo:show-text (format nil "~A" (counted *model*)))
 
-  (draw-rectangle-a *model* "yellow")
-  (draw-rectangle-b *model* "orange"))
+  (draw-rectangle *model* :a "yellow")
+  (draw-rectangle *model* :b "orange"))
 
 (defmethod draw-window :after ((window counter-second-window))
   ;; pink square follows the mouse
