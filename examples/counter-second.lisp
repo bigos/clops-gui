@@ -88,10 +88,11 @@
     (decf (counted model))))
 
 (defun update-mouse-release (model))
+
 (defun update-mouse-over (model id)
-  (ecase id
-    (:a (setf (a-mouseover model) t))
-    (:b (setf (b-mouseover model) t))))
+    (ecase id
+      (:a (setf (a-mouseover model) t))
+      (:b (setf (b-mouseover model) t))))
 
 (defun update-mouse-out (model id)
   (ecase id
@@ -146,6 +147,7 @@
                           lisp-window
                           e
                           eargs ))))
+  (describe *model*)
   (warn "finished experiments"))
 
 ;;; drawing ====================================================================
