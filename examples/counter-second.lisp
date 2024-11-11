@@ -2,10 +2,12 @@
 
 ;;;; Example of counter-second window
 
+;; https://common-lisp-libraries.readthedocs.io/fiveam/
+
 ;;; load ===================================================================
 ;; (load "~/Programming/Lisp/clops-gui/examples/counter-second.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui :access) :silent T)
+(ql:quickload '(:clops-gui :access :fiveam) :silent T)
 
 ;;; package ================================================================
 (defpackage #:counter-second
@@ -247,3 +249,28 @@
   (gui-window-gtk:window (make-instance 'counter-second-window)))
 
 ;; (main)
+
+;;; !!!!!!!!!!!!!!!!!!!!!!!!!!testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+(in-package :common-lisp-user)
+
+(defpackage #:counter-second.test
+  (:use #:cl  #:counter-second :fiveam)
+  (:import-from #:counter-second
+                :init-model
+                :model)
+  (:export #:run!))
+
+(in-package #:counter-second.test)
+
+(def-suite my-tests :description "my tests")
+
+(in-suite my-tests)
+
+(test two-and-two
+      (is (eq (+ 2 2) 4)))
+
+(test model-creation
+  (let ((m (init-model)))
+    (is (eq (type-of m) 'model))))
+
+(run! 'my-tests)
