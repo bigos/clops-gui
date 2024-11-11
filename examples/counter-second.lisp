@@ -257,7 +257,13 @@
   (:use #:cl  #:counter-second :fiveam)
   (:import-from #:counter-second
                 :init-model
-                :model)
+                :model
+                :experiment-first-window
+                :counter-second-window
+                :*model*
+                :counted
+                :process-event
+                )
   (:export #:run!))
 
 (in-package #:counter-second.test)
@@ -270,7 +276,34 @@
       (is (eq (+ 2 2) 4)))
 
 (test model-creation
+  (setf *model* nil)
   (let ((m (init-model)))
     (is (eq (type-of m) 'model))))
+
+(test counter-clicking
+  (setf *model* nil)
+  (init-model)
+  (let ((lisp-window (experiment-first-window))
+        (events '((:RESIZE ((600 400))) (:KEY-RELEASED (("" "Return" 36 NIL)))
+                  (:TIMEOUT (NIL)) (:MOTION-ENTER ((194.0d0 390.0d0)))
+                  (:MOTION ((39.4 210.1)))
+                  (:assert (zerop (counted *model*)))
+                  (:PRESSED ((1 39.4 210.1)))
+                  (:RELEASED ((1 39.4 210.1)))
+                  (:PRESSED ((1 39.4 210.1)))
+                  (:RELEASED ((1 39.4 210.1)))
+                  (:assert (eq 2 (counted *model*))))))
+    (is (typep lisp-window 'counter-second-window))
+
+    (loop for event in events
+          for e = (car event)
+          for eargs = (caadr event)
+          do
+             (if (eq e :assert)
+                 (is (eval (second event)))
+                 (funcall 'process-event
+                          lisp-window
+                          e
+                          eargs )))))
 
 (run! 'my-tests)
