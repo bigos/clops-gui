@@ -292,7 +292,13 @@
                   (:RELEASED ((1 39.4 210.1)))
                   (:PRESSED ((1 39.4 210.1)))
                   (:RELEASED ((1 39.4 210.1)))
-                  (:assert (eq 2 (counted *model*))))))
+                  (:assert (eq 2 (counted *model*)))
+                  ;; correct it
+                  (:motion     ((125.4 210.1)))
+                  (:PRESSED  ((1 125.4 210.1)))
+                  (:RELEASED ((1 125.4 210.1)))
+                  (:assert (eq 1 (counted *model*)))
+                  )))
     (is (typep lisp-window 'counter-second-window))
 
     (loop for event in events
