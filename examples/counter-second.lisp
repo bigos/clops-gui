@@ -66,12 +66,12 @@
 (defun update-mouse-location (model x y)
   (when (or (null x) (null y)) (error "null coordinates are not acceptable"))
   (if (mouse-overp model x y :a)
-      (update-mouse-over model :a)
-      (update-mouse-out model :a))
+      (update-mouse-over% model :a)
+      (update-mouse-out% model :a))
 
   (if (mouse-overp model x y :b)
-      (update-mouse-over model :b)
-      (update-mouse-out model :b)))
+      (update-mouse-over% model :b)
+      (update-mouse-out% model :b)))
 
 (defun update-mouse-press (model x y button)
   (when (a-mouseover model)
@@ -80,14 +80,12 @@
   (when (b-mouseover model)
     (decf (counted model))))
 
-(defun update-mouse-release (model))
-
-(defun update-mouse-over (model id)
+(defun update-mouse-over% (model id)
   (ecase id
     (:a (setf (a-mouseover model) t))
     (:b (setf (b-mouseover model) t))))
 
-(defun update-mouse-out (model id)
+(defun update-mouse-out% (model id)
   (ecase id
     (:a (setf (a-mouseover model) nil))
     (:b (setf (b-mouseover model) nil))))
