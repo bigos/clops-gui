@@ -256,12 +256,12 @@
 (defpackage #:counter-second.test
   (:use #:cl  #:counter-second :fiveam)
   (:import-from #:counter-second
-                :init-model
-                :model
-                :experiment-first-window
-                :counter-second-window
                 :*model*
                 :counted
+                :counter-second-window
+                :experiment-first-window
+                :init-model
+                :model
                 :process-event
                 )
   (:export #:run!))
