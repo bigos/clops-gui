@@ -80,6 +80,8 @@
   (when (b-mouseover model)
     (decf (counted model))))
 
+(defun update-mouse-release (model))
+
 (defun set-mouseover (model id)
   (ecase id
     (:a (setf (a-mouseover model) t))
