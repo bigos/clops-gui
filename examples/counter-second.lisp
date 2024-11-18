@@ -255,15 +255,18 @@
 
 (defpackage #:counter-second.test
   (:use #:cl  #:counter-second :fiveam)
-  (:import-from #:counter-second
-                :*model*
-                :counted
-                :counter-second-window
-                :experiment-first-window
-                :init-model
-                :model
-                :process-event
-                )
+  (:import-from
+   #:counter-second
+   :*model*
+   :a-mouseover
+   :b-mouseover
+   :counted
+   :counter-second-window
+   :experiment-first-window
+   :init-model
+   :model
+   :process-event
+   )
   (:export #:run!))
 
 (in-package #:counter-second.test)
@@ -283,33 +286,44 @@
 (test counter-clicking
   (setf *model* nil)
   (init-model)
-  (let ((lisp-window (experiment-first-window))
-        (events '((:RESIZE ((600 400))) (:KEY-RELEASED (("" "Return" 36 NIL)))
-                  (:TIMEOUT (NIL)) (:MOTION-ENTER ((194.0d0 390.0d0)))
-                  (:MOTION ((39.4 210.1)))
-                  (:assert (zerop (counted *model*)))
-                  (:PRESSED ((1 39.4 210.1)))
-                  (:RELEASED ((1 39.4 210.1)))
-                  (:PRESSED ((1 39.4 210.1)))
-                  (:RELEASED ((1 39.4 210.1)))
-                  (:assert (eq 2 (counted *model*)))
-                  ;; correct it
-                  (:motion     ((125.4 210.1)))
-                  (:PRESSED  ((1 125.4 210.1)))
-                  (:RELEASED ((1 125.4 210.1)))
-                  (:assert (eq 1 (counted *model*)))
-                  )))
+  (let ((lisp-window (experiment-first-window)))
     (is (typep lisp-window 'counter-second-window))
+    (labels ((doit (e eargs)
+               (funcall 'process-event
+                        lisp-window
+                        e
+                        eargs)))
 
-    (loop for event in events
-          for e = (car event)
-          for eargs = (caadr event)
-          do
-             (if (eq e :assert)
-                 (is (eval (second event)))
-                 (funcall 'process-event
-                          lisp-window
-                          e
-                          eargs )))))
+      (doit :RESIZE '(600 400))
+      (doit :KEY-RELEASED '("" "Return" 36 NIL))
+      (doit :TIMEOUT NIL)
+
+      (is (null (a-mouseover *model*)))
+      (is (null (b-mouseover *model*)))
+
+      (doit :MOTION-ENTER '(194.0d0 390.0d0))
+      (doit :MOTION '(39.4 210.1))
+
+      (is (zerop (counted *model*)))
+      (is (not (null (a-mouseover *model*))))
+      (is (null (b-mouseover *model*)))
+
+      (doit :PRESSED '(1 39.4 210.1))
+      (doit :RELEASED '(1 39.4 210.1))
+      (doit :PRESSED '(1 39.4 210.1))
+      (doit :RELEASED '(1 39.4 210.1))
+
+      (is (eq 2 (counted *model*)))
+      (is (not (null (a-mouseover *model*))))
+      (is (null (b-mouseover *model*)))
+
+      (doit :MOTION     '(125.4 210.1))
+
+      (is (null (a-mouseover *model*)))
+      (is (not (null (b-mouseover *model*))) "this one")
+
+      (doit :PRESSED  '(1 125.4 210.1))
+      (doit :RELEASED '(1 125.4 210.1))
+      (is (eq 1 (counted *model*))))))
 
 (run! 'my-tests)
