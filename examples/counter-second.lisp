@@ -98,7 +98,7 @@
 (defmethod height ((rect rect))
   (- (~> rect by) (~> rect ty)))
 
-;;; === experiment ==============================================================
+;;; === test preparation =======================================================
 (defun experiment-first-window ()
   (setf gui-drawing:*client-fn-draw-objects*  'counter-second::draw-window)
 
@@ -109,39 +109,6 @@
     (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
     (assert (eq 1 (hash-table-count (gui-app:all-windows))))
     lisp-window))
-
-(defun experiment ()
-  "Experiment for testing"
-  (warn "starting experiments")
-  (init-model)
-  (let ((lisp-window (experiment-first-window))
-        (events '((:RESIZE ((600 400))) (:KEY-RELEASED (("" "Return" 36 NIL)))
-                  (:TIMEOUT (NIL)) (:MOTION-ENTER ((194.0d0 390.0d0)))
-                  (:MOTION ((39.4 210.1)))
-                  (:assert (zerop (counted *model*)))
-                  (:PRESSED ((1 39.4 210.1)))
-                  (:RELEASED ((1 39.4 210.1)))
-                  (:PRESSED ((1 39.4 210.1)))
-                  (:RELEASED ((1 39.4 210.1)))
-                  (:assert (eq 2 (counted *model*)))
-
-             )))
-    (loop for event in events
-          for e = (car event)
-          for eargs = (caadr event)
-          do
-             (break "data ~s" (list
-                               gui-app:*lisp-app*
-                               lisp-window
-                               event))
-             (if (eq e :assert)
-                 (assert (eval (second event)))
-                 (funcall 'process-event
-                          lisp-window
-                          e
-                          eargs ))))
-  (describe *model*)
-  (warn "finished experiments"))
 
 ;;; drawing ====================================================================
 (defmethod draw-window ((window counter-second-window))
