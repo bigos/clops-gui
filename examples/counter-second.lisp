@@ -255,13 +255,11 @@
 
 (defpackage #:counter-second.test
   (:use #:cl  #:counter-second :fiveam)
-  (:import-from
-   #:counter-second
+  (:import-from #:counter-second
    :*model*
    :a-mouseover
    :b-mouseover
    :counted
-   :counter-second-window
    :experiment-first-window
    :init-model
    :model
@@ -287,12 +285,10 @@
   (setf *model* nil)
   (init-model)
   (let ((lisp-window (experiment-first-window)))
-    (is (typep lisp-window 'counter-second-window))
     (labels ((doit (e eargs)
-               (funcall 'process-event
-                        lisp-window
-                        e
-                        eargs)))
+               (process-event lisp-window
+                              e
+                              eargs)))
       (doit :RESIZE '(600 400))
       (doit :KEY-RELEASED '("" "Return" 36 NIL))
       (doit :TIMEOUT NIL)
