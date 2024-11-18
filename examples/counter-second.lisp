@@ -293,17 +293,14 @@
                         lisp-window
                         e
                         eargs)))
-
       (doit :RESIZE '(600 400))
       (doit :KEY-RELEASED '("" "Return" 36 NIL))
       (doit :TIMEOUT NIL)
-
       (is (null (a-mouseover *model*)))
       (is (null (b-mouseover *model*)))
 
       (doit :MOTION-ENTER '(194.0d0 390.0d0))
       (doit :MOTION '(39.4 210.1))
-
       (is (zerop (counted *model*)))
       (is (not (null (a-mouseover *model*))))
       (is (null (b-mouseover *model*)))
@@ -312,15 +309,13 @@
       (doit :RELEASED '(1 39.4 210.1))
       (doit :PRESSED '(1 39.4 210.1))
       (doit :RELEASED '(1 39.4 210.1))
-
       (is (eq 2 (counted *model*)))
       (is (not (null (a-mouseover *model*))))
       (is (null (b-mouseover *model*)))
 
       (doit :MOTION     '(125.4 210.1))
-
       (is (null (a-mouseover *model*)))
-      (is (not (null (b-mouseover *model*))) "this one")
+      (is (not (null (b-mouseover *model*))))
 
       (doit :PRESSED  '(1 125.4 210.1))
       (doit :RELEASED '(1 125.4 210.1))
