@@ -244,7 +244,6 @@
 (defparameter b-mouse-coordinates '(125.4 210.1))
 (defparameter b-mouse-coordinates-press '(1 125.4 210.1))
 
-
 (defun doit (e eargs)
   (process-event lisp-window
                  e
