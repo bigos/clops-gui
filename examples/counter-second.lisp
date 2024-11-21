@@ -238,10 +238,10 @@
 
 (defparameter lisp-window (experiment-first-window))
 
-(defparameter a-mouse-coordinates '(39.4 210.1))
+(defparameter a-mouse-coordinates         '(39.4 210.1))
 (defparameter a-mouse-coordinates-press '(1 39.4 210.1))
 
-(defparameter b-mouse-coordinates '(125.4 210.1))
+(defparameter b-mouse-coordinates         '(125.4 210.1))
 (defparameter b-mouse-coordinates-press '(1 125.4 210.1))
 
 (defun doit (e eargs)
@@ -275,7 +275,7 @@
   (doit :MOTION a-mouse-coordinates)
   (is (zerop (counted *model*)))
   (is (not (null (a-mouseover *model*))))
-  (is (null (b-mouseover *model*)))
+  (is      (null (b-mouseover *model*)))
 
   (doit :PRESSED  a-mouse-coordinates-press)
   (doit :RELEASED a-mouse-coordinates-press)
@@ -283,10 +283,10 @@
   (doit :RELEASED a-mouse-coordinates-press)
   (is (eq 2 (counted *model*)))
   (is (not (null (a-mouseover *model*))))
-  (is (null (b-mouseover *model*)))
+  (is      (null (b-mouseover *model*)))
 
   (doit :MOTION     b-mouse-coordinates)
-  (is (null (a-mouseover *model*)))
+  (is      (null (a-mouseover *model*)))
   (is (not (null (b-mouseover *model*))))
 
   (doit :PRESSED  b-mouse-coordinates-press)
