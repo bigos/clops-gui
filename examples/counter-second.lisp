@@ -7,7 +7,7 @@
 ;;; load ===================================================================
 ;; (load "~/Programming/Lisp/clops-gui/examples/counter-second.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui :access :fiveam) :silent T)
+(ql:quickload '(:clops-gui :access :fiveam) :silent nil)
 
 ;;; package ================================================================
 (defpackage #:counter-second
@@ -236,6 +236,20 @@
 
 (in-package #:counter-second.test)
 
+(defparameter lisp-window (experiment-first-window))
+
+(defparameter a-mouse-coordinates '(39.4 210.1))
+(defparameter a-mouse-coordinates-press '(1 39.4 210.1))
+
+(defparameter b-mouse-coordinates '(125.4 210.1))
+(defparameter b-mouse-coordinates-press '(1 125.4 210.1))
+
+
+(defun doit (e eargs)
+  (process-event lisp-window
+                 e
+                 eargs))
+
 (def-suite my-tests :description "my tests")
 
 (in-suite my-tests)
@@ -251,37 +265,33 @@
 (test counter-clicking
   (setf *model* nil)
   (init-model)
-  (let ((lisp-window (experiment-first-window)))
-    (labels ((doit (e eargs)
-               (process-event lisp-window
-                              e
-                              eargs)))
-      (doit :RESIZE '(600 400))
-      (doit :KEY-RELEASED '("" "Return" 36 NIL))
-      (doit :TIMEOUT NIL)
-      (is (null (a-mouseover *model*)))
-      (is (null (b-mouseover *model*)))
 
-      (doit :MOTION-ENTER '(194.0d0 390.0d0))
-      (doit :MOTION '(39.4 210.1))
-      (is (zerop (counted *model*)))
-      (is (not (null (a-mouseover *model*))))
-      (is (null (b-mouseover *model*)))
+  (doit :RESIZE '(600 400))
+  (doit :KEY-RELEASED '("" "Return" 36 NIL))
+  (doit :TIMEOUT NIL)
+  (is (null (a-mouseover *model*)))
+  (is (null (b-mouseover *model*)))
 
-      (doit :PRESSED '(1 39.4 210.1))
-      (doit :RELEASED '(1 39.4 210.1))
-      (doit :PRESSED '(1 39.4 210.1))
-      (doit :RELEASED '(1 39.4 210.1))
-      (is (eq 2 (counted *model*)))
-      (is (not (null (a-mouseover *model*))))
-      (is (null (b-mouseover *model*)))
+  (doit :MOTION-ENTER '(194.0d0 390.0d0))
+  (doit :MOTION a-mouse-coordinates)
+  (is (zerop (counted *model*)))
+  (is (not (null (a-mouseover *model*))))
+  (is (null (b-mouseover *model*)))
 
-      (doit :MOTION     '(125.4 210.1))
-      (is (null (a-mouseover *model*)))
-      (is (not (null (b-mouseover *model*))))
+  (doit :PRESSED  a-mouse-coordinates-press)
+  (doit :RELEASED a-mouse-coordinates-press)
+  (doit :PRESSED  a-mouse-coordinates-press)
+  (doit :RELEASED a-mouse-coordinates-press)
+  (is (eq 2 (counted *model*)))
+  (is (not (null (a-mouseover *model*))))
+  (is (null (b-mouseover *model*)))
 
-      (doit :PRESSED  '(1 125.4 210.1))
-      (doit :RELEASED '(1 125.4 210.1))
-      (is (eq 1 (counted *model*))))))
+  (doit :MOTION     b-mouse-coordinates)
+  (is (null (a-mouseover *model*)))
+  (is (not (null (b-mouseover *model*))))
+
+  (doit :PRESSED  b-mouse-coordinates-press)
+  (doit :RELEASED b-mouse-coordinates-press)
+  (is (eq 1 (counted *model*))))
 
 (run! 'my-tests)
