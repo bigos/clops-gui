@@ -221,7 +221,7 @@
 (in-package :common-lisp-user)
 
 (defpackage #:counter-second.test
-  (:use #:cl  #:counter-second :fiveam)
+  (:use #:cl  #:counter-second #:fiveam)
   (:import-from #:counter-second
    :*model*
    :a-mouseover
