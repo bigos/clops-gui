@@ -1,4 +1,4 @@
-(declaim (optimize (speed 0) (safety 3) (debug 3)))
+(declaim (optimize (speed 0) (safety 2) (debug 3)))
 
 ;; also roam for githubkasken
 ;; file:~/Documents/Roams/githubkasten/org-roam/20240808235036-order_of_development.org::8
@@ -9,7 +9,7 @@
 ;; (load "~/Programming/Lisp/clops-gui/examples/resizing-sections.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
 (ql:quickload '(:clops-gui) :silent nil)
-(ql:quickload '(:access :fiveam))
+(ql:quickload '(:access :fiveam :serapeum))
 
 ;;; package ================================================================
 (defpackage #:resizing-sections
@@ -567,17 +567,28 @@
 (defpackage #:resizing-sections.test
   (:use #:cl #:resizing-sections #:fiveam)
   (:import-from #:resizing-sections
+   :resizing-sections-window
+   :children
    ;; :remove-me-please
    )
   (:export #:run!))
 
-(in-package #:resizing-sections.test)
+(in-package #:resizing-sections.test)   ;---------------------------------------
 
-(def-suite my-tests :description "my tests")
+(defparameter *lisp-window* (make-instance 'resizing-sections-window))
+
+(def-suite my-tests :description "my tests") ;==================================
 
 (in-suite my-tests)
 
 (test two-and-two
       (is (eq (+ 2 2) 4)))
 
-(run! 'my-tests)
+(test lisp-window-is-correct
+  (is (typep *lisp-window* 'resizing-sections-window))
+  (break "examine the children ~S" *lisp-window*)
+ )
+
+
+
+(run! 'my-tests)                        ;---------------------------------------
