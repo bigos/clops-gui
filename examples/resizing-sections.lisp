@@ -22,31 +22,33 @@
 (in-package #:resizing-sections)
 ;;; musing =====================================================================
 
-;; ** define classes
-;; and think how they relate to each other
+#| musing
+  ** define classes
+  and think how they relate to each other
 
-;; ** define interfaces
-;; and think how clients can create and manipulate instances
-;; think about defgenerics and *WHAT* operations they perform
+  ** define interfaces
+  and think how clients can create and manipulate instances
+  think about defgenerics and *WHAT* operations they perform
 
-;; ** define implementations
-;; and think *HOW* to perform the operations
+  ** define implementations
+  and think *HOW* to perform the operations
 
-;; *** interface
-;; is the middleman between two distinct components
-;; defines how components communicate using requests and responses
-;; allows to talk to abstraction of the other component
+  *** interface
+  is the middleman between two distinct components
+  defines how components communicate using requests and responses
+  allows to talk to abstraction of the other component
 
-;; *** utilities and print-object
+  *** utilities and print-object
 
-;; *** component
-;; **** external vs internal
-;; has external part exposed to the client, that should be stable
-;; and internal (private)
-;; The key is to find which parts should not be exposed to the external client
-;; **** responsibilities
-;; component may have specific responsibilities
-;; interface defined the behaviour of the component from the standpoint of the client
+  *** component
+  **** external vs internal
+  has external part exposed to the client, that should be stable
+  and internal (private)
+  The key is to find which parts should not be exposed to the external client
+  **** responsibilities
+  component may have specific responsibilities
+  interface defined the behaviour of the component from the standpoint of the client
+  |#
 
 (defparameter *model* nil)
 ;;; classes !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
