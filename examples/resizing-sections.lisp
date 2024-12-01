@@ -569,7 +569,6 @@
   (:import-from #:resizing-sections
    :resizing-sections-window
    :children
-   ;; :remove-me-please
    )
   (:export #:run!))
 
@@ -585,8 +584,9 @@
       (is (eq (+ 2 2) 4)))
 
 (test lisp-window-is-correct
-  (is (typep *lisp-window* 'resizing-sections-window))
-  (break "examine the children ~S" *lisp-window*)
+  (let ((lisp-window *lisp-window*))
+    (is (typep *lisp-window* 'resizing-sections-window))
+    (break "examine the children ~S" lisp-window))
  )
 
 
