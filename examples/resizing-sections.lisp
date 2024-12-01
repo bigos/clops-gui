@@ -587,6 +587,13 @@
   (let ((lisp-window *lisp-window*))
     (is (typep *lisp-window* 'resizing-sections-window))
     (is  (eq 1 (length (gui-window:children lisp-window))))
+    (is
+     (eq 5
+         (length
+          (children
+           (first
+            (gui-window:children
+             *lisp-window*))))))
 
     ;; (break "examine the children ~S" lisp-window)
     )
