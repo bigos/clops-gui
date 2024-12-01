@@ -590,14 +590,19 @@
           (children (first (gui-window:children *lisp-window*)))))
     (is (typep *lisp-window* 'resizing-sections-window))
     (is (eq 1 (length (gui-window:children lisp-window))))
-    (is (eq 5
-            (length
-             inner-children)))
+    (is (eq 5 (length inner-children)))
+    (is (eq :a1 (resizing-sections::id (nth 4 inner-children))))
+    (is (eq :a2 (resizing-sections::id (nth 3 inner-children))))
+    (is (eq :a3 (resizing-sections::id (nth 2 inner-children))))
+    (is (eq :a4 (resizing-sections::id (nth 1 inner-children))))
+    (is (eq :a5 (resizing-sections::id (nth 0 inner-children))))
+
+
+
+
 
     ;; (break "examine the children ~S" inner-children)
     )
   )
-
-
 
 (run! 'my-tests)                        ;---------------------------------------
