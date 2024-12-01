@@ -1,0 +1,15 @@
+* Counter third
+based on file:counter-second.lisp::1
+lisp eqyivalent file:counter-third.lisp::1
+
+** declaim
+#+begin_src lisp
+(declaim (optimize (speed 0) (safety 3) (debug 3)))
+#+end_src
+
+** loading
+#+begin_src lisp
+;; (load "~/Programming/Lisp/clops-gui/examples/counter-third.lisp")
+(push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
+(ql:quickload '(:clops-gui :access :fiveam) :silent nil)
+#+end_src

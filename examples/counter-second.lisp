@@ -262,35 +262,36 @@
     (is (eq (type-of m) 'model))))
 
 (test counter-clicking
-  (setf *model* nil)
-  (init-model)
+      (setf *model* nil)
+      (init-model)
 
-  (doit :RESIZE '(600 400))
-  (doit :KEY-RELEASED '("" "Return" 36 NIL))
-  (doit :TIMEOUT NIL)
-  (is (null (a-mouseover *model*)))
-  (is (null (b-mouseover *model*)))
+      (doit :RESIZE '(600 400))
+      (doit :KEY-RELEASED '("" "Return" 36 NIL))
+      (doit :TIMEOUT NIL)
+      (is (null (a-mouseover *model*)))
+      (is (null (b-mouseover *model*)))
 
-  (doit :MOTION-ENTER '(194.0d0 390.0d0))
-  (doit :MOTION a-mouse-coordinates)
-  (is (zerop (counted *model*)))
-  (is (not (null (a-mouseover *model*))))
-  (is      (null (b-mouseover *model*)))
+      (doit :MOTION-ENTER '(194.0d0 390.0d0))
+      (doit :MOTION a-mouse-coordinates)
+      (is (zerop (counted *model*)))
+      (is (not (null (a-mouseover *model*))))
+      (is      (null (b-mouseover *model*)))
 
-  (doit :PRESSED  a-mouse-coordinates-press)
-  (doit :RELEASED a-mouse-coordinates-press)
-  (doit :PRESSED  a-mouse-coordinates-press)
-  (doit :RELEASED a-mouse-coordinates-press)
-  (is (eq 2 (counted *model*)))
-  (is (not (null (a-mouseover *model*))))
-  (is      (null (b-mouseover *model*)))
+      (doit :PRESSED  a-mouse-coordinates-press)
+      (doit :RELEASED a-mouse-coordinates-press)
+      (doit :PRESSED  a-mouse-coordinates-press)
+      (doit :RELEASED a-mouse-coordinates-press)
+      (is (eq 2 (counted *model*)))
+      (is (not (null (a-mouseover *model*))))
+      (is      (null (b-mouseover *model*)))
 
-  (doit :MOTION     b-mouse-coordinates)
-  (is      (null (a-mouseover *model*)))
-  (is (not (null (b-mouseover *model*))))
+      (doit :MOTION     b-mouse-coordinates)
+      (is      (null (a-mouseover *model*)))
+      (is (not (null (b-mouseover *model*))))
 
-  (doit :PRESSED  b-mouse-coordinates-press)
-  (doit :RELEASED b-mouse-coordinates-press)
-  (is (eq 1 (counted *model*))))
+      (doit :PRESSED  b-mouse-coordinates-press)
+      (doit :RELEASED b-mouse-coordinates-press)
+
+      (is (eq 1 (counted *model*))))
 
 (run! 'my-tests)
