@@ -567,7 +567,7 @@
 (defpackage #:resizing-sections.test
   (:use #:cl #:resizing-sections #:fiveam)
   (:import-from #:resizing-sections
-   :remove-me-please
+   ;; :remove-me-please
    )
   (:export #:run!))
 
@@ -579,3 +579,5 @@
 
 (test two-and-two
       (is (eq (+ 2 2) 4)))
+
+(run! 'my-tests)
