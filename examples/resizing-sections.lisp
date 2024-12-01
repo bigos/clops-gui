@@ -584,20 +584,19 @@
       (is (eq (+ 2 2) 4)))
 
 (test lisp-window-is-correct
-  (let ((lisp-window *lisp-window*))
+  (let ((lisp-window
+          *lisp-window*)
+        (inner-children
+          (children (first (gui-window:children *lisp-window*)))))
     (is (typep *lisp-window* 'resizing-sections-window))
-    (is  (eq 1 (length (gui-window:children lisp-window))))
-    (is
-     (eq 5
-         (length
-          (children
-           (first
-            (gui-window:children
-             *lisp-window*))))))
+    (is (eq 1 (length (gui-window:children lisp-window))))
+    (is (eq 5
+            (length
+             inner-children)))
 
-    ;; (break "examine the children ~S" lisp-window)
+    ;; (break "examine the children ~S" inner-children)
     )
- )
+  )
 
 
 
