@@ -9,7 +9,7 @@
 ;; (load "~/Programming/Lisp/clops-gui/examples/resizing-sections.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
 (ql:quickload '(:clops-gui) :silent nil)
-(ql:quickload '(:access))
+(ql:quickload '(:access :fiveam))
 
 ;;; package ================================================================
 (defpackage #:resizing-sections
@@ -560,3 +560,22 @@
   (gui-window-gtk:window (make-instance 'resizing-sections-window)))
 
 ;; (main)
+
+;;; !!!!!!!!!!!!!!!!!!!!!!!resizing-sections-testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+(in-package :common-lisp-user)
+
+(defpackage #:resizing-sections.test
+  (:use #:cl #:resizing-sections #:fiveam)
+  (:import-from #:resizing-sections
+   :remove-me-please
+   )
+  (:export #:run!))
+
+(in-package #:resizing-sections.test)
+
+(def-suite my-tests :description "my tests")
+
+(in-suite my-tests)
+
+(test two-and-two
+      (is (eq (+ 2 2) 4)))
