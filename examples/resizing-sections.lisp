@@ -494,6 +494,17 @@
   (cairo:move-to 10 140)
   (cairo:show-text (format nil "the central block")))
 
+;;; === test preparation =======================================================
+(defun experiment-first-window ()
+  (setf gui-drawing:*client-fn-draw-objects*  'resizing-sections::draw-window)
+
+  (setf gui-app:*lisp-app* (gui-app:make-lisp-app))
+  (assert (zerop (hash-table-count (gui-app:all-windows))))
+
+  (let ((lisp-window (make-instance 'resizing-sections-window)))
+    (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
+    (assert (eq 1 (hash-table-count (gui-app:all-windows))))
+    lisp-window))
 ;; In main function we tell to use draw-window to draw on canvas
 (defmethod draw-window ((window resizing-sections-window))
   ;; paint background
@@ -584,13 +595,18 @@
    :resizing-sections-window
    :children
    :id
+   :experiment-first-window
    :stats
+   :process-event
    )
   (:export #:run!))
 
-(in-package #:resizing-sections.test)   ;---------------------------------------
+(in-package #:resizing-sections.test)
 
-(defparameter *lisp-window* (make-instance 'resizing-sections-window))
+(setf *debug-on-error* nil)
+
+(defparameter *lisp-window* (experiment-first-window))
+(defparameter *inner-children* (children (first (gui-window:children *lisp-window*))))
 
 (def-suite my-tests :description "my tests") ;==================================
 
@@ -604,6 +620,11 @@
           *lisp-window*)
         (inner-children
           (children (first (gui-window:children *lisp-window*)))))
+
+    (process-event lisp-window :RESIZE '(600 400))
+    (process-event lisp-window :KEY-RELEASED '("" "Return" 36 NIL))
+    (process-event lisp-window :TIMEOUT NIL)
+
     (is (typep *lisp-window* 'resizing-sections-window))
     (is (eq 1 (length (gui-window:children lisp-window))))
     (is (eq 5 (length inner-children)))
@@ -611,45 +632,53 @@
     (is (eq :a2 (id (nth 3 inner-children))))
     (is (eq :a3 (id (nth 2 inner-children))))
     (is (eq :a4 (id (nth 1 inner-children))))
-    (is (eq :a5 (id (nth 0 inner-children))))
-
+    (is (eq :a5 (id (nth 0 inner-children))))))
     ;; ---------------------------------------------------
-    (is (equal
-         (STATS (NTH 4 inner-children))
-         '(:RESIZING-POINT
-           (:X 0 :Y 10 :ABSOLUTE-X 0 :ABSOLUTE-Y 10)
-           :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
-    (is (equal
-         (STATS (NTH 3  inner-children))
-         '(:RESIZING-POINT
-           (:X 150 :Y 30 :ABSOLUTE-X 150 :ABSOLUTE-Y
-            30)
-           :UP 30 :RIGHT 30 :DOWN 150 :LEFT 30)))
-    (is (equal
-         (STATS (NTH 2  inner-children))
-         '(:RESIZING-POINT
-           (:X 300 :Y 10 :ABSOLUTE-X 300 :ABSOLUTE-Y
-            10)
-           :UP 0 :RIGHT 0 :DOWN 55 :LEFT 250)))
-    (is (equal
-         (STATS (NTH 1 inner-children))
-         '(:RESIZING-POINT
-           (:X 280 :Y 80 :ABSOLUTE-X 280 :ABSOLUTE-Y
-            80)
-           :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
-    (is (equal
-         (STATS (NTH 0 inner-children))
-         '(:RESIZING-POINT
-           (:X 0 :Y 340 :ABSOLUTE-X 0 :ABSOLUTE-Y 340)
-           :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
+
+(break "examine the stats ~S"
+       (loop for x from 4 downto 0 collect
+                                   (list
+                                         `(test c,x
+                                            (is (equalp
+                                                 (stats (nth ,x :inner-children))
+                                                 ,(stats (nth x *inner-children* ))))))))
 
 
-    ;; (break "examine the stats ~S"
-    ;;        (loop for x from 4 downto 0 collect
-    ;;                                    (list x :stats
-    ;;                                          `(stats (nth ,x inner-children))
-    ;;                                          (stats (nth x inner-children )))))
-    )
-  )
+
+(((test c4
+    (is
+     (EQUALP (RESIZING-SECTIONS::STATS #)
+             (:RESIZING-POINT # :UP 0 :RIGHT
+                                50 :DOWN 50 :LEFT 0)))))
+ ((test c3
+    (is
+     (EQUALP (RESIZING-SECTIONS::STATS #)
+             (:RESIZING-POINT # :UP 30 :RIGHT
+                                30 :DOWN 150 :LEFT 30)))))
+ ((test c2
+    (is
+     (EQUALP (RESIZING-SECTIONS::STATS #)
+             (:RESIZING-POINT # :UP 0 :RIGHT 0
+                                :DOWN 55 :LEFT 250)))))
+ ((test c1
+    (is
+     (EQUALP (RESIZING-SECTIONS::STATS #)
+             (:RESIZING-POINT # :UP 0 :RIGHT
+                                50 :DOWN 50 :LEFT 0)))))
+ ((test c0
+    (is
+     (EQUALP (RESIZING-SECTIONS::STATS #)
+             (:RESIZING-POINT # :UP 0 :RIGHT
+                                50 :DOWN 50 :LEFT 0))))))
+
+    ;; (loop for x from 1 to 3 do
+    ;;   (process-event *lisp-window* :key-pressed  '("" "Right" 114 NIL))
+    ;;   (process-event *lisp-window* :key-released '("" "Right" 114 NIL)))
+
+    ;; (loop for x from 1 to 3 do
+    ;;   (process-event *lisp-window* :key-pressed  '("" "Down" 116 NIL))
+    ;;   (process-event *lisp-window* :key-released '("" "Down" 116 NIL)))
+
+
 
 (run! 'my-tests)                        ;---------------------------------------
