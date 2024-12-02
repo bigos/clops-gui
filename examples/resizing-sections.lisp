@@ -501,7 +501,7 @@
   (setf gui-app:*lisp-app* (gui-app:make-lisp-app))
   (assert (zerop (hash-table-count (gui-app:all-windows))))
 
-  (let ((lisp-window (make-instance 'resizing-sections-window)))
+  (let ((lisp-window (make-instance 'resizing-sections-window :dimensions (cons 600 400))))
     (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
     (assert (eq 1 (hash-table-count (gui-app:all-windows))))
     lisp-window))
@@ -645,9 +645,9 @@
            '(:RESIZING-POINT (:X 300 :Y 40 :ABSOLUTE-X 300 :ABSOLUTE-Y 40) :UP 30 :RIGHT 30
              :DOWN 150 :LEFT 30)))
   (is
-   (EQUALP (STATS (nth 3 *inner-children*))
-           '(:RESIZING-POINT (:X 300 :Y 40 :ABSOLUTE-X 300 :ABSOLUTE-Y 40) :UP 30 :RIGHT 30
-             :DOWN 150 :LEFT 30)))
+   (EQUALP (STATS (nth 2 *inner-children*))
+           '(:RESIZING-POINT (:X 590 :Y 10 :ABSOLUTE-X 590 :ABSOLUTE-Y 10) :UP 0 :RIGHT 0
+             :DOWN 55 :LEFT 240)))
   (is
    (EQUALP (STATS (nth 1 *inner-children*))
            '(:RESIZING-POINT (:X 350 :Y 80 :ABSOLUTE-X 350 :ABSOLUTE-Y 80) :UP 0 :RIGHT 240
@@ -674,9 +674,9 @@
            '(:RESIZING-POINT (:X 300 :Y 40 :ABSOLUTE-X 300 :ABSOLUTE-Y 40) :UP 30 :RIGHT 45
              :DOWN 165 :LEFT 30)))
   (is
-   (EQUALP (STATS (nth 3 *inner-children*))
-           '(:RESIZING-POINT (:X 300 :Y 40 :ABSOLUTE-X 300 :ABSOLUTE-Y 40) :UP 30 :RIGHT 45
-             :DOWN 165 :LEFT 30)))
+   (EQUALP (STATS (nth 2 *inner-children*))
+           '(:RESIZING-POINT (:X 590 :Y 10 :ABSOLUTE-X 590 :ABSOLUTE-Y 10) :UP 0 :RIGHT 0
+             :DOWN 55 :LEFT 225)))
   (is
    (EQUALP (STATS (nth 1 *inner-children*))
            '(:RESIZING-POINT (:X 365 :Y 80 :ABSOLUTE-X 365 :ABSOLUTE-Y 80) :UP 0 :RIGHT 225
