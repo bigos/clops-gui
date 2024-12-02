@@ -621,10 +621,6 @@
         (inner-children
           (children (first (gui-window:children *lisp-window*)))))
 
-    (process-event lisp-window :RESIZE '(600 400))
-    (process-event lisp-window :KEY-RELEASED '("" "Return" 36 NIL))
-    (process-event lisp-window :TIMEOUT NIL)
-
     (is (typep *lisp-window* 'resizing-sections-window))
     (is (eq 1 (length (gui-window:children lisp-window))))
     (is (eq 5 (length inner-children)))
@@ -635,50 +631,60 @@
     (is (eq :a5 (id (nth 0 inner-children))))))
     ;; ---------------------------------------------------
 
-(break "examine the stats ~S"
-       (loop for x from 4 downto 0 collect
-                                   (list
-                                         `(test c,x
-                                            (is (equalp
-                                                 (stats (nth ,x :inner-children))
-                                                 ,(stats (nth x *inner-children* ))))))))
+(test movement
+  (process-event *lisp-window* :RESIZE '(600 400))
+  (process-event *lisp-window* :KEY-RELEASED '("" "Return" 36 NIL))
+  (process-event *lisp-window* :TIMEOUT NIL)
 
+  (is
+   (EQUALP (STATS (nth 4 *inner-children*))
+           '(:RESIZING-POINT (:X 10 :Y 10 :ABSOLUTE-X 10 :ABSOLUTE-Y 10) :UP 0 :RIGHT 240
+             :DOWN 50 :LEFT 0)))
+  (is
+   (EQUALP (STATS (nth 3 *inner-children*))
+           '(:RESIZING-POINT (:X 300 :Y 40 :ABSOLUTE-X 300 :ABSOLUTE-Y 40) :UP 30 :RIGHT 30
+             :DOWN 150 :LEFT 30)))
+  (is
+   (EQUALP (STATS (nth 3 *inner-children*))
+           '(:RESIZING-POINT (:X 300 :Y 40 :ABSOLUTE-X 300 :ABSOLUTE-Y 40) :UP 30 :RIGHT 30
+             :DOWN 150 :LEFT 30)))
+  (is
+   (EQUALP (STATS (nth 1 *inner-children*))
+           '(:RESIZING-POINT (:X 350 :Y 80 :ABSOLUTE-X 350 :ABSOLUTE-Y 80) :UP 0 :RIGHT 240
+             :DOWN 110 :LEFT 0)))
+  (is
+   (EQUALP (STATS (nth 0 *inner-children*))
+           '(:RESIZING-POINT (:X 10 :Y 200 :ABSOLUTE-X 10 :ABSOLUTE-Y 200) :UP 0 :RIGHT 580
+             :DOWN 190 :LEFT 0)))
 
+  (loop for x from 1 to 3 do
+    (process-event *lisp-window* :key-pressed  '("" "Right" 114 NIL))
+    (process-event *lisp-window* :key-released '("" "Right" 114 NIL)))
 
-(((test c4
-    (is
-     (EQUALP (RESIZING-SECTIONS::STATS #)
-             (:RESIZING-POINT # :UP 0 :RIGHT
-                                50 :DOWN 50 :LEFT 0)))))
- ((test c3
-    (is
-     (EQUALP (RESIZING-SECTIONS::STATS #)
-             (:RESIZING-POINT # :UP 30 :RIGHT
-                                30 :DOWN 150 :LEFT 30)))))
- ((test c2
-    (is
-     (EQUALP (RESIZING-SECTIONS::STATS #)
-             (:RESIZING-POINT # :UP 0 :RIGHT 0
-                                :DOWN 55 :LEFT 250)))))
- ((test c1
-    (is
-     (EQUALP (RESIZING-SECTIONS::STATS #)
-             (:RESIZING-POINT # :UP 0 :RIGHT
-                                50 :DOWN 50 :LEFT 0)))))
- ((test c0
-    (is
-     (EQUALP (RESIZING-SECTIONS::STATS #)
-             (:RESIZING-POINT # :UP 0 :RIGHT
-                                50 :DOWN 50 :LEFT 0))))))
+  (loop for x from 1 to 3 do
+    (process-event *lisp-window* :key-pressed  '("" "Down" 116 NIL))
+    (process-event *lisp-window* :key-released '("" "Down" 116 NIL)))
 
-    ;; (loop for x from 1 to 3 do
-    ;;   (process-event *lisp-window* :key-pressed  '("" "Right" 114 NIL))
-    ;;   (process-event *lisp-window* :key-released '("" "Right" 114 NIL)))
-
-    ;; (loop for x from 1 to 3 do
-    ;;   (process-event *lisp-window* :key-pressed  '("" "Down" 116 NIL))
-    ;;   (process-event *lisp-window* :key-released '("" "Down" 116 NIL)))
-
+  (is
+   (EQUALP (STATS (nth 4 *inner-children*))
+           '(:RESIZING-POINT (:X 10 :Y 10 :ABSOLUTE-X 10 :ABSOLUTE-Y 10) :UP 0 :RIGHT 240
+             :DOWN 50 :LEFT 0)))
+  (is
+   (EQUALP (STATS (nth 3 *inner-children*))
+           '(:RESIZING-POINT (:X 300 :Y 40 :ABSOLUTE-X 300 :ABSOLUTE-Y 40) :UP 30 :RIGHT 45
+             :DOWN 165 :LEFT 30)))
+  (is
+   (EQUALP (STATS (nth 3 *inner-children*))
+           '(:RESIZING-POINT (:X 300 :Y 40 :ABSOLUTE-X 300 :ABSOLUTE-Y 40) :UP 30 :RIGHT 45
+             :DOWN 165 :LEFT 30)))
+  (is
+   (EQUALP (STATS (nth 1 *inner-children*))
+           '(:RESIZING-POINT (:X 365 :Y 80 :ABSOLUTE-X 365 :ABSOLUTE-Y 80) :UP 0 :RIGHT 225
+             :DOWN 125 :LEFT 0)))
+  (is
+   (EQUALP (STATS (nth 0 *inner-children*))
+           '(:RESIZING-POINT (:X 10 :Y 215 :ABSOLUTE-X 10 :ABSOLUTE-Y 215) :UP 0 :RIGHT 580
+             :DOWN 175 :LEFT 0))))
 
 
 (run! 'my-tests)                        ;---------------------------------------
