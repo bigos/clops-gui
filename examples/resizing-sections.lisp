@@ -173,6 +173,20 @@
 ;;; events is a component for responding to GTK events
 
 ;;; description of another component and its implementation will go here
+(defmethod stats ((point point))
+  (list
+   :x (x point)
+   :y (y point)
+   :absolute-x (absolute-x point)
+   :absolute-y (absolute-y point)))
+
+(defmethod stats ((rect rect))
+  (list
+   :resizing-point (stats (resizing-point rect))
+   :up (up rect)
+   :right (right rect)
+   :down (down rect)
+   :left (left rect)))
 
 ;;; constructors ---------------------------------------------------------------
 (defun make-point (x y)
@@ -569,6 +583,8 @@
   (:import-from #:resizing-sections
    :resizing-sections-window
    :children
+   :id
+   :stats
    )
   (:export #:run!))
 
@@ -591,17 +607,48 @@
     (is (typep *lisp-window* 'resizing-sections-window))
     (is (eq 1 (length (gui-window:children lisp-window))))
     (is (eq 5 (length inner-children)))
-    (is (eq :a1 (resizing-sections::id (nth 4 inner-children))))
-    (is (eq :a2 (resizing-sections::id (nth 3 inner-children))))
-    (is (eq :a3 (resizing-sections::id (nth 2 inner-children))))
-    (is (eq :a4 (resizing-sections::id (nth 1 inner-children))))
-    (is (eq :a5 (resizing-sections::id (nth 0 inner-children))))
+    (is (eq :a1 (id (nth 4 inner-children))))
+    (is (eq :a2 (id (nth 3 inner-children))))
+    (is (eq :a3 (id (nth 2 inner-children))))
+    (is (eq :a4 (id (nth 1 inner-children))))
+    (is (eq :a5 (id (nth 0 inner-children))))
+
+    ;; ---------------------------------------------------
+    (is (equal
+         (STATS (NTH 4 inner-children))
+         '(:RESIZING-POINT
+          (:X 0 :Y 10 :ABSOLUTE-X 0 :ABSOLUTE-Y 10)
+          :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
+    (is (equal
+         (STATS (NTH 3  inner-children))
+         '(:RESIZING-POINT
+          (:X 150 :Y 30 :ABSOLUTE-X 150 :ABSOLUTE-Y
+              30)
+          :UP 30 :RIGHT 30 :DOWN 150 :LEFT 30)))
+    (is (equal
+         (STATS (NTH 2  inner-children))
+         '(:RESIZING-POINT
+          (:X 300 :Y 10 :ABSOLUTE-X 300 :ABSOLUTE-Y
+              10)
+          :UP 0 :RIGHT 0 :DOWN 55 :LEFT 250)))
+    (is (equal
+         (STATS (NTH 1 inner-children))
+         '(:RESIZING-POINT
+          (:X 280 :Y 80 :ABSOLUTE-X 280 :ABSOLUTE-Y
+              80)
+          :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
+    (is (equal
+         (STATS (NTH 0 inner-children))
+         '(:RESIZING-POINT
+          (:X 0 :Y 340 :ABSOLUTE-X 0 :ABSOLUTE-Y 340)
+          :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
 
 
-
-
-
-    ;; (break "examine the children ~S" inner-children)
+    ;; (break "examine the stats ~S"
+    ;;        (loop for x from 4 downto 0 collect
+    ;;                                    (list x :stats
+    ;;                                          `(stats (nth ,x inner-children))
+    ;;                                          (stats (nth x inner-children )))))
     )
   )
 
