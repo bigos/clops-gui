@@ -617,31 +617,31 @@
     (is (equal
          (STATS (NTH 4 inner-children))
          '(:RESIZING-POINT
-          (:X 0 :Y 10 :ABSOLUTE-X 0 :ABSOLUTE-Y 10)
-          :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
+           (:X 0 :Y 10 :ABSOLUTE-X 0 :ABSOLUTE-Y 10)
+           :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
     (is (equal
          (STATS (NTH 3  inner-children))
          '(:RESIZING-POINT
-          (:X 150 :Y 30 :ABSOLUTE-X 150 :ABSOLUTE-Y
-              30)
-          :UP 30 :RIGHT 30 :DOWN 150 :LEFT 30)))
+           (:X 150 :Y 30 :ABSOLUTE-X 150 :ABSOLUTE-Y
+            30)
+           :UP 30 :RIGHT 30 :DOWN 150 :LEFT 30)))
     (is (equal
          (STATS (NTH 2  inner-children))
          '(:RESIZING-POINT
-          (:X 300 :Y 10 :ABSOLUTE-X 300 :ABSOLUTE-Y
-              10)
-          :UP 0 :RIGHT 0 :DOWN 55 :LEFT 250)))
+           (:X 300 :Y 10 :ABSOLUTE-X 300 :ABSOLUTE-Y
+            10)
+           :UP 0 :RIGHT 0 :DOWN 55 :LEFT 250)))
     (is (equal
          (STATS (NTH 1 inner-children))
          '(:RESIZING-POINT
-          (:X 280 :Y 80 :ABSOLUTE-X 280 :ABSOLUTE-Y
-              80)
-          :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
+           (:X 280 :Y 80 :ABSOLUTE-X 280 :ABSOLUTE-Y
+            80)
+           :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
     (is (equal
          (STATS (NTH 0 inner-children))
          '(:RESIZING-POINT
-          (:X 0 :Y 340 :ABSOLUTE-X 0 :ABSOLUTE-Y 340)
-          :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
+           (:X 0 :Y 340 :ABSOLUTE-X 0 :ABSOLUTE-Y 340)
+           :UP 0 :RIGHT 50 :DOWN 50 :LEFT 0)))
 
 
     ;; (break "examine the stats ~S"
