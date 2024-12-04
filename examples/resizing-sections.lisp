@@ -288,6 +288,26 @@
     (if t
         (describe window-widget))))
 
+(defmethod resizify ((lisp-window resizing-sections-window) key-name)
+  (warn "resizifying ~S" key-name)
+  (let ((widget (access:accesses *model* '(:widget-a2 :type :alist)))
+        (step 5))
+    (warn "============= Widget ~S" widget)
+    (warn "!!!!!!!!!!!!! model in action ~S" *model*)
+
+    (when (and widget
+               (~> widget down)
+               (~> widget right))
+      (cond ((equal key-name "Up")
+             (setf (~> widget down) (- (~> widget down) step)))
+            ((equal key-name "Right")
+             (setf (~> widget right) (+ (~> widget right) step)))
+            ((equal key-name "Down")
+             (setf (~> widget down) (+ (~> widget down) step)))
+            ((equal key-name "Left")
+             (setf (~> widget right) (- (~> widget right) step))))
+      (warn "resized >>> ~S ~S >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" (~> widget right) (~> widget down)))))
+
 ;;; moving =====================================================================
 
 (defmethod move-widget ((parents T) (widget rect-window))
@@ -347,26 +367,6 @@
 (defmethod move-widget :after ((parents T) (widget T))
   (loop for c in (~> widget children)
         do (move-widget (cons widget parents) c)))
-
-(defmethod resizify ((lisp-window resizing-sections-window) key-name)
-  (warn "resizifying ~S" key-name)
-  (let ((widget (access:accesses *model* '(:widget-a2 :type :alist)))
-        (step 5))
-    (warn "============= Widget ~S" widget)
-    (warn "!!!!!!!!!!!!! model in action ~S" *model*)
-
-  (when (and widget
-             (~> widget down)
-             (~> widget right))
-    (cond ((equal key-name "Up")
-           (setf (~> widget down) (- (~> widget down) step)))
-          ((equal key-name "Right")
-           (setf (~> widget right) (+ (~> widget right) step)))
-          ((equal key-name "Down")
-           (setf (~> widget down) (+ (~> widget down) step)))
-          ((equal key-name "Left")
-           (setf (~> widget right) (- (~> widget right) step))))
-    (warn "resized >>> ~S ~S >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" (~> widget right) (~> widget down)))))
 
 ;;; rendering ==================================================================
 (defmethod to-rectangle ((rect rect-base))
@@ -567,9 +567,11 @@
     (otherwise
      (warn "not handled event ~S ~S" event args)))
 
-  ;; redrawing ------------------------------
+  ;; update layout of window and its child widgets
   (move-widget (list lisp-window)
                (first (gui-window:children lisp-window)))
+
+  ;; redrawing ------------------------------
   (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
 
 ;;; main =======================================================================
