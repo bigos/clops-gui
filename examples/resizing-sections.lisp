@@ -313,6 +313,7 @@
 (defmethod move-widget ((parents T) (widget rect-window))
   (warn "doing nothing in rect-window moving"))
 
+;;; recalculate layout
 (defmethod move-widget ((parents T) (widget rect))
   (let ((parent (first parents)))
     ;; find sibling :a2
