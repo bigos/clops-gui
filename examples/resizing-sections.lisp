@@ -554,16 +554,12 @@
      (destructuring-bind ((w h)) args
        (window-resize w h lisp-window)
 
-
        ;; (move-widgets lisp-window)
        ))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
-       (when (or (equal key-name "Up")
-                 (equal key-name "Right")
-                 (equal key-name "Down")
-                 (equal key-name "Left"))
+       (when (member key-name '("Up" "Right" "Down" "Left") :test 'equal)
          (window-resize-by-key lisp-window key-name))))
     (otherwise
      (warn "not handled event ~S ~S" event args)))
