@@ -17,6 +17,12 @@ loading
 that is decided on the type of the window attribute used in the event
 file:~/Programming/Lisp/clops-gui/examples/counter-second.lisp::157
 
+**** application state is updated
+
+**** relevant widgets are updated
+
+**** Layout is updated
+
 *** redraw-canvas is called
 file:~/Programming/Lisp/clops-gui/src/gui-window.lisp::17
 depending if real gtk4 or simulated event based on window properties
