@@ -494,17 +494,6 @@
   (cairo:move-to 10 140)
   (cairo:show-text (format nil "the central block")))
 
-;;; === test preparation =======================================================
-(defun experiment-first-window ()
-  (setf gui-drawing:*client-fn-draw-objects*  'resizing-sections::draw-window)
-
-  (setf gui-app:*lisp-app* (gui-app:make-lisp-app))
-  (assert (zerop (hash-table-count (gui-app:all-windows))))
-
-  (let ((lisp-window (make-instance 'resizing-sections-window :dimensions (cons 600 400))))
-    (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
-    (assert (eq 1 (hash-table-count (gui-app:all-windows))))
-    lisp-window))
 ;; In main function we tell to use draw-window to draw on canvas
 (defmethod draw-window ((window resizing-sections-window))
   ;; paint background
@@ -520,6 +509,18 @@
         do (render c))
 
   (draw-mouse-square window))
+
+;;; === test preparation =======================================================
+(defun experiment-first-window ()
+  (setf gui-drawing:*client-fn-draw-objects*  'resizing-sections::draw-window)
+
+  (setf gui-app:*lisp-app* (gui-app:make-lisp-app))
+  (assert (zerop (hash-table-count (gui-app:all-windows))))
+
+  (let ((lisp-window (make-instance 'resizing-sections-window :dimensions (cons 600 400))))
+    (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
+    (assert (eq 1 (hash-table-count (gui-app:all-windows))))
+    lisp-window))
 
 ;;; events =====================================================================
 ;;; in main function we tell to use process-event to respond to GTK events
