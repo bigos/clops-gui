@@ -235,7 +235,7 @@
 (defmethod find-child ((parent-widget rect-base) (child-id T))
   (first (remove-if-not (lambda (c) (eq (id c) child-id)) (children parent-widget))))
 
-;;; zzzzzzz --------------------------------------------------------------------
+;;; resizing -------------------------------------------------------------------
 (defmethod initialize-instance :after ((window resizing-sections-window) &rest initargs &key)
     (declare (ignore initargs))
   ;; add child
