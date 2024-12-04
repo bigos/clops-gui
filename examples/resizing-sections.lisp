@@ -288,8 +288,8 @@
     (if t
         (describe window-widget))))
 
-(defmethod resizify ((lisp-window resizing-sections-window) key-name)
-  (warn "resizifying ~S" key-name)
+(defmethod window-resize-by-key ((lisp-window resizing-sections-window) key-name)
+  (warn "window resize by ~S" key-name)
   (let ((widget (access:accesses *model* '(:widget-a2 :type :alist)))
         (step 5))
     (warn "============= Widget ~S" widget)
@@ -563,7 +563,7 @@
                  (equal key-name "Right")
                  (equal key-name "Down")
                  (equal key-name "Left"))
-         (resizify lisp-window key-name))))
+         (window-resize-by-key lisp-window key-name))))
     (otherwise
      (warn "not handled event ~S ~S" event args)))
 
