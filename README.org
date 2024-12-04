@@ -69,6 +69,23 @@ file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
 [[file:src/gui-window.lisp::(defmethod add-child]] and the method below need to be
 somehow moved to gui-box
 
+** Interesting Gtk doc
+
+*** Drawing model
+https://docs.gtk.org/gtk4/drawing-model.html
+
+**** event
+Some events, like mouse motion are compressed so that only a single mouse motion event per clock cycle
+
+**** update
+running animation
+
+**** layout
+geometry changes, sizes and positions
+
+**** paint
+redrawing what needs redrawing
+
 ** Great ideas
 
 *** Archy
