@@ -288,7 +288,9 @@
     (if t
         (describe window-widget))))
 
-(defmethod window-resize-by-key ((lisp-window resizing-sections-window) key-name)
+(defmethod window-resize-by-key ((window resizing-sections-window) key-name)
+  (declare (ignore window))
+
   (warn "window resize by ~S" key-name)
   (let ((widget (access:accesses *model* '(:widget-a2 :type :alist)))
         (step 5))
