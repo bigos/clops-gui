@@ -1,12 +1,10 @@
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
 
-#|
-loading
-|#
+#| loading |#
 
 ;; (load "~/Programming/Lisp/clops-gui/examples/counter-third.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui :access :fiveam) :silent nil)
+(ql:quickload '(:clops-gui :access :serapeum :defclass-std) :silent nil)
 
 
 #| planning
@@ -51,7 +49,8 @@ loading
 (in-package #:counter-third)
 
 ;;; -------------------------------- code --------------------------------------
-
+(defclass/std counter-third-window (gui-window:lisp-window)
+  (()))
 ;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
   ;; paint background
@@ -59,27 +58,10 @@ loading
   (cairo:paint)
 
   (cairo:select-font-face "Ubuntu Mono" :italic :bold)
-  (cairo:set-font-size 10)
-  (cairo:move-to 10 10)
+  (cairo:set-font-size 20)
+  (cairo:move-to 20 30)
   (gui-window:set-rgba "black")
-  (cairo:show-text (format nil "try moving the mouse over the window and outside of it"))
-
-  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
-  (cairo:set-font-size 15)
-  (cairo:move-to 10 100)
-  (let ((cmotion (gui-app:current-motion-window-p gui-app:*lisp-app* window)))
-    (if cmotion
-        (gui-window:set-rgba "green")
-        (gui-window:set-rgba "red"))
-    (cairo:show-text (format nil "motion ~A" cmotion)))
-
-  (cairo:set-font-size 30)
-  (cairo:move-to 10 150)
-  (gui-window:set-rgba "blue")
-  (cairo:show-text (format nil "~A" (counted *model*)))
-
-  (draw-rectangle *model* :a "yellow")
-  (draw-rectangle *model* :b "orange"))
+  (cairo:show-text (format nil "try to code something")))
 
 (defmethod draw-window :after ((window counter-third-window))
   ;; pink square follows the mouse
