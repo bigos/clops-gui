@@ -147,3 +147,12 @@
   reactive way, hiding the buttons when the width goes below the small limit,
   limiting buttons to 10% at middle limit, and haveing 30% buttons at large limit.
  |#
+
+(defun test-experiment ()
+  (warn "starting test-experiment")
+
+  (warn "TODO finish me")
+
+  (warn "finished test-experiment"))
+
+;; (test-experiment)
