@@ -133,3 +133,17 @@
    gui-window-gtk:*initial-title*           "Counter Third")
 
   (gui-window-gtk:window (make-instance 'counter-third-window)))
+
+
+#| hmmm
+  **** hmm
+  We need scaled counter the screen is divided into 2 sections, upper 2/3 is for
+  counter and bottom 1/3 is for echo area.
+
+  The counter sub section is divided horizontally into 3 sections, plus-button,
+  count and minus-button.
+
+  depending on the window size, the counter sub section elements will scale in a
+  reactive way, hiding the buttons when the width goes below the small limit,
+  limiting buttons to 10% at middle limit, and haveing 30% buttons at large limit.
+|#
