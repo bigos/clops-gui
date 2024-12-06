@@ -7,17 +7,32 @@ lisp equivalent file:counter-third.lisp::1
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
 #+end_src
 
-** planning
-
-*** event is processed, either Gtk4 or simulated event
-that is decided on the type of the window attribute used in the event
-file:~/Programming/Lisp/clops-gui/examples/counter-second.lisp::157
-
-
-**** enqueue gtk4 drawing which calls back to draw-func
+** enqueue gtk4 drawing which calls back to draw-func
 file:~/Programming/Lisp/clops-gui/src/gui-drawing.lisp::12
 
 ** minimal functions
 [[file:counter-third.lisp::(defmethod draw-window]]
 
 [[file:counter-third.lisp::(defmethod process-event]]
+
+** gaboreaning
+
+*** keywords
+re-sizeable counter scaled-buttons resize increase decrease mouse-over
+mouse-pressed
+
+*** 10 minutes break
+
+*** musing
+rubber duck and domain specific language with possible bit of mind mapping
+
+**** hmm
+We need scaled counter the screen is divided into 2 sections, upper 2/3 is for
+counter and bottom 1/3 is for echo area.
+
+The counter sub section is divided horizontally into 3 sections, plus-button,
+count and minus-button.
+
+depending on the window size, the counter sub section elements will scale in a
+reactive way, hiding the buttons when the width goes below the small limit,
+limiting buttons to 10% at middle limit, and haveing 30% buttons at large limit.
