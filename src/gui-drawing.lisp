@@ -22,14 +22,11 @@
                                        :width width
                                        :height height
                                        :pixel-based-p nil))
-  ;; call actual drawing
+
+  ;; call actual drawing - on the context's gtk4 canvas surface
   (funcall *client-fn-draw-objects* (gui-app:window-get gui-app:*lisp-app* (gtk4:widget-parent
                                                                                   (gtk4:widget-parent
-                                                                                   (gir:build-object-ptr (gir:nget gtk4:*ns* "DrawingArea") area)))))
-
-
-  ;; gtk will put the drawn surface on canvas
-  )
+                                                                                   (gir:build-object-ptr (gir:nget gtk4:*ns* "DrawingArea") area))))))
 
 (defun simulate-draw-func (window &optional log)
   (let ((surface (cairo:create-image-surface :argb32
@@ -43,7 +40,7 @@
     (when (null *client-fn-draw-objects*)
       (error "You forgot to declare drawing function in *client-fn-draw-objects* "))
 
-    ;; call actual drawing
+    ;; call actual drawing - on the surface
     (funcall *client-fn-draw-objects* window)
 
     ;; put drawn surface to a file
