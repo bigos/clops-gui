@@ -6,7 +6,6 @@
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
 (ql:quickload '(:clops-gui :access :serapeum :defclass-std) :silent nil)
 
-
 #| planning
 
   ** planning
@@ -51,6 +50,7 @@
 ;;; -------------------------------- code --------------------------------------
 (defclass/std counter-third-window (gui-window:lisp-window)
   (()))
+
 ;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
   ;; paint background
