@@ -51,6 +51,7 @@
 (defclass/std counter-third-window (gui-window:lisp-window)
   (()))
 
+;;; ============================================================================
 ;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
   ;; paint background
@@ -148,10 +149,26 @@
   limiting buttons to 10% at middle limit, and haveing 30% buttons at large limit.
  |#
 
+;;; === test preparation =======================================================
+(defun experiment-first-window ()
+  (setf gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window)
+
+  (setf gui-app:*lisp-app* (gui-app:make-lisp-app))
+  (assert (zerop (hash-table-count (gui-app:all-windows))))
+
+  (let ((lisp-window (make-instance 'counter-third-window)))
+    (gui-window-gtk:window-creation-from-simulation :testing lisp-window)
+    (assert (eq 1 (hash-table-count (gui-app:all-windows))))
+    lisp-window))
+
 (defun test-experiment ()
   (warn "starting test-experiment")
+  (let ((win (experiment-first-window)))
+    (process-event win :RESIZE '(600 400))
+    (process-event win :KEY-RELEASED '("" "Return" 36 NIL))
+    (process-event win :TIMEOUT NIL))
 
-  (warn "TODO finish me")
+
 
   (warn "finished test-experiment"))
 
