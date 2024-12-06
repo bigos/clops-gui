@@ -150,7 +150,7 @@
  |#
 
 ;;; === test preparation =======================================================
-(defun experiment-first-window ()
+(defun test-experiment-first-window ()
   (setf gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window)
 
   (setf gui-app:*lisp-app* (gui-app:make-lisp-app))
@@ -163,11 +163,10 @@
 
 (defun test-experiment ()
   (warn "starting test-experiment")
-  (let ((win (experiment-first-window)))
+  (let ((win (test-experiment-first-window)))
     (process-event win :RESIZE '(600 400))
     (process-event win :KEY-RELEASED '("" "Return" 36 NIL))
     (process-event win :TIMEOUT NIL))
-
 
 
   (warn "finished test-experiment"))
