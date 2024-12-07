@@ -67,6 +67,19 @@
   (setf (gethash (id individual) (ids individual)) individual))
 
 ;; (loop for x from 1 to 5 collect  (make-instance 'node))
+
+
+#|
+
+removing ids from individual
+
+http://www.sbcl.org/manual/index.html#Finalization
+
+file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defi_3.htm#define-setf-expander
+file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.htm#defsetf
+
+|#
+
 ;;; ============================================================================
 ;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
