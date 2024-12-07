@@ -51,6 +51,16 @@
 (defclass/std counter-third-window (gui-window:lisp-window)
   (()))
 
+(defclass/std node ()
+  ((id :r :allocation :class)))
+
+(defmethod initialize-instance :after ((node node) &key)
+  "After initialising increase class allocated ID."
+  (setf (slot-value node 'id)
+        (if (null (id node))
+            1
+            (1+ (id node)))))
+
 ;;; ============================================================================
 ;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
