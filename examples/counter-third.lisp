@@ -64,10 +64,16 @@
   "After initialising increase class allocated ID."
   (setf (slot-value individual 'id-count) (1+ (id-count individual)))
   (setf (slot-value individual 'id)       (1+ (id-count individual)))
-  (setf (gethash (id individual) (ids individual)) individual))
+  (setf (gethash (id individual) (ids individual)) individual)
 
-;; (loop for x from 1 to 5 collect  (make-instance 'node))
+  ;; that does not work
+  (let ((hid (slot-value individual 'id)))
+    (sb-ext:finalize individual (lambda ()
+                                  (warn "removing ~S" individual)
+                           (remhash hid (slot-value individual 'ids))))))
 
+
+;; (defparameter zzz  (loop for x from 1 to 5 collect  (make-instance 'node)))
 
 #|
 
