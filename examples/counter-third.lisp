@@ -51,16 +51,22 @@
 (defclass/std counter-third-window (gui-window:lisp-window)
   (()))
 
-(defclass/std node ()
-  ((id :r :allocation :class)))
+(defclass/std individual ()
+  ((id :r :allocation :instance)
+   (id-count :r :allocation :class :std 0)
+   (ids :allocation :class :std (make-hash-table))))
 
-(defmethod initialize-instance :after ((node node) &key)
+(defclass/std node (individual)
+  ((parent-id)
+   (children-ids)))
+
+(defmethod initialize-instance :after ((individual individual) &key)
   "After initialising increase class allocated ID."
-  (setf (slot-value node 'id)
-        (if (null (id node))
-            1
-            (1+ (id node)))))
+  (setf (slot-value individual 'id-count) (1+ (id-count individual)))
+  (setf (slot-value individual 'id)       (1+ (id-count individual)))
+  (setf (gethash (id individual) (ids individual)) individual))
 
+;; (loop for x from 1 to 5 collect  (make-instance 'node))
 ;;; ============================================================================
 ;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
