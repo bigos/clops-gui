@@ -87,6 +87,7 @@ geometry changes, sizes and positions
 redrawing what needs redrawing
 
 ** Great ideas
+https://lisp-journey.gitlab.io/resources/
 
 *** Archy
 https://en.wikipedia.org/wiki/Archy_(software)
