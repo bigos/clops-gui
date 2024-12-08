@@ -47,6 +47,31 @@
 
 (in-package #:counter-third)
 
+;;; ------------------------------- macros -------------------------------------
+(defmacro assign (place value)
+  `(progn
+     (format t "assigning place of type ~S and value ~S with value ~S~%"
+             (type-of ,place) ,place ,value)
+     (typecase ,place
+       (standard-object
+        (progn
+          (format t "doing ~S~%" (type-of ,place))
+          (cond ((null ,value)
+                 (progn
+                   (warn "error assigning with null")
+                   (setf,place ,value)))
+                (T
+                 (progn
+                   (warn "warning assigning with another value")
+                   (setf ,place ,value))))))
+       (t (progn
+            (format t "doing any~%")
+            (if (null ,value)
+                (progn
+                  (warn "assigning with null")
+                  (setf,place ,value))
+                (setf ,place ,value)))))))
+
 ;;; -------------------------------- code --------------------------------------
 (defclass/std counter-third-window (gui-window:lisp-window)
   (()))
@@ -62,9 +87,9 @@
 
 (defmethod initialize-instance :after ((individual individual) &key)
   "After initialising increase class allocated ID."
-  (setf (slot-value individual 'id-count) (1+ (id-count individual)))
-  (setf (slot-value individual 'id)       (1+ (id-count individual)))
-  (setf (gethash (id individual) (ids individual)) individual)
+  (assign (slot-value individual 'id-count) (1+ (id-count individual)))
+  (assign (slot-value individual 'id)       (1+ (id-count individual)))
+  (assign (gethash (id individual) (ids individual)) individual)
 
   ;; that does not work
   (let ((hid (slot-value individual 'id)))
@@ -85,6 +110,16 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defi_3.
 file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.htm#defsetf
 
 |#
+
+
+(defmethod print-object ((obj standard-object) stream)
+  (print-unreadable-object (obj stream :type t :identity t)
+    (format stream "~a"
+            (loop for sl in (sb-mop:class-slots (class-of obj))
+                  for slot-name = (sb-mop:slot-definition-name sl)
+                  collect (cons slot-name
+                                (if (slot-boundp obj slot-name)
+                                    (format nil "~S" (slot-value obj slot-name))))))))
 
 ;;; ============================================================================
 ;;; ---------------------------------- draw window -----------------------------
@@ -160,13 +195,13 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
 ;;; ============================================================================
 (defun main ()
 
-  (setf
-   gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window
-   gui-window-gtk:*client-fn-menu-bar*      nil
-   gui-events:*client-fn-process-event* 'counter-third::process-event
-   gui-window-gtk:*initial-window-width*    600
-   gui-window-gtk:*initial-window-height*   400
-   gui-window-gtk:*initial-title*           "Counter Third")
+  (progn
+    (assign gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window)
+    (assign gui-window-gtk:*client-fn-menu-bar*      nil)
+    (assign gui-events:*client-fn-process-event* 'counter-third::process-event)
+    (assign gui-window-gtk:*initial-window-width*    600)
+    (assign gui-window-gtk:*initial-window-height*   400)
+    (assign gui-window-gtk:*initial-title*           "Counter Third"))
 
   (gui-window-gtk:window (make-instance 'counter-third-window)))
 
@@ -186,9 +221,9 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
 
 ;;; === test preparation =======================================================
 (defun test-experiment-first-window ()
-  (setf gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window)
+  (assign gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window)
 
-  (setf gui-app:*lisp-app* (gui-app:make-lisp-app))
+  (assign gui-app:*lisp-app* (gui-app:make-lisp-app))
   (assert (zerop (hash-table-count (gui-app:all-windows))))
 
   (let ((lisp-window (make-instance 'counter-third-window)))
