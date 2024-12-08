@@ -82,24 +82,29 @@
 
 (defclass/std individual ()
   ((id :r :allocation :instance)
-   (id-count :r :allocation :class :std 0)
-   (ids :allocation :class :std (make-hash-table))))
+   (id-count :r :allocation :class :std nil)
+   (ids :allocation :class :std nil)))
 
 (defclass/std node (individual)
   ((parent-id)
    (children-ids)))
 
+(defmethod ensure-first ((individual individual))
+  (setf (slot-value individual 'id-count) 1)
+  (setf (slot-value individual 'ids) (make-hash-table))
+  (setf (gethash (id individual) (ids individual)) individual))
+
 (defmethod initialize-instance :after ((individual individual) &key)
   "After initialising increase class allocated ID."
-  (assign (slot-value individual 'id-count) (1+ (id-count individual)))
-  (assign (slot-value individual 'id)       (1+ (id-count individual)))
-  (assign (gethash (id individual) (ids individual)) individual)
 
-  ;; that does not work
-  (let ((hid (slot-value individual 'id)))
-    (sb-ext:finalize individual (lambda ()
-                                  (warn "removing ~S" individual)
-                           (remhash hid (slot-value individual 'ids))))))
+  (let ((next-id (1+ (id-count individual))))
+    (break "zzzzzzzzzzzzzzzzz ~S" individual)
+
+    (setf (slot-value individual 'id-count) next-id)
+    (setf (slot-value individual 'id)       next-id)
+    (setf (gethash (id individual) (ids individual)) individual))
+
+  )
 
 
 ;; (defparameter zzz  (loop for x from 1 to 5 collect  (make-instance 'node)))
@@ -241,8 +246,26 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
     (process-event win :RESIZE '(600 400))
     (process-event win :KEY-RELEASED '("" "Return" 36 NIL))
     (process-event win :TIMEOUT NIL))
-
-
   (warn "finished test-experiment"))
 
-;; (test-experiment)
+(defun test-node ()
+  (warn "starting test-node")
+  (let ((n nil))
+    (warn "having n nil assign new instance ~s" n)
+    (assign n (make-instance 'node) )
+    (ensure-first n)
+
+    (break "hmmm ~S" n)
+    (warn "assigned new instance, going to list ids ~s" n)
+    (loop for k being the hash-key of (ids n)
+          for nc = 0 then (1+ nc)
+          for v = (gethash k (ids n)) do
+            (warn "~S ids ~S ~S" nc k v))
+    (warn "value of n")
+    n))
+
+
+#| running tests
+  (test-experiment)
+  (test-node)
+  |#
