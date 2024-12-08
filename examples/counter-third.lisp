@@ -53,22 +53,26 @@
      (format t "assigning place of type ~S and value ~S with value ~S~%"
              (type-of ,place) ,place ,value)
      (typecase ,place
+       (null
+        (progn
+          (format t "ASSIGN initializing with value ~S~%" ,value)
+          (setf ,place ,value)))
        (standard-object
         (progn
-          (format t "doing ~S~%" (type-of ,place))
+          (format t "ASSIGN updating ~S~%" (type-of ,place))
           (cond ((null ,value)
                  (progn
-                   (warn "error assigning with null")
+                   (format t "ASSIGN error assigning with null")
                    (setf,place ,value)))
                 (T
                  (progn
-                   (warn "warning assigning with another value")
+                   (format t "ASSIGN warning assigning with another value")
                    (setf ,place ,value))))))
        (t (progn
-            (format t "doing any~%")
+            (format t "ASSIGN doing any~%")
             (if (null ,value)
                 (progn
-                  (warn "assigning with null")
+                  (format t "ASSIGN assigning with null")
                   (setf,place ,value))
                 (setf ,place ,value)))))))
 
@@ -112,7 +116,7 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
 |#
 
 
-(defmethod print-object ((obj standard-object) stream)
+(defmethod print-object ((obj node) stream)
   (print-unreadable-object (obj stream :type t :identity t)
     (format stream "~a"
             (loop for sl in (sb-mop:class-slots (class-of obj))
