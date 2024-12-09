@@ -64,8 +64,8 @@
                 (format t "ASSIGN updating ~S~%" (type-of ,place))
                 (cond ((null ,value)
                        (progn
-                         (format t "ASSIGN error assigning with null~%")
-                         (setf,place ,value)))
+                         (format t "ASSIGN destroying object~%")
+                         (destroy-object,place)))
                       (T
                        (progn
                          (format t "ASSIGN warning assigning with another value~%")
@@ -77,6 +77,11 @@
                         (format t "ASSIGN assigning with null~%")
                         (setf,place ,value))
                       (setf ,place ,value)))))))))
+
+(defmethod destroy-object ((node node))
+  (remhash (id node) (ids node))
+  (setf node nil))
+
 
 ;;; -------------------------------- code --------------------------------------
 (defclass/std counter-third-window (gui-window:lisp-window)
@@ -257,6 +262,9 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
     (warn "we have n ~s" n)
 
     (assign n (make-instance 'node) )
+
+    (assign (gethash 2 (ids n)) nil)
+    (assign (gethash 1 (ids n)) nil)
 
     (warn "finally we have ~S" n)
     (reset-everything n)
