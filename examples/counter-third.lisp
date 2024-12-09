@@ -48,11 +48,9 @@
 (in-package #:counter-third)
 
 ;;; ------------------------------- macros -------------------------------------
-(defmacro assign (place0 value0)
-  (let ((place (gensym "PLACE"))
-        (value (gensym "VALUE")))
-    `(let ((,place ,place0)
-           (,value ,value0))
+(defmacro assign (place value0)
+  (let ((value (gensym "VALUE")))
+    `(let ((,value ,value0))
          (progn
            (format t "assigning place of type ~S and value ~S with value ~S~%"
                    (type-of ,place) ,place ,value)
