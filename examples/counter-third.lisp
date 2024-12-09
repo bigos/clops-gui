@@ -62,17 +62,17 @@
           (format t "ASSIGN updating ~S~%" (type-of ,place))
           (cond ((null ,value)
                  (progn
-                   (format t "ASSIGN error assigning with null")
+                   (format t "ASSIGN error assigning with null~%")
                    (setf,place ,value)))
                 (T
                  (progn
-                   (format t "ASSIGN warning assigning with another value")
+                   (format t "ASSIGN warning assigning with another value~%")
                    (setf ,place ,value))))))
        (t (progn
             (format t "ASSIGN doing any~%")
             (if (null ,value)
                 (progn
-                  (format t "ASSIGN assigning with null")
+                  (format t "ASSIGN assigning with null~%")
                   (setf,place ,value))
                 (setf ,place ,value)))))))
 
@@ -82,36 +82,31 @@
 
 (defclass/std individual ()
   ((id :r :allocation :instance)
-   (id-count :r :allocation :class :std nil)
-   (ids :allocation :class :std nil)))
+   (id-count :r :allocation :class :std 0)
+   (ids         :allocation :class :std (make-hash-table))))
 
 (defclass/std node (individual)
   ((parent-id)
    (children-ids)))
 
-(defmethod ensure-first ((individual individual))
-  (setf (slot-value individual 'id-count) 1)
-  (setf (slot-value individual 'ids) (make-hash-table))
-  (setf (gethash (id individual) (ids individual)) individual))
+(defmethod inc-nodes ((node node))
+  (setf (slot-value node 'id-count) (1+ (id-count node)))
+  (setf (slot-value node 'id) (id-count node) )
+  (setf (gethash (id node) (ids node)) node))
 
-(defmethod initialize-instance :after ((individual individual) &key)
-  "After initialising increase class allocated ID."
-
-  (let ((next-id (1+ (id-count individual))))
-    (break "zzzzzzzzzzzzzzzzz ~S" individual)
-
-    (setf (slot-value individual 'id-count) next-id)
-    (setf (slot-value individual 'id)       next-id)
-    (setf (gethash (id individual) (ids individual)) individual))
-
-  )
+(defmethod reset-everything ((node node))
+  (loop for k being the hash-key of (ids node) do
+    (remhash k (ids node)))
+  (setf (slot-value node 'id-count) 0)
+  (setf (slot-value node 'id) 0)
+  (setf (slot-value node 'ids) (make-hash-table)))
 
 
 ;; (defparameter zzz  (loop for x from 1 to 5 collect  (make-instance 'node)))
 
 #|
 
-removing ids from individual
+removing ids from node
 
 http://www.sbcl.org/manual/index.html#Finalization
 
@@ -190,7 +185,7 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
-       (warn "model ~S" *model*)
+       ;; (warn "model ~S" *model*)
        ))
     (otherwise
      (warn "not handled event ~S ~S" event args)))
@@ -253,15 +248,15 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
   (let ((n nil))
     (warn "having n nil assign new instance ~s" n)
     (assign n (make-instance 'node) )
-    (ensure-first n)
+    (inc-nodes n)
 
-    (break "hmmm ~S" n)
-    (warn "assigned new instance, going to list ids ~s" n)
-    (loop for k being the hash-key of (ids n)
-          for nc = 0 then (1+ nc)
-          for v = (gethash k (ids n)) do
-            (warn "~S ids ~S ~S" nc k v))
-    (warn "value of n")
+    (assign n (make-instance 'node) )
+    (inc-nodes n)
+
+    (assign n (make-instance 'node) )
+    (inc-nodes n)
+
+    (reset-everything n)
     n))
 
 
