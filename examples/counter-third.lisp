@@ -267,6 +267,13 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
     (assign (gethash 1 (ids n)) nil)
 
     (warn "finally we have ~S" n)
+
+    ;; was that simpler?
+    (progn
+      (let ((nid (id n)))
+        (remhash nid (ids n))
+        (setf n nil)))
+
     (reset-everything n)
     n))
 
