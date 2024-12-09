@@ -274,6 +274,9 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
         (remhash nid (ids n))
         (setf n nil)))
 
+    ;; or just
+    (destroy-object n)
+
     (reset-everything n)
     n))
 
