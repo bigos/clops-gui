@@ -48,33 +48,37 @@
 (in-package #:counter-third)
 
 ;;; ------------------------------- macros -------------------------------------
-(defmacro assign (place value)
-  `(progn
-     (format t "assigning place of type ~S and value ~S with value ~S~%"
-             (type-of ,place) ,place ,value)
-     (typecase ,place
-       (null
-        (progn
-          (format t "ASSIGN initializing with value ~S~%" ,value)
-          (setf ,place ,value)))
-       (standard-object
-        (progn
-          (format t "ASSIGN updating ~S~%" (type-of ,place))
-          (cond ((null ,value)
-                 (progn
-                   (format t "ASSIGN error assigning with null~%")
-                   (setf,place ,value)))
-                (T
-                 (progn
-                   (format t "ASSIGN warning assigning with another value~%")
-                   (setf ,place ,value))))))
-       (t (progn
-            (format t "ASSIGN doing any~%")
-            (if (null ,value)
-                (progn
-                  (format t "ASSIGN assigning with null~%")
-                  (setf,place ,value))
-                (setf ,place ,value)))))))
+(defmacro assign (place0 value0)
+  (let ((place (gensym "PLACE"))
+        (value (gensym "VALUE")))
+    `(let ((,place ,place0)
+           (,value ,value0))
+         (progn
+           (format t "assigning place of type ~S and value ~S with value ~S~%"
+                   (type-of ,place) ,place ,value)
+           (typecase ,place
+             (null
+              (progn
+                (format t "ASSIGN initializing with value ~S~%" ,value)
+                (setf ,place ,value)))
+             (standard-object
+              (progn
+                (format t "ASSIGN updating ~S~%" (type-of ,place))
+                (cond ((null ,value)
+                       (progn
+                         (format t "ASSIGN error assigning with null~%")
+                         (setf,place ,value)))
+                      (T
+                       (progn
+                         (format t "ASSIGN warning assigning with another value~%")
+                         (setf ,place ,value))))))
+             (t (progn
+                  (format t "ASSIGN doing any~%")
+                  (if (null ,value)
+                      (progn
+                        (format t "ASSIGN assigning with null~%")
+                        (setf,place ,value))
+                      (setf ,place ,value)))))))))
 
 ;;; -------------------------------- code --------------------------------------
 (defclass/std counter-third-window (gui-window:lisp-window)
@@ -89,7 +93,8 @@
   ((parent-id)
    (children-ids)))
 
-(defmethod inc-nodes ((node node))
+(defmethod initialize-instance :after ((node node) &key)
+  (warn "initilize-instance")
   (setf (slot-value node 'id-count) (1+ (id-count node)))
   (setf (slot-value node 'id) (id-count node) )
   (setf (gethash (id node) (ids node)) node))
@@ -248,14 +253,14 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
   (let ((n nil))
     (warn "having n nil assign new instance ~s" n)
     (assign n (make-instance 'node) )
-    (inc-nodes n)
+    (warn "we have n ~s" n)
 
     (assign n (make-instance 'node) )
-    (inc-nodes n)
+    (warn "we have n ~s" n)
 
     (assign n (make-instance 'node) )
-    (inc-nodes n)
 
+    (warn "finally we have ~S" n)
     (reset-everything n)
     n))
 
