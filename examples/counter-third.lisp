@@ -65,7 +65,7 @@
                 (cond ((null ,value)
                        (progn
                          (format t "ASSIGN destroying object~%")
-                         (destroy-object,place)))
+                         (setf ,place ,value)))
                       (T
                        (progn
                          (format t "ASSIGN warning assigning with another value~%")
@@ -275,9 +275,10 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
         (setf n nil)))
 
     ;; or just
-    (destroy-object n)
+    ;; (destroy-object n)
+    ;; (setf n nil)
 
-    (reset-everything n)
+    ;; (reset-everything n)
     n))
 
 
