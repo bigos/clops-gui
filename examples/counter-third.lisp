@@ -9,6 +9,7 @@
 #| planning
   libraries
   https://cl-containers.common-lisp.dev/documentation/index.html
+  https://cl-containers.common-lisp.dev/documentation/metabang.cl-containers-package/index.html
 
   ** planning
 
