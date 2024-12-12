@@ -65,7 +65,7 @@
                 (cond ((null ,value)
                        (progn
                          (format t "ASSIGN destroying object~%")
-                         (setf ,place ,value)))
+                         (destroy-object)))
                       (T
                        (progn
                          (format t "ASSIGN warning assigning with another value~%")
@@ -95,6 +95,19 @@
 (defclass/std node (individual)
   ((parent-id)
    (children-ids)))
+
+(defclass/std box (node)
+  ((top-left)
+   (width)
+   (height)))
+
+(defclass/std button (box)
+  ((label)))
+
+(defclass/std text (box)
+  ((label)))
+
+
 
 (defmethod initialize-instance :after ((node node) &key)
   (warn "initilize-instance")
