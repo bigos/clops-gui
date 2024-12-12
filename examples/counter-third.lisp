@@ -4,7 +4,7 @@
 
 ;; (load "~/Programming/Lisp/clops-gui/examples/counter-third.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui :access :serapeum :defclass-std) :silent nil)
+(ql:quickload '(:clops-gui :serapeum :defclass-std) :silent nil)
 
 #| planning
 
@@ -122,21 +122,6 @@
   (setf (slot-value node 'id) 0)
   (setf (slot-value node 'ids) (make-hash-table)))
 
-
-;; (defparameter zzz  (loop for x from 1 to 5 collect  (make-instance 'node)))
-
-#|
-
-removing ids from node
-
-http://www.sbcl.org/manual/index.html#Finalization
-
-file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defi_3.htm#define-setf-expander
-file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.htm#defsetf
-
-|#
-
-
 (defmethod print-object ((obj node) stream)
   (print-unreadable-object (obj stream :type t :identity t)
     (format stream "~a"
@@ -145,6 +130,12 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
                   collect (cons slot-name
                                 (if (slot-boundp obj slot-name)
                                     (format nil "~S" (slot-value obj slot-name))))))))
+;;; ----------------------------------------------------------------------------
+(defparameter *model* nil)
+
+(defun init-model ()
+  (error "implement me")
+  )
 
 ;;; ============================================================================
 ;;; ---------------------------------- draw window -----------------------------
@@ -258,6 +249,7 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
 
 (defun test-experiment ()
   (warn "starting test-experiment")
+  (init-model)
   (let ((win (test-experiment-first-window)))
     (process-event win :RESIZE '(600 400))
     (process-event win :KEY-RELEASED '("" "Return" 36 NIL))
