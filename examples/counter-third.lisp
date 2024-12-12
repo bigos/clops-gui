@@ -11,6 +11,8 @@
   https://cl-containers.common-lisp.dev/documentation/index.html
   https://cl-containers.common-lisp.dev/documentation/metabang.cl-containers-package/index.html
 
+  https://github.com/orthecreedence/cl-hash-util
+
   https://github.com/CodyReichert/awesome-cl?tab=readme-ov-file#data-structures
 
   ** planning
