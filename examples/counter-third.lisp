@@ -251,19 +251,17 @@ file:///home/jacek/Documents/Manuals/Lisp/HyperSpec-7-0/HyperSpec/Body/m_defset.
     (process-event win :TIMEOUT NIL))
   (warn "finished test-experiment"))
 
-
-(defsetf identity (place) (new-val)
-    `(progn
-      (warn "ZZZZZZZZZZZZZZZZZZZ")
-      (setf n ,new-val )))
-
+;;; my assing macro is better than all those defsetfs
 (defun test-node ()
   (warn "starting test-node")
   (let ((n nil))
     (warn "having n nil assign new instance ~s" n)
     (assign n (make-instance 'node) )
     (warn "we have n ~s" n)
-    (setf (identity n) 123)
+
+    (warn "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZz")
+    (assign n 123)
+    (warn "we have n ~s" n)
 
     (assign n (make-instance 'node) )
     (warn "we have n ~s" n)
