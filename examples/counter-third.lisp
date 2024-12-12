@@ -13,6 +13,8 @@
 
   https://github.com/orthecreedence/cl-hash-util
 
+  https://github.com/AccelerationNet/access/blob/a4f87fc1007f5c9a0a2abfddc1c23a77e87096f8/access.lisp#L458
+
   https://github.com/CodyReichert/awesome-cl?tab=readme-ov-file#data-structures
 
   ** planning
