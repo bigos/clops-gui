@@ -7,6 +7,8 @@
 (ql:quickload '(:clops-gui :serapeum :defclass-std :cl-containers) :silent nil)
 
 #| planning
+  libraries
+  https://cl-containers.common-lisp.dev/documentation/index.html
 
   ** planning
 
