@@ -4,7 +4,7 @@
 
 ;; (load "~/Programming/Lisp/clops-gui/examples/counter-third.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui :serapeum :defclass-std :cl-containers) :silent nil)
+(ql:quickload '(:clops-gui :serapeum :defclass-std :cl-containers :access) :silent nil)
 
 #| planning
   libraries
@@ -74,7 +74,7 @@
                 (cond ((null ,value)
                        (progn
                          (format t "ASSIGN destroying object~%")
-                         (destroy-object)))
+                         (destroy-object ,place)))
                       (T
                        (progn
                          (format t "ASSIGN warning assigning with another value~%")
@@ -143,8 +143,23 @@
 (defparameter *model* nil)
 
 (defun init-model ()
-  (error "implement me")
-  )
+  (setf *model* (make-hash-table :test #'equal))
+  (setf (access:access *model* :counted)  0)
+  (setf (access:access *model* :button-plus)  (make-instance 'button
+                                                             :label "+"
+                                                             :top-left (cons 10 10)
+                                                             :width 50
+                                                             :height 50))
+  (setf (access:access *model* :text)         (make-instance 'text
+                                                             :label (access:access *model* :counted)
+                                                             :top-left (cons 110 10)
+                                                             :width 50
+                                                             :height 50))
+  (setf (access:access *model* :button-minus) (make-instance 'button
+                                                             :label "-"
+                                                             :top-left (cons 210 10)
+                                                             :width 50
+                                                             :height 50)))
 
 ;;; ============================================================================
 ;;; ---------------------------------- draw window -----------------------------
@@ -262,7 +277,9 @@
   (let ((win (test-experiment-first-window)))
     (process-event win :RESIZE '(600 400))
     (process-event win :KEY-RELEASED '("" "Return" 36 NIL))
-    (process-event win :TIMEOUT NIL))
+    (process-event win :TIMEOUT NIL)
+    (break "examine ~s" *model*)
+    )
   (warn "finished test-experiment"))
 
 ;;; my assing macro is better than all those defsetfs
