@@ -150,6 +150,7 @@
 
 (defun init-model ()
   (setf *model* (make-hash-table :test #'equal))
+  (setf (access:access *model* :mouse-location nil))
   (setf (access:access *model* :counted)  0)
   (setf (access:access *model* :button-plus)  (make-instance 'button
                                                              :label "+"
