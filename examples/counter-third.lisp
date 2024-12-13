@@ -209,6 +209,7 @@
     (:pressed
      (destructuring-bind ((button x y)) args
        (declare (ignore button x y))
+       (warn " pressed mouse button ~S" (list button x y))
        ;; (update-mouse-press *model* x y button)
        ))
     (:released
@@ -287,7 +288,7 @@
     (process-event win :RELEASED '(1 20.0 20.0)))
   (warn "finished test-experiment"))
 
-;;; my assing macro is better than all those defsetfs
+;;; my assign macro is better than all those defsetfs
 (defun test-node ()
   (warn "starting test-node")
   (let ((n nil))
