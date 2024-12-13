@@ -279,7 +279,12 @@
     (process-event win :KEY-RELEASED '("" "Return" 36 NIL))
     (process-event win :TIMEOUT NIL)
     (break "examine ~s" *model*)
-    )
+
+    (process-event win :MOTION-ENTER '(1.0 1.0))
+    (process-event win :MOTION '(20.0 20.0))
+
+    (process-event win :PRESSED '(1 20.0 20.0))
+    (process-event win :RELEASED '(1 20.0 20.0)))
   (warn "finished test-experiment"))
 
 ;;; my assing macro is better than all those defsetfs
