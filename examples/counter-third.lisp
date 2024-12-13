@@ -116,8 +116,7 @@
 (defclass/std text (box)
   ((label)))
 
-
-
+;;; ==================== methods and functions =================================
 (defmethod initialize-instance :after ((node node) &key)
   (warn "initilize-instance")
   (setf (slot-value node 'id-count) (1+ (id-count node)))
@@ -139,6 +138,13 @@
                   collect (cons slot-name
                                 (if (slot-boundp obj slot-name)
                                     (format nil "~S" (slot-value obj slot-name))))))))
+
+(defun update-mouse-location (model x y)
+  (warn "implement update mouse location"))
+
+(defun update-mouse-press (model x y button)
+  (warn "implement update mouse press"))
+
 ;;; ----------------------------------------------------------------------------
 (defparameter *model* nil)
 
@@ -200,7 +206,7 @@
     ((:motion :motion-enter)
      ;; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y)) args
-       ;; (update-mouse-location *model* x y)
+       (update-mouse-location *model* x y)
        (gui-app:mouse-motion-enter lisp-window x y)))
     (:motion-leave
      (gui-app:mouse-motion-leave))
@@ -210,7 +216,7 @@
      (destructuring-bind ((button x y)) args
        (declare (ignore button x y))
        (warn " pressed mouse button ~S" (list button x y))
-       ;; (update-mouse-press *model* x y button)
+       (update-mouse-press *model* x y button)
        ))
     (:released
      ;; (update-mouse-release *model*)
