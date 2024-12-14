@@ -166,7 +166,7 @@
 (defun update-mouse-location (model x y)
   (setf (access:access model :mouse-location) (cons x y))
   ;; depend on location update mouse over or mouse out
-  (break "investigate update mouse location")
+  ;; (break "investigate update mouse location")
   (let ((current-widget (access:access model :current-widget))
         (most-specific-widget (most-specific-widget model x y)))
     (unless (equal most-specific-widget current-widget)
@@ -331,7 +331,12 @@
 
 (defun test-mouse-movement ()
   (init-model)
+  (update-mouse-location *model* 9 9)
+  (assert (equal (cons 9 9) (~> *model* (gethash :mouse-location _))) nil "mouse location at 9x9")
+
   (update-mouse-location *model* 10 10)
+  (assert (equal (cons 10 10) (~> *model* (gethash :mouse-location _))) nil "mouse location at 10x10")
+
   (reset-everything (access:access *model* :button-plus)))
 
 ;;; my assign macro is better than all those defsetfs
