@@ -140,17 +140,19 @@
                                     (format nil "~S" (slot-value obj slot-name))))))))
 
 (defun update-mouse-location (model x y)
-  (warn "implement update mouse location"))
+  (setf (access:access model :mouse-location) (cons x y)))
 
 (defun update-mouse-press (model x y button)
-  (warn "implement update mouse press"))
+  (update-mouse-location model x y)
+  ;; depending on location update mouse press
+  (warn "implement update mouse press ~s" (lisp model x y)))
 
 ;;; ----------------------------------------------------------------------------
 (defparameter *model* nil)
 
 (defun init-model ()
   (setf *model* (make-hash-table :test #'equal))
-  (setf (access:access *model* :mouse-location nil))
+  (setf (access:access *model* :mouse-location) nil)
   (setf (access:access *model* :counted)  0)
   (setf (access:access *model* :button-plus)  (make-instance 'button
                                                              :label "+"
