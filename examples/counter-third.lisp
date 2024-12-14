@@ -139,10 +139,36 @@
                                 (if (slot-boundp obj slot-name)
                                     (format nil "~S" (slot-value obj slot-name))))))))
 
+(defmethod mouse-overp (model (box box))
+  (let ((mx (~> model (gethash :mouse-location _) car))
+        (my (~> model (gethash :mouse-location _) cdr)))
+    (and (>= mx (~> box top-left car))
+         (>= my (~> box top-left cdr))
+         (<= mx (+
+                 (~> box top-left car)
+                 (~> box width)))
+         (<= my (+
+                 (~> box top-left cdr)
+                 (~> box height))))))
+
+(defun most-specific-widget (model x y)
+  (declare (ignore x y))
+  ;; it will change later
+  (let ((widgets (list (access:access model :button-plus)
+                       (access:access model :button-minus))))
+    (or
+     (when (mouse-overp model (elt widgets 0)) (elt widgets 0))
+     (when (mouse-overp model (elt widgets 1)) (elt widgets 1)))))
+
+(defun update-mouse-over (widget)
+  (warn "finish me"))
+
 (defun update-mouse-location (model x y)
   (setf (access:access model :mouse-location) (cons x y))
   ;; depend on location update mouse over or mouse out
-  (let ((most-specific-widget (error "find it")))
+  (break "investigate update mouse location")
+  (let ((current-widget (access:access model :current-widget))
+        (most-specific-widget (most-specific-widget model x y)))
     (unless (equal most-specific-widget current-widget)
       (progn
         (when current-widget
@@ -150,9 +176,10 @@
         (update-mouse-over most-specific-widget)))))
 
 (defun update-mouse-press (model x y button)
+  (declare (ignore  button))
   (update-mouse-location model x y)
   ;; depending on location update mouse press
-  (warn "implement update mouse press ~s" (lisp model x y)))
+  (warn "implement update mouse press ~s" (list model x y)))
 
 ;;; ----------------------------------------------------------------------------
 (defparameter *model* nil)
@@ -224,7 +251,6 @@
     (:focus-leave)
     (:pressed
      (destructuring-bind ((button x y)) args
-       (declare (ignore button x y))
        (warn " pressed mouse button ~S" (list button x y))
        (update-mouse-press *model* x y button)
        ))
@@ -295,7 +321,6 @@
     (process-event win :RESIZE '(600 400))
     (process-event win :KEY-RELEASED '("" "Return" 36 NIL))
     (process-event win :TIMEOUT NIL)
-    (break "examine ~s" *model*)
 
     (process-event win :MOTION-ENTER '(1.0 1.0))
     (process-event win :MOTION '(20.0 20.0))
@@ -303,6 +328,11 @@
     (process-event win :PRESSED '(1 20.0 20.0))
     (process-event win :RELEASED '(1 20.0 20.0)))
   (warn "finished test-experiment"))
+
+(defun test-mouse-movement ()
+  (init-model)
+  (update-mouse-location *model* 10 10)
+  (reset-everything (access:access *model* :button-plus)))
 
 ;;; my assign macro is better than all those defsetfs
 (defun test-node ()
