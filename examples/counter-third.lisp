@@ -142,7 +142,12 @@
 (defun update-mouse-location (model x y)
   (setf (access:access model :mouse-location) (cons x y))
   ;; depend on location update mouse over or mouse out
-  )
+  (let ((most-specific-widget (error "find it")))
+    (unless (equal most-specific-widget current-widget)
+      (progn
+        (when current-widget
+          (update-mouse-out  current-widget))
+        (update-mouse-over most-specific-widget)))))
 
 (defun update-mouse-press (model x y button)
   (update-mouse-location model x y)
