@@ -140,7 +140,9 @@
                                     (format nil "~S" (slot-value obj slot-name))))))))
 
 (defun update-mouse-location (model x y)
-  (setf (access:access model :mouse-location) (cons x y)))
+  (setf (access:access model :mouse-location) (cons x y))
+  ;; depend on location update mouse over or mouse out
+  )
 
 (defun update-mouse-press (model x y button)
   (update-mouse-location model x y)
