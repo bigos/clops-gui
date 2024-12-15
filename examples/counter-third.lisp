@@ -152,13 +152,17 @@
                  (~> box height))))))
 
 (defun most-specific-widget (model x y)
-  (declare (ignore x y))
+  (warn "find most specific widget ~S" (list model x y))
   ;; it will change later
   (let ((widgets (list (access:access model :button-plus)
                        (access:access model :button-minus))))
-    (or
-     (when (mouse-overp model (elt widgets 0)) (elt widgets 0))
-     (when (mouse-overp model (elt widgets 1)) (elt widgets 1)))))
+    (warn "zzzzzzzz ~S" (loop for w in widgets collect (label w)))
+    (let ((choice
+            (or
+             (when (mouse-overp model (first widgets)) (first widgets ))
+             (when (mouse-overp model (second widgets)) (second widgets)))))
+      (warn "investigate choice ~S" choice)
+      choice)))
 
 (defun update-mouse-over (widget)
   (warn "finish me"))
@@ -179,7 +183,16 @@
   (declare (ignore  button))
   (update-mouse-location model x y)
   ;; depending on location update mouse press
-  (warn "implement update mouse press ~s" (list model x y)))
+  (warn "verifying mouse press")
+  ;; (break "verify mouse press")
+  (if (eq 1 button)
+      (let ((msw (most-specific-widget model x y)))
+        (warn "label of msw ~S" (~> msw label))
+        (if (equal "+" (~> msw label))
+            (progn  (warn "setting the plus button inc")
+                    (setf (gethash :counted model) (1+ (gethash :counted model))))
+            (progn (warn "NOT setting zzz"))))
+      (warn "skipping mouse press because button ~S" button)))
 
 ;;; ----------------------------------------------------------------------------
 (defparameter *model* nil)
@@ -253,6 +266,7 @@
      (destructuring-bind ((button x y)) args
        (warn " pressed mouse button ~S" (list button x y))
        (update-mouse-press *model* x y button)
+       (warn "verify model is set ~S" (gethash :counted *model*))
        ))
     (:released
      ;; (update-mouse-release *model*)
@@ -326,6 +340,7 @@
     (process-event win :MOTION '(20.0 20.0))
 
     (process-event win :PRESSED '(1 20.0 20.0))
+    (assert (eq 1 (gethash :counted *model*)) nil "counted must be 1")
     (process-event win :RELEASED '(1 20.0 20.0)))
   (warn "finished test-experiment"))
 
@@ -377,5 +392,6 @@
 
 #| running tests
   (test-experiment)
+  (test-mouse-movement)
   (test-node)
   |#
