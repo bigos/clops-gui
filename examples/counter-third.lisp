@@ -188,10 +188,15 @@
   (if (eq 1 button)
       (let ((msw (most-specific-widget model x y)))
         (warn "label of msw ~S" (~> msw label))
-        (if (equal "+" (~> msw label))
-            (progn  (warn "setting the plus button inc")
-                    (setf (gethash :counted model) (1+ (gethash :counted model))))
-            (progn (warn "NOT setting zzz"))))
+        (cond ((equal "+" (~> msw label))
+                (progn  (warn "setting the plus button inc")
+                        (setf (gethash :counted model) (1+ (gethash :counted model)))))
+              ((equal "-" (~> msw label))
+               (progn  (warn "setting the plus button inc")
+                       (setf (gethash :counted model) (1- (gethash :counted model)))))
+
+              (t
+               (progn (warn "NOT setting zzz")))))
       (warn "skipping mouse press because button ~S" button)))
 
 ;;; ----------------------------------------------------------------------------
@@ -341,7 +346,15 @@
 
     (process-event win :PRESSED '(1 20.0 20.0))
     (assert (eq 1 (gethash :counted *model*)) nil "counted must be 1")
-    (process-event win :RELEASED '(1 20.0 20.0)))
+    (process-event win :RELEASED '(1 20.0 20.0))
+
+    (process-event win :MOTION '(220.0 20.0))
+    (process-event win :PRESSED '(1 220.0 20.0))
+    (assert (eq 0 (gethash :counted *model*)) nil "counted must be 0")
+    (process-event win :RELEASED '(1 220.0 20.0))
+
+    )
+
   (warn "finished test-experiment"))
 
 (defun test-mouse-movement ()
