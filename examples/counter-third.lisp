@@ -4,7 +4,13 @@
 
 ;; (load "~/Programming/Lisp/clops-gui/examples/counter-third.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
-(ql:quickload '(:clops-gui :serapeum :defclass-std :cl-containers :access) :silent nil)
+(ql:quickload '(:clops-gui
+                :serapeum
+                :defclass-std
+                :cl-containers
+                ;; remove access
+                :access)
+              :silent nil)
 
 #| planning
   libraries
