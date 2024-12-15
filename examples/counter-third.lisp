@@ -152,20 +152,18 @@
                  (~> box height))))))
 
 (defun most-specific-widget (model x y)
-  (warn "find most specific widget ~S" (list model x y))
-  ;; it will change later
+  (declare (ignore x y))
   (let ((widgets (list (access:access model :button-plus)
                        (access:access model :button-minus))))
-    (warn "zzzzzzzz ~S" (loop for w in widgets collect (label w)))
-    (let ((choice
-            (or
-             (when (mouse-overp model (first widgets)) (first widgets ))
-             (when (mouse-overp model (second widgets)) (second widgets)))))
-      (warn "investigate choice ~S" choice)
-      choice)))
+    (or
+     (when (mouse-overp model (first widgets))  (first widgets ))
+     (when (mouse-overp model (second widgets)) (second widgets)))))
 
 (defun update-mouse-over (widget)
-  (warn "finish me"))
+  (warn "finish me and ~S" widget))
+
+(defun update-mouse-out (widget)
+  (warn "finish me and ~S" widget))
 
 (defun update-mouse-location (model x y)
   (setf (access:access model :mouse-location) (cons x y))
@@ -174,30 +172,19 @@
   (let ((current-widget (access:access model :current-widget))
         (most-specific-widget (most-specific-widget model x y)))
     (unless (equal most-specific-widget current-widget)
-      (progn
-        (when current-widget
-          (update-mouse-out  current-widget))
-        (update-mouse-over most-specific-widget)))))
+      (when current-widget (update-mouse-out  current-widget))
+      (update-mouse-over most-specific-widget))))
 
 (defun update-mouse-press (model x y button)
-  (declare (ignore  button))
   (update-mouse-location model x y)
-  ;; depending on location update mouse press
-  (warn "verifying mouse press")
-  ;; (break "verify mouse press")
-  (if (eq 1 button)
+  (when (eq 1 button)
       (let ((msw (most-specific-widget model x y)))
-        (warn "label of msw ~S" (~> msw label))
         (cond ((equal "+" (~> msw label))
-                (progn  (warn "setting the plus button inc")
-                        (setf (gethash :counted model) (1+ (gethash :counted model)))))
+               (setf (gethash :counted model) (1+ (gethash :counted model))))
               ((equal "-" (~> msw label))
-               (progn  (warn "setting the plus button inc")
-                       (setf (gethash :counted model) (1- (gethash :counted model)))))
-
+               (setf (gethash :counted model) (1- (gethash :counted model))))
               (t
-               (progn (warn "NOT setting zzz")))))
-      (warn "skipping mouse press because button ~S" button)))
+               (progn (warn "NOT setting zzz")))))))
 
 ;;; ----------------------------------------------------------------------------
 (defparameter *model* nil)
@@ -269,9 +256,9 @@
     (:focus-leave)
     (:pressed
      (destructuring-bind ((button x y)) args
-       (warn " pressed mouse button ~S" (list button x y))
+
        (update-mouse-press *model* x y button)
-       (warn "verify model is set ~S" (gethash :counted *model*))
+
        ))
     (:released
      ;; (update-mouse-release *model*)
@@ -357,15 +344,7 @@
 
   (warn "finished test-experiment"))
 
-(defun test-mouse-movement ()
-  (init-model)
-  (update-mouse-location *model* 9 9)
-  (assert (equal (cons 9 9) (~> *model* (gethash :mouse-location _))) nil "mouse location at 9x9")
 
-  (update-mouse-location *model* 10 10)
-  (assert (equal (cons 10 10) (~> *model* (gethash :mouse-location _))) nil "mouse location at 10x10")
-
-  (reset-everything (access:access *model* :button-plus)))
 
 ;;; my assign macro is better than all those defsetfs
 (defun test-node ()
