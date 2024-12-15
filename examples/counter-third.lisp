@@ -126,7 +126,7 @@
   (warn "initilize-instance")
   (setf (slot-value node 'id-count) (1+ (id-count node)))
   (setf (slot-value node 'id) (id-count node) )
-  (setf (gethash (id node) (ids node)) node))
+  (setf (@ (ids node) (id node)) node))
 
 (defmethod reset-everything ((node node))
   (loop for k being the hash-key of (ids node) do
@@ -337,12 +337,12 @@
     (process-event win :MOTION '(20.0 20.0))
 
     (process-event win :PRESSED '(1 20.0 20.0))
-    (assert (eq 1 (gethash :counted *model*)) nil "counted must be 1")
+    (assert (eq 1 (@ *model* :counted)) nil "counted must be 1")
     (process-event win :RELEASED '(1 20.0 20.0))
 
     (process-event win :MOTION '(220.0 20.0))
     (process-event win :PRESSED '(1 220.0 20.0))
-    (assert (eq 0 (gethash :counted *model*)) nil "counted must be 0")
+    (assert (eq 0 (@ *model* :counted)) nil "counted must be 0")
     (process-event win :RELEASED '(1 220.0 20.0))
 
     )
@@ -368,8 +368,8 @@
 
     (assign n (make-instance 'node) )
 
-    (assign (gethash 2 (ids n)) nil)
-    (assign (gethash 1 (ids n)) nil)
+    (assign (@ (ids n) 2) nil)
+    (assign (@ (ids n) 1) nil)
 
     (warn "finally we have ~S" n)
 
