@@ -100,6 +100,14 @@
 (defclass/std counter-third-window (gui-window:lisp-window)
   (()))
 
+(defclass/std model ()
+  ((mouse-location)
+   (current-widget)
+   (counted)
+   (button-plus)
+   (text)
+   (button-minus)))
+
 (defclass/std individual ()
   ((id :r :allocation :instance)
    (id-count :r :allocation :class :std 0)
@@ -144,8 +152,8 @@
                                     (format nil "~S" (slot-value obj slot-name))))))))
 
 (defmethod mouse-overp (model (box box))
-  (let ((mx (car (@ model :mouse-location)))
-        (my (cdr (@ model :mouse-location))))
+  (let ((mx (car (~> model mouse-location)))
+        (my (cdr (~> model mouse-location))))
     (and (>= mx (~> box top-left car))
          (>= my (~> box top-left cdr))
          (<= mx (+
@@ -157,8 +165,8 @@
 
 (defun most-specific-widget (model x y)
   (declare (ignore x y))
-  (let ((widgets (list (@ model :button-plus)
-                       (@ model :button-minus))))
+  (let ((widgets (list (~> model button-plus)
+                       (~> model button-minus))))
     (or
      (when (mouse-overp model (first widgets))  (first widgets ))
      (when (mouse-overp model (second widgets)) (second widgets)))))
@@ -170,10 +178,10 @@
   (warn "finish me and ~S" widget))
 
 (defun update-mouse-location (model x y)
-  (setf (@ model :mouse-location) (cons x y))
+  (setf (~> model mouse-location) (cons x y))
   ;; depend on location update mouse over or mouse out
   ;; (break "investigate update mouse location")
-  (let ((current-widget (@ model :current-widget))
+  (let ((current-widget (~> model current-widget))
         (most-specific-widget (most-specific-widget model x y)))
     (unless (equal most-specific-widget current-widget)
       (when current-widget (update-mouse-out  current-widget))
@@ -184,9 +192,9 @@
   (when (eq 1 button)
       (let ((msw (most-specific-widget model x y)))
         (cond ((equal "+" (~> msw label))
-               (setf (@ model :counted) (1+ (@ model :counted))))
+               (setf (~> model counted) (1+ (~> model counted))))
               ((equal "-" (~> msw label))
-               (setf (@ model :counted) (1- (@ model :counted))))
+               (setf (~> model counted) (1- (~> model counted))))
               (t
                (progn (warn "NOT setting zzz")))))))
 
@@ -194,24 +202,25 @@
 (defparameter *model* nil)
 
 (defun init-model ()
-  (setf *model* (make-hash-table :test #'equal))
-  (setf (@ *model* :mouse-location) nil)
-  (setf (@ *model* :counted)  0)
-  (setf (@ *model* :button-plus)  (make-instance 'button
-                                                 :label "+"
-                                                 :top-left (cons 10 10)
-                                                 :width 50
-                                                 :height 50))
-  (setf (@ *model* :text)         (make-instance 'text
-                                                 :label (@ *model* :counted)
-                                                 :top-left (cons 110 10)
-                                                 :width 50
-                                                 :height 50))
-  (setf (@ *model* :button-minus) (make-instance 'button
-                                                 :label "-"
-                                                 :top-left (cons 210 10)
-                                                 :width 50
-                                                 :height 50)))
+  (setf *model* (make-instance 'model
+                               :mouse-location nil
+                               :current-widget nil
+                               :counted  0
+                               :button-plus  (make-instance 'button
+                                                            :label "+"
+                                                            :top-left (cons 10 10)
+                                                            :width 50
+                                                            :height 50)
+                               :text         (make-instance 'text
+                                                            :label 0
+                                                            :top-left (cons 110 10)
+                                                            :width 50
+                                                            :height 50)
+                               :button-minus (make-instance 'button
+                                                            :label "-"
+                                                            :top-left (cons 210 10)
+                                                            :width 50
+                                                            :height 50))))
 
 ;;; ============================================================================
 ;;; ---------------------------------- draw window -----------------------------
@@ -336,12 +345,12 @@
     (process-event win :MOTION '(20.0 20.0))
 
     (process-event win :PRESSED '(1 20.0 20.0))
-    (assert (eq 1 (@ *model* :counted)) nil "counted must be 1")
+    (assert (eq 1 (~> *model* counted)) nil "counted must be 1")
     (process-event win :RELEASED '(1 20.0 20.0))
 
     (process-event win :MOTION '(220.0 20.0))
     (process-event win :PRESSED '(1 220.0 20.0))
-    (assert (eq 0 (@ *model* :counted)) nil "counted must be 0")
+    (assert (eq 0 (~> *model* counted)) nil "counted must be 0")
     (process-event win :RELEASED '(1 220.0 20.0)))
 
   (warn "finished test-experiment"))
