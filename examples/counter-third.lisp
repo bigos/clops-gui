@@ -342,13 +342,9 @@
     (process-event win :MOTION '(220.0 20.0))
     (process-event win :PRESSED '(1 220.0 20.0))
     (assert (eq 0 (@ *model* :counted)) nil "counted must be 0")
-    (process-event win :RELEASED '(1 220.0 20.0))
-
-    )
+    (process-event win :RELEASED '(1 220.0 20.0)))
 
   (warn "finished test-experiment"))
-
-
 
 ;;; my assign macro is better than all those defsetfs
 (defun test-node ()
