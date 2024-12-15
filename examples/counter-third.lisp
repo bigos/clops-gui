@@ -145,8 +145,8 @@
                                     (format nil "~S" (slot-value obj slot-name))))))))
 
 (defmethod mouse-overp (model (box box))
-  (let ((mx (~> model (gethash :mouse-location _) car))
-        (my (~> model (gethash :mouse-location _) cdr)))
+  (let ((mx (car (@ model :mouse-location)))
+        (my (cdr (@ model :mouse-location))))
     (and (>= mx (~> box top-left car))
          (>= my (~> box top-left cdr))
          (<= mx (+
@@ -185,9 +185,9 @@
   (when (eq 1 button)
       (let ((msw (most-specific-widget model x y)))
         (cond ((equal "+" (~> msw label))
-               (setf (gethash :counted model) (1+ (gethash :counted model))))
+               (setf (@ model :counted) (1+ (: model :counted))))
               ((equal "-" (~> msw label))
-               (setf (gethash :counted model) (1- (gethash :counted model))))
+               (setf (@ model :counted) (1- (@ model :counted))))
               (t
                (progn (warn "NOT setting zzz")))))))
 
