@@ -7,9 +7,7 @@
 (ql:quickload '(:clops-gui
                 :serapeum
                 :defclass-std
-                :cl-containers
-                ;; remove access
-                :access)
+                :cl-containers)
               :silent nil)
 
 #| planning
@@ -56,7 +54,8 @@
 (defpackage #:counter-third
   (:use #:cl)
   (:import-from :serapeum
-   :~>)
+   :~>
+   :@)
   (:import-from :defclass-std
    :defclass/std))
 
@@ -159,8 +158,8 @@
 
 (defun most-specific-widget (model x y)
   (declare (ignore x y))
-  (let ((widgets (list (access:access model :button-plus)
-                       (access:access model :button-minus))))
+  (let ((widgets (list (@ model :button-plus)
+                       (@ model :button-minus))))
     (or
      (when (mouse-overp model (first widgets))  (first widgets ))
      (when (mouse-overp model (second widgets)) (second widgets)))))
@@ -172,10 +171,10 @@
   (warn "finish me and ~S" widget))
 
 (defun update-mouse-location (model x y)
-  (setf (access:access model :mouse-location) (cons x y))
+  (setf (@ model :mouse-location) (cons x y))
   ;; depend on location update mouse over or mouse out
   ;; (break "investigate update mouse location")
-  (let ((current-widget (access:access model :current-widget))
+  (let ((current-widget (@ model :current-widget))
         (most-specific-widget (most-specific-widget model x y)))
     (unless (equal most-specific-widget current-widget)
       (when current-widget (update-mouse-out  current-widget))
@@ -197,23 +196,23 @@
 
 (defun init-model ()
   (setf *model* (make-hash-table :test #'equal))
-  (setf (access:access *model* :mouse-location) nil)
-  (setf (access:access *model* :counted)  0)
-  (setf (access:access *model* :button-plus)  (make-instance 'button
-                                                             :label "+"
-                                                             :top-left (cons 10 10)
-                                                             :width 50
-                                                             :height 50))
-  (setf (access:access *model* :text)         (make-instance 'text
-                                                             :label (access:access *model* :counted)
-                                                             :top-left (cons 110 10)
-                                                             :width 50
-                                                             :height 50))
-  (setf (access:access *model* :button-minus) (make-instance 'button
-                                                             :label "-"
-                                                             :top-left (cons 210 10)
-                                                             :width 50
-                                                             :height 50)))
+  (setf (@ *model* :mouse-location) nil)
+  (setf (@ *model* :counted)  0)
+  (setf (@ *model* :button-plus)  (make-instance 'button
+                                                 :label "+"
+                                                 :top-left (cons 10 10)
+                                                 :width 50
+                                                 :height 50))
+  (setf (@ *model* :text)         (make-instance 'text
+                                                 :label (@ *model* :counted)
+                                                 :top-left (cons 110 10)
+                                                 :width 50
+                                                 :height 50))
+  (setf (@ *model* :button-minus) (make-instance 'button
+                                                 :label "-"
+                                                 :top-left (cons 210 10)
+                                                 :width 50
+                                                 :height 50)))
 
 ;;; ============================================================================
 ;;; ---------------------------------- draw window -----------------------------
