@@ -54,8 +54,7 @@
 (defpackage #:counter-third
   (:use #:cl)
   (:import-from :serapeum
-   :~>
-   :@)
+   :~> :@)
   (:import-from :defclass-std
    :defclass/std))
 
@@ -185,7 +184,7 @@
   (when (eq 1 button)
       (let ((msw (most-specific-widget model x y)))
         (cond ((equal "+" (~> msw label))
-               (setf (@ model :counted) (1+ (: model :counted))))
+               (setf (@ model :counted) (1+ (@ model :counted))))
               ((equal "-" (~> msw label))
                (setf (@ model :counted) (1- (@ model :counted))))
               (t
