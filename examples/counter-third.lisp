@@ -102,6 +102,7 @@
 
 (defclass/std model ()
   ((mouse-location)
+   (mouse-button)
    (current-widget)
    (counted)
    (button-plus)
@@ -120,7 +121,8 @@
 (defclass/std box (node)
   ((top-left)
    (width)
-   (height)))
+   (height)
+   (mouse-over)))
 
 (defclass/std button (box)
   ((label)))
@@ -171,11 +173,11 @@
      (when (mouse-overp model (first widgets))  (first widgets ))
      (when (mouse-overp model (second widgets)) (second widgets)))))
 
-(defun update-mouse-over (widget)
-  (warn "finish me and ~S" widget))
+(defmethod update-mouse-over ((widget box))
+  (setf (~> widget mouse-over) T))
 
-(defun update-mouse-out (widget)
-  (warn "finish me and ~S" widget))
+(defmethod update-mouse-out ((widget box))
+  (setf (~> widget mouse-over) nil))
 
 (defun update-mouse-location (model x y)
   (setf (~> model mouse-location) (cons x y))
@@ -183,20 +185,38 @@
   ;; (break "investigate update mouse location")
   (let ((current-widget (~> model current-widget))
         (most-specific-widget (most-specific-widget model x y)))
-    (unless (equal most-specific-widget current-widget)
-      (when current-widget (update-mouse-out  current-widget))
+
+    (if current-widget
+        (update-mouse-out  current-widget)
+        (progn
+          (update-mouse-out (~> model button-plus))
+          (update-mouse-out (~> model button-minus))))
+
+    (when most-specific-widget
       (update-mouse-over most-specific-widget))))
+
 
 (defun update-mouse-press (model x y button)
   (update-mouse-location model x y)
+  (setf (~> model mouse-button) t)
   (when (eq 1 button)
-      (let ((msw (most-specific-widget model x y)))
-        (cond ((equal "+" (~> msw label))
-               (setf (~> model counted) (1+ (~> model counted))))
-              ((equal "-" (~> msw label))
-               (setf (~> model counted) (1- (~> model counted))))
-              (t
-               (progn (warn "NOT setting zzz")))))))
+    (let ((msw (most-specific-widget model x y)))
+      (cond ((null msw) (warn "null msw"))
+            ((equal "+" (~> msw label))
+             (warn "plusing ~S" (~> model counted))
+             (setf (~> model counted) (1+ (~> model counted))))
+            ((equal "-" (~> msw label))
+             (warn "minusing")
+             (setf (~> model counted) (1- (~> model counted))))
+            (t
+             (progn (warn "NOT setting zzz"))))))
+  (setf *model* model))
+
+(defun update-mouse-release (model x y button)
+  (declare (ignore button))
+  (update-mouse-location model x y)
+  (setf (~> model mouse-button) nil)
+  (setf *model* model))
 
 ;;; ----------------------------------------------------------------------------
 (defparameter *model* nil)
@@ -223,6 +243,40 @@
                                                             :height 50))))
 
 ;;; ============================================================================
+(defun draw-widget (w)
+  (gui-window:set-rgba (cond ((null (~> w mouse-over)) "yellow")
+                             ((~> w mouse-over) (if (~> *model* mouse-button)
+                                                    "orange"
+                                                    "lime"))
+                             (T "red")))
+  (cairo:rectangle (~> w top-left (car _))
+                   (~> w top-left (cdr _))
+                   (~> w width)
+                   (~> w height))
+  (cairo:fill-path)
+
+  (cairo:set-font-size 20)
+  (cairo:move-to (~> w top-left (car _))
+                 (+ 10 (~> w top-left (cdr _))))
+  (gui-window:set-rgba "black")
+  (cairo:show-text (format nil "~a" (~> w label))))
+
+(defun draw-widget-count (model w)
+  (gui-window:set-rgba (cond ((null (~> w mouse-over)) "yellow")
+                             ((~> w mouse-over) "orange")
+                             (T "red")))
+  (cairo:rectangle (~> w top-left (car _))
+                   (~> w top-left (cdr _))
+                   (~> w width)
+                   (~> w height))
+  (cairo:fill-path)
+
+  (cairo:set-font-size 20)
+  (cairo:move-to (~> w top-left (car _))
+                 (+ 10 (~> w top-left (cdr _))))
+  (gui-window:set-rgba "black")
+  (cairo:show-text (format nil "~a" (~> model counted))))
+
 ;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
   ;; paint background
@@ -233,7 +287,16 @@
   (cairo:set-font-size 20)
   (cairo:move-to 20 30)
   (gui-window:set-rgba "black")
-  (cairo:show-text (format nil "try to code something")))
+  (cairo:show-text (format nil "try to code something"))
+
+  (let ((w (~> *model* button-plus)))
+    (draw-widget w))
+
+  (let ((w (~> *model* text)))
+    (draw-widget-count *model* w))
+
+  (let ((w (~> *model* button-minus)))
+    (draw-widget w)))
 
 (defmethod draw-window :after ((window counter-third-window))
   ;; pink square follows the mouse
@@ -274,8 +337,9 @@
 
        ))
     (:released
-     ;; (update-mouse-release *model*)
-     (gui-app:mouse-button-released))
+     (destructuring-bind ((button x y)) args
+       (update-mouse-release *model* x y button)
+       (gui-app:mouse-button-released)))
     (:scroll)
     (:resize
      (destructuring-bind ((w h)) args
@@ -296,7 +360,7 @@
 
 ;;; ============================================================================
 (defun main ()
-
+  (init-model)
   (progn
     (assign gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window)
     (assign gui-window-gtk:*client-fn-menu-bar*      nil)
