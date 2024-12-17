@@ -174,7 +174,7 @@
      (when (mouse-overp model (second widgets)) (second widgets)))))
 
 (defmethod update-mouse-over ((widget box))
-  (setf (~> widget mouse-over) T))
+  (setf (~> widget mouse-over) :mouse-over))
 
 (defmethod update-mouse-out ((widget box))
   (setf (~> widget mouse-over) nil))
@@ -201,6 +201,8 @@
   (setf (~> model mouse-button) t)
   (when (eq 1 button)
     (let ((msw (most-specific-widget model x y)))
+      (when msw
+        (setf (~> msw mouse-over) :mouse-active))
       (cond ((null msw) (warn "null msw"))
             ((equal "+" (~> msw label))
              (warn "plusing ~S" (~> model counted))
@@ -216,6 +218,9 @@
   (declare (ignore button))
   (update-mouse-location model x y)
   (setf (~> model mouse-button) nil)
+  (let ((msw (most-specific-widget model x y)))
+    (when msw
+      (setf (~> msw mouse-over) :mouse-over)))
   (setf *model* model))
 
 ;;; ----------------------------------------------------------------------------
@@ -406,13 +411,21 @@
     (process-event win :TIMEOUT NIL)
 
     (process-event win :MOTION-ENTER '(1.0 1.0))
+
+    (assert (null (~> *model* button-plus mouse-over)))
     (process-event win :MOTION '(20.0 20.0))
+    (assert (eq :mouse-over (~> *model* button-plus mouse-over)))
+
 
     (process-event win :PRESSED '(1 20.0 20.0))
+    (assert (eq :mouse-active (~> *model* button-plus mouse-over)))
     (assert (eq 1 (~> *model* counted)) nil "counted must be 1")
     (process-event win :RELEASED '(1 20.0 20.0))
+    (assert (eq :mouse-over (~> *model* button-plus mouse-over)))
 
     (process-event win :MOTION '(220.0 20.0))
+    (assert (null (~> *model* button-plus mouse-over)))
+
     (process-event win :PRESSED '(1 220.0 20.0))
     (assert (eq 0 (~> *model* counted)) nil "counted must be 0")
     (process-event win :RELEASED '(1 220.0 20.0)))
