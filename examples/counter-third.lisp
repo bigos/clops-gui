@@ -225,30 +225,6 @@
     (when msw
       (setf (~> msw mouse-over) :mouse-over))))
 
-;;; ----------------------------------------------------------------------------
-(defparameter *model* nil)
-
-(defun init-model ()
-  (setf *model* (make-instance 'model
-                               :mouse-location nil
-                               :current-widget nil
-                               :counted  0
-                               :button-plus  (make-instance 'button
-                                                            :label "+"
-                                                            :top-left (cons 10 10)
-                                                            :width 50
-                                                            :height 50)
-                               :text         (make-instance 'text
-                                                            :label 0
-                                                            :top-left (cons 110 10)
-                                                            :width 50
-                                                            :height 50)
-                               :button-minus (make-instance 'button
-                                                            :label "-"
-                                                            :top-left (cons 210 10)
-                                                            :width 50
-                                                            :height 50))))
-
 ;;; ============================================================================
 (defun draw-widget (w)
   (gui-window:set-rgba (if (null (~> w mouse-over))
@@ -368,6 +344,30 @@
   (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
 
 ;;; ============================================================================
+(defparameter *model* nil)
+
+(defun init-model ()
+  (setf *model* (make-instance 'model
+                               :mouse-location nil
+                               :current-widget nil
+                               :counted  0
+                               :button-plus  (make-instance 'button
+                                                            :label "+"
+                                                            :top-left (cons 10 10)
+                                                            :width 50
+                                                            :height 50)
+                               :text         (make-instance 'text
+                                                            :label 0
+                                                            :top-left (cons 110 10)
+                                                            :width 50
+                                                            :height 50)
+                               :button-minus (make-instance 'button
+                                                            :label "-"
+                                                            :top-left (cons 210 10)
+                                                            :width 50
+                                                            :height 50))))
+
+;;; ============================================================================
 (defun main ()
   (init-model)
   (progn
@@ -379,7 +379,6 @@
     (assign gui-window-gtk:*initial-title*           "Counter Third"))
 
   (gui-window-gtk:window (make-instance 'counter-third-window)))
-
 
 #| mini spec
   **** hmm
@@ -410,32 +409,32 @@
   (warn "starting test-experiment")
   (init-model)
   (let ((win (test-experiment-first-window)))
-    (process-event win :RESIZE '(600 400))
-    (process-event win :KEY-RELEASED '("" "Return" 36 NIL))
-    (process-event win :TIMEOUT NIL)
+    (process-gtk-event win :RESIZE '(600 400))
+    (process-gtk-event win :KEY-RELEASED '("" "Return" 36 NIL))
+    (process-gtk-event win :TIMEOUT NIL)
 
-    (process-event win :MOTION-ENTER '(1.0 1.0))
+    (process-gtk-event win :MOTION-ENTER '(1.0 1.0))
 
     (assert (null (~> *model* button-plus mouse-over)))
-    (process-event win :MOTION '(20.0 20.0))
+    (process-gtk-event win :MOTION '(20.0 20.0))
     (assert (eq :mouse-over (~> *model* button-plus mouse-over)))
 
 
-    (process-event win :PRESSED '(1 20.0 20.0))
+    (process-gtk-event win :PRESSED '(1 20.0 20.0))
     (assert (eq :mouse-active (~> *model* button-plus mouse-over)))
     (assert (eq 1 (~> *model* counted)) nil "counted must be 1")
-    (process-event win :RELEASED '(1 20.0 20.0))
+    (process-gtk-event win :RELEASED '(1 20.0 20.0))
     (assert (eq :mouse-over (~> *model* button-plus mouse-over)))
 
-    (process-event win :MOTION-ENTER '(1.0 1.0))
+    (process-gtk-event win :MOTION-ENTER '(1.0 1.0))
     (assert (null (~> *model* button-plus mouse-over)))
 
-    (process-event win :MOTION '(220.0 20.0))
+    (process-gtk-event win :MOTION '(220.0 20.0))
     (assert (null (~> *model* button-plus mouse-over)))
 
-    (process-event win :PRESSED '(1 220.0 20.0))
+    (process-gtk-event win :PRESSED '(1 220.0 20.0))
     (assert (eq 0 (~> *model* counted)) nil "counted must be 0")
-    (process-event win :RELEASED '(1 220.0 20.0)))
+    (process-gtk-event win :RELEASED '(1 220.0 20.0)))
 
   (warn "finished test-experiment"))
 
