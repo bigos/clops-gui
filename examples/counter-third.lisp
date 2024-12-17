@@ -322,7 +322,7 @@
       (cairo:fill-path))))
 
 ;;; -------------------------------- process event -----------------------------
-(defmethod process-event ((lisp-window counter-third-window) event &rest args)
+(defmethod process-gtk-event ((lisp-window counter-third-window) event &rest args)
   (unless (member event '(:timeout :motion))
     (warn "event ~S ~S" event args))
 
@@ -373,7 +373,7 @@
   (progn
     (assign gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window)
     (assign gui-window-gtk:*client-fn-menu-bar*      nil)
-    (assign gui-events:*client-fn-process-event* 'counter-third::process-event)
+    (assign gui-events:*client-fn-process-event* 'counter-third::process-gtk-event)
     (assign gui-window-gtk:*initial-window-width*    600)
     (assign gui-window-gtk:*initial-window-height*   400)
     (assign gui-window-gtk:*initial-title*           "Counter Third"))
