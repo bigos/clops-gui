@@ -199,10 +199,13 @@
 (defun update-mouse-press (model x y button)
   (update-mouse-location model x y)
   (setf (~> model mouse-button) t)
+
   (when (eq 1 button)
     (let ((msw (most-specific-widget model x y)))
+
       (when msw
         (setf (~> msw mouse-over) :mouse-active))
+
       (cond ((null msw) (warn "null msw"))
             ((equal "+" (~> msw label))
              (warn "plusing ~S" (~> model counted))
@@ -211,17 +214,16 @@
              (warn "minusing")
              (setf (~> model counted) (1- (~> model counted))))
             (t
-             (progn (warn "NOT setting zzz"))))))
-  (setf *model* model))
+             (progn (warn "NOT setting zzz")))))))
 
 (defun update-mouse-release (model x y button)
   (declare (ignore button))
   (update-mouse-location model x y)
   (setf (~> model mouse-button) nil)
+
   (let ((msw (most-specific-widget model x y)))
     (when msw
-      (setf (~> msw mouse-over) :mouse-over)))
-  (setf *model* model))
+      (setf (~> msw mouse-over) :mouse-over))))
 
 ;;; ----------------------------------------------------------------------------
 (defparameter *model* nil)
