@@ -249,11 +249,13 @@
 
 ;;; ============================================================================
 (defun draw-widget (w)
-  (gui-window:set-rgba (cond ((null (~> w mouse-over)) "yellow")
-                             ((~> w mouse-over) (if (~> *model* mouse-button)
-                                                    "orange"
-                                                    "lime"))
-                             (T "red")))
+  (gui-window:set-rgba (if (null (~> w mouse-over))
+                           "yellow"
+                           (when (keywordp (~> w mouse-over))
+                             (ecase (~> w mouse-over)
+                               (:mouse-over "orange")
+                               (:mouse-active "lime")))))
+
   (cairo:rectangle (~> w top-left (car _))
                    (~> w top-left (cdr _))
                    (~> w width)
