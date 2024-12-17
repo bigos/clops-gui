@@ -425,6 +425,9 @@
     (process-event win :RELEASED '(1 20.0 20.0))
     (assert (eq :mouse-over (~> *model* button-plus mouse-over)))
 
+    (process-event win :MOTION-ENTER '(1.0 1.0))
+    (assert (null (~> *model* button-plus mouse-over)))
+
     (process-event win :MOTION '(220.0 20.0))
     (assert (null (~> *model* button-plus mouse-over)))
 
