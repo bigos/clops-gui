@@ -173,6 +173,7 @@
      (when (mouse-overp model (first widgets))  (first widgets ))
      (when (mouse-overp model (second widgets)) (second widgets)))))
 
+;;; ----------------------- update ---------------------------------------------
 (defmethod update-mouse-over ((widget box))
   (setf (~> widget mouse-over) :mouse-over))
 
@@ -194,7 +195,6 @@
 
     (when most-specific-widget
       (update-mouse-over most-specific-widget))))
-
 
 (defun update-mouse-press (model x y button)
   (update-mouse-location model x y)
