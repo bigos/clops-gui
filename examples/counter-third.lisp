@@ -289,14 +289,35 @@
     (when (and (eq (gui-app:current-motion app)
                    window)
                (gui-app:mouse-coordinates app))
-      (gui-window:set-rgba "pink")
-      (cairo:rectangle
-       (car (gui-app:mouse-coordinates app))
-       (cdr (gui-app:mouse-coordinates app))
-       25
-       25)
-      (cairo:fill-path))))
+      (render-mouse app))))
 
+(defun render-mouse (app)
+  (let* ((mouse-position (gui-app:mouse-coordinates app))
+         (mx (car mouse-position))
+         (my (cdr mouse-position))
+         (px (+ mx 20))
+         (py (+ my 20))
+         (po 6)
+         (ao 15))
+    (when mouse-position
+      (labels ((drrr ()
+                 (cairo:line-to (+ 50 mx) (+ po 50 my)) ; end
+                 (cairo:line-to px (+ po py))
+                 (cairo:line-to (+ ao mx) (+ 50 my))
+                 (cairo:line-to mx my)  ;mp
+                 (cairo:line-to (+ 50 mx) (+ ao my))
+                 (cairo:line-to (+ po px) py)
+                 (cairo:line-to (+ po 50 mx) (+ 50 my)) ; end
+                 (cairo:line-to (+ 50 mx) (+ po 50 my)) ; end
+                 ))
+        (drrr)
+        (cairo:set-source-rgba 0.2 1.0 0.3 0.3)
+        (cairo:fill-path)
+
+        (cairo:set-line-width 1.0)
+        (drrr)
+        (cairo:set-source-rgb 0.0 0.0 0.0) ; http://davidbau.com/colors/
+        (cairo:stroke)))))
 ;;; -------------------------------- process event -----------------------------
 (defmethod process-gtk-event ((lisp-window counter-third-window) event &rest args)
   (unless (member event '(:timeout :motion))
