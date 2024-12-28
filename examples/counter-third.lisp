@@ -104,6 +104,7 @@
   ((mouse-location)
    (mouse-button)
    (current-widget)
+   (root-widget)
    (counted)
    (button-plus)
    (text)
@@ -135,7 +136,12 @@
   (warn "initilize-instance")
   (setf (slot-value node 'id-count) (1+ (id-count node)))
   (setf (slot-value node 'id) (id-count node) )
-  (setf (@ (ids node) (id node)) node))
+  (setf (@ (ids node) (id node)) node)
+
+  ;; add to parent
+  (when (parent-id node)
+    (let ((parent (@ (ids node) (parent-id node))))
+      (pushnew (id node) (children-ids parent)))))
 
 (defmethod reset-everything ((node node))
   (loop for k being the hash-key of (ids node) do
@@ -368,25 +374,32 @@
 (defparameter *model* nil)
 
 (defun init-model ()
-  (setf *model* (make-instance 'model
-                               :mouse-location nil
-                               :current-widget nil
-                               :counted  0
-                               :button-plus  (make-instance 'button
-                                                            :label "+"
-                                                            :top-left (cons 10 10)
-                                                            :width 50
-                                                            :height 50)
-                               :text         (make-instance 'text
-                                                            :label 0
-                                                            :top-left (cons 110 10)
-                                                            :width 50
-                                                            :height 50)
-                               :button-minus (make-instance 'button
-                                                            :label "-"
-                                                            :top-left (cons 210 10)
-                                                            :width 50
-                                                            :height 50))))
+  (let ((root-widget (make-instance 'node :parent-id nil
+                                          :children-ids nil)))
+    (setf *model* (make-instance 'model
+                                 :mouse-location nil
+                                 :current-widget nil
+                                 :root-widget root-widget
+                                 :counted  0
+                                 :button-plus  (make-instance 'button
+                                                              :label "+"
+                                                              :top-left (cons 10 10)
+                                                              :width 50
+                                                              :height 50
+                                                              :parent-id (id root-widget))
+                                 :text         (make-instance 'text
+                                                              :label 0
+                                                              :top-left (cons 110 10)
+                                                              :width 50
+                                                              :height 50
+                                                              :parent-id (id root-widget))
+                                 :button-minus (make-instance 'button
+                                                              :label "-"
+                                                              :top-left (cons 210 10)
+                                                              :width 50
+                                                              :height 50
+                                                              :parent-id (id root-widget)))))
+  (break "test parenting ~S" (button-plus *model*)))
 
 ;;; ============================================================================
 (defun main ()
