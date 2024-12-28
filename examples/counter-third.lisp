@@ -232,6 +232,9 @@
       (setf (~> msw mouse-over) :mouse-over))))
 
 ;;; ============================================================================
+(defun find-id (id)
+  (@ (~> *model* root-widget ids) id))
+
 (defun draw-widget (w)
   (gui-window:set-rgba (if (null (~> w mouse-over))
                            "yellow"
@@ -267,6 +270,17 @@
                  (+ 10 (~> w top-left (cdr _))))
   (gui-window:set-rgba "black")
   (cairo:show-text (format nil "~a" (~> model counted))))
+
+;;; ------------------------ resize --------------------------------------------
+(defmethod resize ((widget node))
+  (warn "resizing node ~S" widget))
+
+(defmethod resize :after ((widget T))
+  (loop for c in (children-ids widget)
+        do (resize (find-id c))))
+
+(defmethod resize ((widget box))
+  (warn "resizing box ~S"widget))
 
 ;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
@@ -355,7 +369,8 @@
     (:scroll)
     (:resize
      (destructuring-bind ((w h)) args
-       (gui-window:window-resize w h lisp-window)))
+       (gui-window:window-resize w h lisp-window)
+       (resize (root-widget *model*))))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
