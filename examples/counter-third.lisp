@@ -102,6 +102,8 @@
 (defclass/std model ()
   ((mouse-location)
    (mouse-button)
+   (width)
+   (height)
    (current-widget)
    (root-widget)
    (counted)
@@ -285,10 +287,25 @@
          (tlaxy (typecase parent-widget
                   (node (cons 0 0))
                   (T (top-left-abs parent-widget))))
-         (tlax (car tlaxy))
-         (tlay (cdr tlaxy)))
-    (setf (top-left-abs widget) (cons (+ tlax (car (top-left widget)))
-                                      (+ tlay (cdr (top-left widget)))))))
+         (wider (>= (width *model*) 200)))
+    (cond
+      ((typep widget 'text)
+       (if wider
+           (setf (top-left widget) (cons 110 10))
+           (setf (top-left widget) (cons 10 110))))
+      ((and (typep widget 'button)
+            (equal "+" (label widget)))
+       (if wider
+           (setf (top-left widget) (cons 10 10))
+           (setf (top-left widget) (cons 10 10))))
+      ((and (typep widget 'button)
+            (equal "-" (label widget)))
+       (if wider
+           (setf (top-left widget) (cons 210 10))
+           (setf (top-left widget) (cons 10 210))))
+      (t (error "unexpected case")))
+    (setf (top-left-abs widget) (cons (+ (car tlaxy) (car (top-left widget)))
+                                      (+ (cdr tlaxy) (cdr (top-left widget)))))))
 
 ;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
@@ -378,6 +395,8 @@
     (:resize
      (destructuring-bind ((w h)) args
        (gui-window:window-resize w h lisp-window)
+       (setf (width  *model*) w)
+       (setf (height *model*) h)
        (resize (root-widget *model*))))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
