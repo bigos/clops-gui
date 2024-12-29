@@ -243,15 +243,15 @@
                                (:mouse-over "orange")
                                (:mouse-active "lime")))))
 
-  (cairo:rectangle (~> w top-left (car _))
-                   (~> w top-left (cdr _))
+  (cairo:rectangle (~> w top-left-abs (car _))
+                   (~> w top-left-abs (cdr _))
                    (~> w width)
                    (~> w height))
   (cairo:fill-path)
 
   (cairo:set-font-size 20)
-  (cairo:move-to (~> w top-left (car _))
-                 (+ 10 (~> w top-left (cdr _))))
+  (cairo:move-to       (~> w top-left-abs (car _))
+                 (+ 10 (~> w top-left-abs (cdr _))))
   (gui-window:set-rgba "black")
   (cairo:show-text (format nil "~a" (~> w label))))
 
@@ -275,20 +275,20 @@
 (defmethod resize ((widget node))
   (warn "resizing node ~S" widget))
 
-(defmethod resize :after ((widget T))
+(defmethod resize :after ((widget node))
   (loop for c in (children-ids widget)
         do (resize (find-id c))))
 
 (defmethod resize ((widget box))
   (warn "resizing box ~S"widget)
   (let* ((parent-widget (find-id (parent-id widget)))
-         (tlax (car (top-left-abs parent-widget)))
-         (tlay (cdr (top-left-abs parent-widget))))
-    (setf (top-left-abs widget) (typecase parent-widget
-                                  (node (cons (+ 0 (car (top-left widget)))
-                                              (+ 0 (cdr (top-left widget)))))
-                                  (t (cons (+ tlax (car (top-left widget)))
-                                           (+ tlay (cdr (top-left widget)))))))))
+         (tlaxy (typecase parent-widget
+                  (node (cons 0 0))
+                  (T (top-left-abs parent-widget))))
+         (tlax (car tlaxy))
+         (tlay (cdr tlaxy)))
+    (setf (top-left-abs widget) (cons (+ tlax (car (top-left widget)))
+                                      (+ tlay (cdr (top-left widget)))))))
 
 ;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
@@ -406,7 +406,7 @@
                                  :counted  0
                                  :button-plus  (make-instance 'button
                                                               :label "+"
-                                                              :top-left (cons 10 10)
+                                                              :top-left (cons 10 100)
                                                               :width 50
                                                               :height 50
                                                               :parent-id (id root-widget))
