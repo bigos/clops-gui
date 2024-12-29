@@ -95,7 +95,6 @@
   (remhash (id node) (ids node))
   (setf node nil))
 
-
 ;;; -------------------------------- code --------------------------------------
 (defclass/std counter-third-window (gui-window:lisp-window)
   (()))
@@ -121,6 +120,7 @@
 
 (defclass/std box (node)
   ((top-left)
+   (top-left-abs)
    (width)
    (height)
    (mouse-over)))
@@ -280,7 +280,15 @@
         do (resize (find-id c))))
 
 (defmethod resize ((widget box))
-  (warn "resizing box ~S"widget))
+  (warn "resizing box ~S"widget)
+  (let* ((parent-widget (find-id (parent-id widget)))
+         (tlax (car (top-left-abs parent-widget)))
+         (tlay (cdr (top-left-abs parent-widget))))
+    (setf (top-left-abs widget) (typecase parent-widget
+                                  (node (cons (+ 0 (car (top-left widget)))
+                                              (+ 0 (cdr (top-left widget)))))
+                                  (t (cons (+ tlax (car (top-left widget)))
+                                           (+ tlay (cdr (top-left widget)))))))))
 
 ;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
