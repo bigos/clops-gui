@@ -91,10 +91,6 @@
                         (setf,place ,value))
                       (setf ,place ,value)))))))))
 
-(defmethod destroy-object ((node node))
-  (remhash (id node) (ids node))
-  (setf node nil))
-
 ;;; -------------------------------- code --------------------------------------
 (defclass/std counter-third-window (gui-window:lisp-window)
   (()))
@@ -160,6 +156,10 @@
                   collect (cons slot-name
                                 (if (slot-boundp obj slot-name)
                                     (format nil "~S" (slot-value obj slot-name))))))))
+
+(defmethod destroy-object ((node node))
+  (remhash (id node) (ids node))
+  (setf node nil))
 
 (defmethod mouse-overp (model (box box))
   (let ((mx (car (~> model mouse-location)))
