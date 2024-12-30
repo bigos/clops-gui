@@ -1,7 +1,5 @@
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
 
-#| loading |#
-
 ;; (load "~/Programming/Lisp/clops-gui/examples/counter-third.lisp")
 (push #p "~/Programming/Lisp/clops-gui/" ql:*local-project-directories*)
 (ql:quickload '(:clops-gui
@@ -95,42 +93,45 @@
 (defparameter *model* nil)
 
 ;;; -------------------------------- code --------------------------------------
-(defclass/std counter-third-window (gui-window:lisp-window)
-  (()))
 
-(defclass/std model ()
-  ((mouse-location)
-   (mouse-button)
-   (width)
-   (height)
-   (current-widget)
-   (root-widget)
-   (counted)
-   (button-plus)
-   (text)
-   (button-minus)))
+(progn ;; classes
+  (defclass/std counter-third-window (gui-window:lisp-window)
+    (()))
 
-(defclass/std individual ()
-  ((id :r :allocation :instance)
-   (id-count :r :allocation :class :std 0)
-   (ids         :allocation :class :std (make-hash-table))))
+  (defclass/std model ()
+    ((mouse-location)
+     (mouse-button)
+     (width)
+     (height)
+     (current-widget)
+     (root-widget)
+     (counted)
+     (button-plus)
+     (text)
+     (button-minus)))
 
-(defclass/std node (individual)
-  ((parent-id)
-   (children-ids)))
+  (defclass/std individual ()
+    ((id :r :allocation :instance)
+     (id-count :r :allocation :class :std 0)
+     (ids         :allocation :class :std (make-hash-table))))
 
-(defclass/std box (node)
-  ((top-left)
-   (top-left-abs)
-   (width)
-   (height)
-   (mouse-over)))
+  (defclass/std node (individual)
+    ((parent-id)
+     (children-ids)))
 
-(defclass/std button (box)
-  ((label)))
+  (defclass/std box (node)
+    ((top-left)
+     (top-left-abs)
+     (width)
+     (height)
+     (mouse-over)))
 
-(defclass/std text (box)
-  ((label)))
+  (defclass/std button (box)
+    ((label)))
+
+  (defclass/std text (box)
+    ((label)))
+  )
 
 ;;; ==================== methods and functions =================================
 (defmethod initialize-instance :after ((node node) &key)
@@ -185,96 +186,134 @@
      (when (mouse-overp model (second widgets)) (second widgets)))))
 
 ;;; ----------------------- update ---------------------------------------------
-(defmethod update-mouse-over ((widget box))
-  (setf (~> widget mouse-over) :mouse-over))
+(progn                                  ;update
+  (defmethod update-mouse-over ((widget box))
+    (setf (~> widget mouse-over) :mouse-over))
 
-(defmethod update-mouse-out ((widget box))
-  (setf (~> widget mouse-over) nil))
+  (defmethod update-mouse-out ((widget box))
+    (setf (~> widget mouse-over) nil))
 
-(defun update-mouse-location (model x y)
-  (setf (~> model mouse-location) (cons x y))
-  ;; depend on location update mouse over or mouse out
-  ;; (break "investigate update mouse location")
-  (let ((current-widget (~> model current-widget))
-        (most-specific-widget (most-specific-widget model x y)))
+  (defun update-mouse-location (model x y)
+      (setf (~> model mouse-location) (cons x y))
+    ;; depend on location update mouse over or mouse out
+    ;; (break "investigate update mouse location")
+    (let ((current-widget (~> model current-widget))
+          (most-specific-widget (most-specific-widget model x y)))
 
-    (if current-widget
-        (update-mouse-out  current-widget)
-        (progn
-          (update-mouse-out (~> model button-plus))
-          (update-mouse-out (~> model button-minus))))
+      (if current-widget
+          (update-mouse-out  current-widget)
+          (progn
+            (update-mouse-out (~> model button-plus))
+            (update-mouse-out (~> model button-minus))))
 
-    (when most-specific-widget
-      (update-mouse-over most-specific-widget))))
+      (when most-specific-widget
+        (update-mouse-over most-specific-widget))))
 
-(defun update-mouse-press (model x y button)
-  (update-mouse-location model x y)
-  (setf (~> model mouse-button) t)
+  (defun update-mouse-press (model x y button)
+      (update-mouse-location model x y)
+    (setf (~> model mouse-button) t)
 
-  (when (eq 1 button)
+    (when (eq 1 button)
+      (let ((msw (most-specific-widget model x y)))
+
+        (when msw
+          (setf (~> msw mouse-over) :mouse-active))
+
+        (cond ((null msw) (warn "null msw"))
+              ((equal "+" (~> msw label))
+               (warn "plusing ~S" (~> model counted))
+               (setf (~> model counted) (1+ (~> model counted))))
+              ((equal "-" (~> msw label))
+               (warn "minusing")
+               (setf (~> model counted) (1- (~> model counted))))
+              (t
+               (progn (warn "NOT setting zzz")))))))
+
+  (defun update-mouse-release (model x y button)
+      (declare (ignore button))
+    (update-mouse-location model x y)
+    (setf (~> model mouse-button) nil)
+
     (let ((msw (most-specific-widget model x y)))
-
       (when msw
-        (setf (~> msw mouse-over) :mouse-active))
+        (setf (~> msw mouse-over) :mouse-over)))))
 
-      (cond ((null msw) (warn "null msw"))
-            ((equal "+" (~> msw label))
-             (warn "plusing ~S" (~> model counted))
-             (setf (~> model counted) (1+ (~> model counted))))
-            ((equal "-" (~> msw label))
-             (warn "minusing")
-             (setf (~> model counted) (1- (~> model counted))))
-            (t
-             (progn (warn "NOT setting zzz")))))))
+;;; ------------------------ resize --------------------------------------------
+(progn                                  ;resize
+  (defmethod resize ((widget node))
+    (warn "resizing node ~S" widget))
 
-(defun update-mouse-release (model x y button)
-  (declare (ignore button))
-  (update-mouse-location model x y)
-  (setf (~> model mouse-button) nil)
+  (defmethod resize :after ((widget node))
+    (loop for c in (children-ids widget)
+          do (resize (find-id c))))
 
-  (let ((msw (most-specific-widget model x y)))
-    (when msw
-      (setf (~> msw mouse-over) :mouse-over))))
+  (defmethod resize ((widget box))
+    (warn "resizing box ~S"widget)
+    (let* ((parent-widget (find-id (parent-id widget)))
+           (tlaxy (typecase parent-widget
+                    (node (cons 0 0))
+                    (T (top-left-abs parent-widget))))
+           (wider (>= (width *model*) 200)))
+      (cond
+        ((typep widget 'text)
+         (if wider
+             (setf (top-left widget) (cons 110 10))
+             (setf (top-left widget) (cons 10 110))))
+        ((and (typep widget 'button)
+              (equal "+" (label widget)))
+         (if wider
+             (setf (top-left widget) (cons 10 10))
+             (setf (top-left widget) (cons 10 10))))
+        ((and (typep widget 'button)
+              (equal "-" (label widget)))
+         (if wider
+             (setf (top-left widget) (cons 210 10))
+             (setf (top-left widget) (cons 10 210))))
+        (t (error "unexpected case")))
+      (setf (top-left-abs widget) (cons (+ (car tlaxy) (car (top-left widget)))
+                                        (+ (cdr tlaxy) (cdr (top-left widget))))))))
 
-;;; ============================================================================
+;;; find-------------------------------------------------
 (defun find-id (id)
   (@ (~> *model* root-widget ids) id))
+;;; -----------------widget drawing --------------------------------
+(progn   ;; widget drawing
 
-(defun draw-widget (w)
-  (gui-window:set-rgba (if (null (~> w mouse-over))
-                           "yellow"
-                           (when (keywordp (~> w mouse-over))
-                             (ecase (~> w mouse-over)
-                               (:mouse-over "orange")
-                               (:mouse-active "lime")))))
+  (defun draw-widget (w)
+      (gui-window:set-rgba (if (null (~> w mouse-over))
+                               "yellow"
+                               (when (keywordp (~> w mouse-over))
+                                 (ecase (~> w mouse-over)
+                                   (:mouse-over "orange")
+                                   (:mouse-active "lime")))))
 
-  (cairo:rectangle (~> w top-left-abs (car _))
-                   (~> w top-left-abs (cdr _))
-                   (~> w width)
-                   (~> w height))
-  (cairo:fill-path)
+    (cairo:rectangle (~> w top-left-abs (car _))
+                     (~> w top-left-abs (cdr _))
+                     (~> w width)
+                     (~> w height))
+    (cairo:fill-path)
 
-  (cairo:set-font-size 20)
-  (cairo:move-to       (~> w top-left-abs (car _))
-                 (+ 10 (~> w top-left-abs (cdr _))))
-  (gui-window:set-rgba "black")
-  (cairo:show-text (format nil "~a" (~> w label))))
+    (cairo:set-font-size 20)
+    (cairo:move-to       (~> w top-left-abs (car _))
+                         (+ 10 (~> w top-left-abs (cdr _))))
+    (gui-window:set-rgba "black")
+    (cairo:show-text (format nil "~a" (~> w label))))
 
-(defun draw-widget-count (model w)
-  (gui-window:set-rgba (cond ((null (~> w mouse-over)) "yellow")
-                             ((~> w mouse-over) "orange")
-                             (T "red")))
-  (cairo:rectangle (~> w top-left (car _))
-                   (~> w top-left (cdr _))
-                   (~> w width)
-                   (~> w height))
-  (cairo:fill-path)
+  (defun draw-widget-count (model w)
+      (gui-window:set-rgba (cond ((null (~> w mouse-over)) "yellow")
+                                 ((~> w mouse-over) "orange")
+                                 (T "red")))
+    (cairo:rectangle (~> w top-left (car _))
+                     (~> w top-left (cdr _))
+                     (~> w width)
+                     (~> w height))
+    (cairo:fill-path)
 
-  (cairo:set-font-size 20)
-  (cairo:move-to (~> w top-left (car _))
-                 (+ 10 (~> w top-left (cdr _))))
-  (gui-window:set-rgba "black")
-  (cairo:show-text (format nil "~a" (~> model counted))))
+    (cairo:set-font-size 20)
+    (cairo:move-to (~> w top-left (car _))
+                   (+ 10 (~> w top-left (cdr _))))
+    (gui-window:set-rgba "black")
+    (cairo:show-text (format nil "~a" (~> model counted)))))
 
 (defun render-mouse (app)
   (let* ((mouse-position (gui-app:mouse-coordinates app))
@@ -303,41 +342,7 @@
         (drrr)
         (cairo:set-source-rgb 0.0 0.0 0.0) ; http://davidbau.com/colors/
         (cairo:stroke)))))
-;;; ------------------------ resize --------------------------------------------
-(defmethod resize ((widget node))
-  (warn "resizing node ~S" widget))
 
-(defmethod resize :after ((widget node))
-  (loop for c in (children-ids widget)
-        do (resize (find-id c))))
-
-(defmethod resize ((widget box))
-  (warn "resizing box ~S"widget)
-  (let* ((parent-widget (find-id (parent-id widget)))
-         (tlaxy (typecase parent-widget
-                  (node (cons 0 0))
-                  (T (top-left-abs parent-widget))))
-         (wider (>= (width *model*) 200)))
-    (cond
-      ((typep widget 'text)
-       (if wider
-           (setf (top-left widget) (cons 110 10))
-           (setf (top-left widget) (cons 10 110))))
-      ((and (typep widget 'button)
-            (equal "+" (label widget)))
-       (if wider
-           (setf (top-left widget) (cons 10 10))
-           (setf (top-left widget) (cons 10 10))))
-      ((and (typep widget 'button)
-            (equal "-" (label widget)))
-       (if wider
-           (setf (top-left widget) (cons 210 10))
-           (setf (top-left widget) (cons 10 210))))
-      (t (error "unexpected case")))
-    (setf (top-left-abs widget) (cons (+ (car tlaxy) (car (top-left widget)))
-                                      (+ (cdr tlaxy) (cdr (top-left widget)))))))
-
-;;; ---------------------------------- draw window -----------------------------
 (defmethod draw-window ((window counter-third-window))
   ;; paint background
   (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
@@ -365,6 +370,7 @@
                    window)
                (gui-app:mouse-coordinates app))
       (render-mouse app))))
+
 ;;; -------------------------------- process event -----------------------------
 (defmethod process-gtk-event ((lisp-window counter-third-window) event &rest args)
   (unless (member event '(:timeout :motion))
