@@ -91,6 +91,9 @@
                         (setf,place ,value))
                       (setf ,place ,value)))))))))
 
+;;; --------------------------- globals ----------------------------------------
+(defparameter *model* nil)
+
 ;;; -------------------------------- code --------------------------------------
 (defclass/std counter-third-window (gui-window:lisp-window)
   (()))
@@ -273,6 +276,33 @@
   (gui-window:set-rgba "black")
   (cairo:show-text (format nil "~a" (~> model counted))))
 
+(defun render-mouse (app)
+  (let* ((mouse-position (gui-app:mouse-coordinates app))
+         (mx (car mouse-position))
+         (my (cdr mouse-position))
+         (px (+ mx 20))
+         (py (+ my 20))
+         (po 6)
+         (ao 15))
+    (when mouse-position
+      (labels ((drrr ()
+                 (cairo:line-to (+ 50 mx) (+ po 50 my)) ; end
+                 (cairo:line-to px (+ po py))
+                 (cairo:line-to (+ ao mx) (+ 50 my))
+                 (cairo:line-to mx my)  ;mp
+                 (cairo:line-to (+ 50 mx) (+ ao my))
+                 (cairo:line-to (+ po px) py)
+                 (cairo:line-to (+ po 50 mx) (+ 50 my)) ; end
+                 (cairo:line-to (+ 50 mx) (+ po 50 my)) ; end
+                 ))
+        (drrr)
+        (cairo:set-source-rgba 0.2 1.0 0.3 0.3)
+        (cairo:fill-path)
+
+        (cairo:set-line-width 1.0)
+        (drrr)
+        (cairo:set-source-rgb 0.0 0.0 0.0) ; http://davidbau.com/colors/
+        (cairo:stroke)))))
 ;;; ------------------------ resize --------------------------------------------
 (defmethod resize ((widget node))
   (warn "resizing node ~S" widget))
@@ -335,34 +365,6 @@
                    window)
                (gui-app:mouse-coordinates app))
       (render-mouse app))))
-
-(defun render-mouse (app)
-  (let* ((mouse-position (gui-app:mouse-coordinates app))
-         (mx (car mouse-position))
-         (my (cdr mouse-position))
-         (px (+ mx 20))
-         (py (+ my 20))
-         (po 6)
-         (ao 15))
-    (when mouse-position
-      (labels ((drrr ()
-                 (cairo:line-to (+ 50 mx) (+ po 50 my)) ; end
-                 (cairo:line-to px (+ po py))
-                 (cairo:line-to (+ ao mx) (+ 50 my))
-                 (cairo:line-to mx my)  ;mp
-                 (cairo:line-to (+ 50 mx) (+ ao my))
-                 (cairo:line-to (+ po px) py)
-                 (cairo:line-to (+ po 50 mx) (+ 50 my)) ; end
-                 (cairo:line-to (+ 50 mx) (+ po 50 my)) ; end
-                 ))
-        (drrr)
-        (cairo:set-source-rgba 0.2 1.0 0.3 0.3)
-        (cairo:fill-path)
-
-        (cairo:set-line-width 1.0)
-        (drrr)
-        (cairo:set-source-rgb 0.0 0.0 0.0) ; http://davidbau.com/colors/
-        (cairo:stroke)))))
 ;;; -------------------------------- process event -----------------------------
 (defmethod process-gtk-event ((lisp-window counter-third-window) event &rest args)
   (unless (member event '(:timeout :motion))
@@ -413,8 +415,6 @@
   (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
 
 ;;; ============================================================================
-(defparameter *model* nil)
-
 (defun init-model ()
   (let ((root-widget (make-instance 'node :parent-id nil
                                           :children-ids nil)))
@@ -441,7 +441,8 @@
                                                               :width 50
                                                               :height 50
                                                               :parent-id (id root-widget)))))
-  (break "test parenting ~S" (button-plus *model*)))
+  ;(break "test parenting ~S" (button-plus *model*))
+  )
 
 ;;; ============================================================================
 (defun main ()
