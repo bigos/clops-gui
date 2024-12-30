@@ -133,7 +133,6 @@
     ((label)))
   )
 
-;;; ==================== methods and functions =================================
 (defmethod initialize-instance :after ((node node) &key)
   (warn "initilize-instance")
   (setf (slot-value node 'id-count) (1+ (id-count node)))
@@ -145,25 +144,27 @@
     (let ((parent (@ (ids node) (parent-id node))))
       (pushnew (id node) (children-ids parent)))))
 
-(defmethod reset-everything ((node node))
-  (loop for k being the hash-key of (ids node) do
-    (remhash k (ids node)))
-  (setf (slot-value node 'id-count) 0)
-  (setf (slot-value node 'id) 0)
-  (setf (slot-value node 'ids) (make-hash-table)))
+(progn   ;; utilities
 
-(defmethod print-object ((obj node) stream)
-  (print-unreadable-object (obj stream :type t :identity t)
-    (format stream "~a"
-            (loop for sl in (sb-mop:class-slots (class-of obj))
-                  for slot-name = (sb-mop:slot-definition-name sl)
-                  collect (cons slot-name
-                                (if (slot-boundp obj slot-name)
-                                    (format nil "~S" (slot-value obj slot-name))))))))
+  (defmethod reset-everything ((node node))
+      (loop for k being the hash-key of (ids node) do
+        (remhash k (ids node)))
+    (setf (slot-value node 'id-count) 0)
+    (setf (slot-value node 'id) 0)
+    (setf (slot-value node 'ids) (make-hash-table)))
 
-(defmethod destroy-object ((node node))
-  (remhash (id node) (ids node))
-  (setf node nil))
+  (defmethod print-object ((obj node) stream)
+      (print-unreadable-object (obj stream :type t :identity t)
+        (format stream "~a"
+                (loop for sl in (sb-mop:class-slots (class-of obj))
+                      for slot-name = (sb-mop:slot-definition-name sl)
+                      collect (cons slot-name
+                                    (if (slot-boundp obj slot-name)
+                                        (format nil "~S" (slot-value obj slot-name))))))))
+
+  (defmethod destroy-object ((node node))
+      (remhash (id node) (ids node))
+    (setf node nil)))
 
 (defmethod mouse-overp (model (box box))
   (let ((mx (car (~> model mouse-location)))
@@ -185,7 +186,6 @@
      (when (mouse-overp model (first widgets))  (first widgets ))
      (when (mouse-overp model (second widgets)) (second widgets)))))
 
-;;; ----------------------- update ---------------------------------------------
 (progn                                  ;update
   (defmethod update-mouse-over ((widget box))
     (setf (~> widget mouse-over) :mouse-over))
@@ -238,7 +238,6 @@
       (when msw
         (setf (~> msw mouse-over) :mouse-over)))))
 
-;;; ------------------------ resize --------------------------------------------
 (progn                                  ;resize
   (defmethod resize ((widget node))
     (warn "resizing node ~S" widget))
@@ -276,8 +275,8 @@
 ;;; find-------------------------------------------------
 (defun find-id (id)
   (@ (~> *model* root-widget ids) id))
-;;; -----------------widget drawing --------------------------------
-(progn   ;; widget drawing
+
+(progn   ; widget drawing
 
   (defun draw-widget (w)
       (gui-window:set-rgba (if (null (~> w mouse-over))
