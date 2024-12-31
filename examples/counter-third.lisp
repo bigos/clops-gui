@@ -377,10 +377,12 @@
     (process-gtk-event win :TIMEOUT NIL)
 
     (process-gtk-event win :MOTION-ENTER '(1.0 1.0))
+    (let ((debugged (list :model *model*
+                     :model-ids *model-ids*
+                     :model-id *model-id* )))
+      (break "investigate  model ~s" debugged))
 
     (warn "finished test-experiment")))
-
-
 
 #| running tests
   (test-experiment)
