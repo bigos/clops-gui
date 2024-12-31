@@ -516,9 +516,40 @@
 
     (process-gtk-event win :PRESSED '(1 220.0 20.0))
     (assert (eq 0 (~> *model* counted)) nil "counted must be 0")
-    (process-gtk-event win :RELEASED '(1 220.0 20.0)))
+    (process-gtk-event win :RELEASED '(1 220.0 20.0))
 
-  (warn "finished test-experiment"))
+    (let ((w (~> *model* button-plus)))
+      (assert (equal "+" (label w)))
+      ;; (warn "widget ~S" w)
+      (assert (equal (cons 10 10) (top-left-abs w))))
+
+    (let ((w (~> *model* button-minus)))
+      (assert (equal "-" (label w)))
+      (assert (equal (cons 210 10) (top-left-abs w))))
+
+    (process-gtk-event win :RESIZE '(150 390))
+
+    (let ((w (~> *model* button-plus)))
+      (assert (equal "+" (label w)))
+      ;; (warn "widget ~S" w)
+      (assert (equal (cons 10 10) (top-left-abs w))))
+
+    (let ((w (~> *model* button-minus)))
+      (assert (equal "-" (label w)))
+      (assert (equal (cons 10 210) (top-left-abs w))))
+
+    (process-gtk-event win :RESIZE '(600 400))
+
+    (let ((w (~> *model* button-plus)))
+      (assert (equal "+" (label w)))
+      ;; (warn "widget ~S" w)
+      (assert (equal (cons 10 10) (top-left-abs w))))
+
+    (let ((w (~> *model* button-minus)))
+      (assert (equal "-" (label w)))
+      (assert (equal (cons 210 10) (top-left-abs w))))
+
+    (warn "finished test-experiment")))
 
 ;;; my assign macro is better than all those defsetfs
 (defun test-node ()
