@@ -8,46 +8,6 @@
                 :cl-containers)
               :silent nil)
 
-#| planning
-  libraries
-  https://cl-containers.common-lisp.dev/documentation/index.html
-  https://cl-containers.common-lisp.dev/documentation/metabang.cl-containers-package/index.html
-
-  https://github.com/orthecreedence/cl-hash-util
-
-  https://github.com/AccelerationNet/access/blob/a4f87fc1007f5c9a0a2abfddc1c23a77e87096f8/access.lisp#L458
-
-  https://github.com/CodyReichert/awesome-cl?tab=readme-ov-file#data-structures
-
-  ** planning
-
-  *** event is processed, either Gtk4 or simulated event
-  that is decided on the type of the window attribute used in the event
-  file:~/Programming/Lisp/clops-gui/examples/counter-second.lisp::157
-
-  **** application state is updated
-
-  **** relevant widgets are updated
-
-  **** Layout is updated
-
-  *** redraw-canvas is called
-  file:~/Programming/Lisp/clops-gui/src/gui-window.lisp::17
-  depending if real gtk4 or simulated event based on window properties
-  we either
-  **** enqueue gtk4 drawing which calls back to draw-func
-  file:~/Programming/Lisp/clops-gui/src/gui-drawing.lisp::12
-
-  **** or simulate drawing
-  file:~/Programming/Lisp/clops-gui/src/gui-drawing.lisp::34
-
-  *** funcall draw-window
-  file:~/Programming/Lisp/clops-gui/examples/counter-second.lisp::114
-
-  *** wait for the next event
-
-  |#
-
 ;;; --------------------- package ----------------------------------------------
 (defpackage #:counter-third
   (:use #:cl)
@@ -90,69 +50,56 @@
                       (setf ,place ,value)))))))))
 
 ;;; --------------------------- globals ----------------------------------------
-(defparameter *model* nil)
+(defparameter *model-ids* nil)
+(setf *model-ids* (make-hash-table))
+
+(defparameter *model* (list
+                       :size nil
+                       :mouse-position nil
+                       :counted 0
+                       ))
+
+(defparameter *model-id* nil)
+
 
 ;;; -------------------------------- code --------------------------------------
+(cffi:defcstruct gdk-rgba
+    (red   :float)
+  (green :float)
+  (blue  :float)
+  (alpha :float))
 
 (progn ;; classes
   (defclass/std counter-third-window (gui-window:lisp-window)
     (()))
 
-  (defclass/std model ()
-    ((mouse-location)
-     (mouse-button)
-     (width)
-     (height)
-     (current-widget)
-     (root-widget)
-     (counted)
-     (button-plus)
-     (text)
-     (button-minus)))
-
-  (defclass/std individual ()
-    ((id :r :allocation :instance)
-     (id-count :r :allocation :class :std 0)
-     (ids         :allocation :class :std (make-hash-table))))
-
-  (defclass/std node (individual)
-    ((parent-id)
+  (defclass/std node ()
+    ((id)
+     (attrs)
+     (parent-id)
      (children-ids)))
 
-  (defclass/std box (node)
-    ((top-left)
-     (top-left-abs)
-     (width)
-     (height)
-     (mouse-over)))
-
-  (defclass/std button (box)
-    ((label)))
-
-  (defclass/std text (box)
-    ((label)))
-  )
+  (defclass/std root   (node) (()))
+  (defclass/std box    (node) (()))
+  (defclass/std button (node) (()))
+  (defclass/std text   (node) (())))
 
 (defmethod initialize-instance :after ((node node) &key)
-  (warn "initilize-instance")
-  (setf (slot-value node 'id-count) (1+ (id-count node)))
-  (setf (slot-value node 'id) (id-count node) )
-  (setf (@ (ids node) (id node)) node)
+  (assert (null (gethash (id node) *model-ids*)) nil "ID ~s is already taken" (id node))
+  (assert (not (equal (id node) (parent-id node))))
 
-  ;; add to parent
-  (when (parent-id node)
-    (let ((parent (@ (ids node) (parent-id node))))
-      (pushnew (id node) (children-ids parent)))))
+  ;; add node to ids
+  (setf (gethash (id node) *model-ids*) node)
+
+  ;; add to children ids of the parent
+  (when (and (parent-id node)
+             (gethash (parent-id node) *model-ids*))
+    (pushnew (id node)
+             (children-ids (gethash (parent-id node)
+                                    *model-ids*))))
+  (warn "initialized ~s" (list node (id node) (parent-id node))))
 
 (progn   ;; utilities
-
-  (defmethod reset-everything ((node node))
-      (loop for k being the hash-key of (ids node) do
-        (remhash k (ids node)))
-    (setf (slot-value node 'id-count) 0)
-    (setf (slot-value node 'id) 0)
-    (setf (slot-value node 'ids) (make-hash-table)))
-
   (defmethod print-object ((obj node) stream)
       (print-unreadable-object (obj stream :type t :identity t)
         (format stream "~a"
@@ -162,157 +109,34 @@
                                     (if (slot-boundp obj slot-name)
                                         (format nil "~S" (slot-value obj slot-name))))))))
 
-  (defmethod destroy-object ((node node))
-      (remhash (id node) (ids node))
-    (setf node nil)))
+  (defun build-nodes (parent tree)
+    (destructuring-bind  (tag attrs &optional children) tree
+      (let ((nt (make-instance tag
+                               :id (incf *model-id*)
+                               :parent-id parent
+                               :attrs attrs)))
+        (mapcar (lambda (e)
+                  (build-nodes (id nt) e))
+                children))))
 
-(defmethod mouse-overp (model (box box))
-  (let ((mx (car (~> model mouse-location)))
-        (my (cdr (~> model mouse-location))))
-    (and (>= mx (~> box top-left car))
-         (>= my (~> box top-left cdr))
-         (<= mx (+
-                 (~> box top-left car)
-                 (~> box width)))
-         (<= my (+
-                 (~> box top-left cdr)
-                 (~> box height))))))
+  (defun set-rgba (color)
+    (labels ((color-to-rgba (color)
+               (cffi:with-foreign-object (rgba '(:struct gdk-rgba))
+                 (let ((pointer (make-instance 'gir::struct-instance
+                                               :class (gir:nget gdk::*ns* "RGBA")
+                                               :this rgba)))
+                   (let ((valid-color (gdk:rgba-parse pointer color)))
+                     (cffi:with-foreign-slots ((red green blue alpha) rgba (:struct gdk-rgba))
+                       (list valid-color red green blue alpha)))))))
+      (let ((parsed-color (color-to-rgba color)))
+        (if (first parsed-color)
+            (apply 'cairo:set-source-rgba (rest parsed-color))
+            (error "~S is not a valid color" color)))))
 
-(defun most-specific-widget (model x y)
-  (declare (ignore x y))
-  (let ((widgets (list (~> model button-plus)
-                       (~> model button-minus))))
-    (or
-     (when (mouse-overp model (first widgets))  (first widgets ))
-     (when (mouse-overp model (second widgets)) (second widgets)))))
+  )
 
-(progn                                  ;update
-  (defmethod update-mouse-over ((widget box))
-    (setf (~> widget mouse-over) :mouse-over))
 
-  (defmethod update-mouse-out ((widget box))
-    (setf (~> widget mouse-over) nil))
 
-  (defun update-mouse-location (model x y)
-      (setf (~> model mouse-location) (cons x y))
-    ;; depend on location update mouse over or mouse out
-    ;; (break "investigate update mouse location")
-    (let ((current-widget (~> model current-widget))
-          (most-specific-widget (most-specific-widget model x y)))
-
-      (if current-widget
-          (update-mouse-out  current-widget)
-          (progn
-            (update-mouse-out (~> model button-plus))
-            (update-mouse-out (~> model button-minus))))
-
-      (when most-specific-widget
-        (update-mouse-over most-specific-widget))))
-
-  (defun update-mouse-press (model x y button)
-      (update-mouse-location model x y)
-    (setf (~> model mouse-button) t)
-
-    (when (eq 1 button)
-      (let ((msw (most-specific-widget model x y)))
-
-        (when msw
-          (setf (~> msw mouse-over) :mouse-active))
-
-        (cond ((null msw) (warn "null msw"))
-              ((equal "+" (~> msw label))
-               (warn "plusing ~S" (~> model counted))
-               (setf (~> model counted) (1+ (~> model counted))))
-              ((equal "-" (~> msw label))
-               (warn "minusing")
-               (setf (~> model counted) (1- (~> model counted))))
-              (t
-               (progn (warn "NOT setting zzz")))))))
-
-  (defun update-mouse-release (model x y button)
-      (declare (ignore button))
-    (update-mouse-location model x y)
-    (setf (~> model mouse-button) nil)
-
-    (let ((msw (most-specific-widget model x y)))
-      (when msw
-        (setf (~> msw mouse-over) :mouse-over)))))
-
-(progn                                  ;resize
-  (defmethod resize ((widget node))
-    (warn "resizing node ~S" widget))
-
-  (defmethod resize :after ((widget node))
-    (loop for c in (children-ids widget)
-          do (resize (find-id c))))
-
-  (defmethod resize ((widget box))
-    (warn "resizing box ~S"widget)
-    (let* ((parent-widget (find-id (parent-id widget)))
-           (tlaxy (typecase parent-widget
-                    (node (cons 0 0))
-                    (T (top-left-abs parent-widget))))
-           (wider (>= (width *model*) 200)))
-      (cond
-        ((typep widget 'text)
-         (if wider
-             (setf (top-left widget) (cons 110 10))
-             (setf (top-left widget) (cons 10 110))))
-        ((and (typep widget 'button)
-              (equal "+" (label widget)))
-         (if wider
-             (setf (top-left widget) (cons 10 10))
-             (setf (top-left widget) (cons 10 10))))
-        ((and (typep widget 'button)
-              (equal "-" (label widget)))
-         (if wider
-             (setf (top-left widget) (cons 210 10))
-             (setf (top-left widget) (cons 10 210))))
-        (t (error "unexpected case")))
-      (setf (top-left-abs widget) (cons (+ (car tlaxy) (car (top-left widget)))
-                                        (+ (cdr tlaxy) (cdr (top-left widget))))))))
-
-;;; find-------------------------------------------------
-(defun find-id (id)
-  (@ (~> *model* root-widget ids) id))
-
-(progn   ; widget drawing
-
-  (defun draw-widget (w)
-      (gui-window:set-rgba (if (null (~> w mouse-over))
-                               "yellow"
-                               (when (keywordp (~> w mouse-over))
-                                 (ecase (~> w mouse-over)
-                                   (:mouse-over "orange")
-                                   (:mouse-active "lime")))))
-
-    (cairo:rectangle (~> w top-left-abs (car _))
-                     (~> w top-left-abs (cdr _))
-                     (~> w width)
-                     (~> w height))
-    (cairo:fill-path)
-
-    (cairo:set-font-size 20)
-    (cairo:move-to       (~> w top-left-abs (car _))
-                         (+ 10 (~> w top-left-abs (cdr _))))
-    (gui-window:set-rgba "black")
-    (cairo:show-text (format nil "~a" (~> w label))))
-
-  (defun draw-widget-count (model w)
-      (gui-window:set-rgba (cond ((null (~> w mouse-over)) "yellow")
-                                 ((~> w mouse-over) "orange")
-                                 (T "red")))
-    (cairo:rectangle (~> w top-left (car _))
-                     (~> w top-left (cdr _))
-                     (~> w width)
-                     (~> w height))
-    (cairo:fill-path)
-
-    (cairo:set-font-size 20)
-    (cairo:move-to (~> w top-left (car _))
-                   (+ 10 (~> w top-left (cdr _))))
-    (gui-window:set-rgba "black")
-    (cairo:show-text (format nil "~a" (~> model counted)))))
 
 (defun render-mouse (app)
   (let* ((mouse-position (gui-app:mouse-coordinates app))
@@ -353,14 +177,8 @@
   (gui-window:set-rgba "black")
   (cairo:show-text (format nil "try to code something"))
 
-  (let ((w (~> *model* button-plus)))
-    (draw-widget w))
-
-  (let ((w (~> *model* text)))
-    (draw-widget-count *model* w))
-
-  (let ((w (~> *model* button-minus)))
-    (draw-widget w)))
+  (loop for v being the hash-value in *model-ids*
+        when (null (parent-id v)) do (render v)))
 
 (defmethod draw-window :after ((window counter-third-window))
   ;; pink square follows the mouse
@@ -382,10 +200,11 @@
     ((:motion :motion-enter)
      ;; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y)) args
-       (update-mouse-location *model* x y)
-       (gui-app:mouse-motion-enter lisp-window x y)))
+       (gui-app:mouse-motion-enter lisp-window x y)
+       (setf (getf *model* :mouse-position) (cons x y))))
     (:motion-leave
-     (gui-app:mouse-motion-leave))
+     (gui-app:mouse-motion-leave)
+     (setf (getf *model* :mouse-position) nil))
     (:focus-enter)
     (:focus-leave)
     (:pressed
@@ -402,9 +221,7 @@
     (:resize
      (destructuring-bind ((w h)) args
        (gui-window:window-resize w h lisp-window)
-       (setf (width  *model*) w)
-       (setf (height *model*) h)
-       (resize (root-widget *model*))))
+       (setf (getf *model* :size) (cons w h))))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
@@ -421,33 +238,16 @@
 
 ;;; ============================================================================
 (defun init-model ()
-  (let ((root-widget (make-instance 'node :parent-id nil
-                                          :children-ids nil)))
-    (setf *model* (make-instance 'model
-                                 :mouse-location nil
-                                 :current-widget nil
-                                 :root-widget root-widget
-                                 :counted  0
-                                 :button-plus  (make-instance 'button
-                                                              :label "+"
-                                                              :top-left (cons 10 100)
-                                                              :width 50
-                                                              :height 50
-                                                              :parent-id (id root-widget))
-                                 :text         (make-instance 'text
-                                                              :label 0
-                                                              :top-left (cons 110 10)
-                                                              :width 50
-                                                              :height 50
-                                                              :parent-id (id root-widget))
-                                 :button-minus (make-instance 'button
-                                                              :label "-"
-                                                              :top-left (cons 210 10)
-                                                              :width 50
-                                                              :height 50
-                                                              :parent-id (id root-widget)))))
-  ;(break "test parenting ~S" (button-plus *model*))
-  )
+  (when T
+    (progn
+      (clrhash *model-ids*)
+      (setf *model-id* 10)
+      (build-nodes nil
+                   '(root nil
+                     ((box nil
+                       ((button (:label "+"))
+                        (text nil)
+                        (button (:label "-"))))))))))
 
 ;;; ============================================================================
 (defun main ()
