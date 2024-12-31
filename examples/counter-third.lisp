@@ -136,6 +136,90 @@
   )
 
 
+;;; this is the beginning of rendering
+(defmethod render :after ((node node))
+  (loop for i in (children-ids node)
+        for w = (gethash i *model-ids*)
+        do (render w)))
+
+(defmethod render ((node root))
+  (warn "RENDERING ~S" (type-of node))
+  (if (< (car (getf *model* :size)) 100)
+      (set-rgba "lime")
+      (set-rgba "white"))
+
+  (cairo:paint)
+
+  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
+  (cairo:set-font-size 20)
+  (cairo:move-to 20 30)
+  (set-rgba "black")
+  (cairo:show-text (format nil "try to code something")))
+
+(defmethod render ((node button))
+  (warn "rendering ~S" (type-of node))
+  (let ((label (getf (attrs node) :label)))
+    (cond
+      ((equal label "+")
+       (render-plus node))
+      ((equal label "-")
+       (render-minus node))
+      (t (error "unexpected label ~S" label)))))
+
+(defmethod render-plus ((node button))
+  (set-rgba "orange")  ; http://davidbau.com/colors/
+  (cairo:rectangle 10
+                   40
+                   50
+                   30)
+  (cairo:fill-path)
+
+  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
+  (cairo:set-font-size 20)
+  (cairo:move-to 20 60)
+  (set-rgba "black")
+  (cairo:show-text (format nil "~A" (getf (attrs node) :label))))
+
+(defmethod render-minus ((node button))
+  (set-rgba "turquoise")
+  (cairo:rectangle 210
+                   40
+                   50
+                   30)
+  (cairo:fill-path)
+
+  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
+  (cairo:set-font-size 20)
+  (cairo:move-to 210 60)
+  (set-rgba "black")
+  (cairo:show-text (format nil "~A" (getf (attrs node) :label))))
+
+(defmethod render ((node text))
+  (set-rgba "mistyrose")
+  (cairo:rectangle 70
+                   40
+                   110
+                   30)
+  (cairo:fill-path)
+
+  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
+  (cairo:set-font-size 20)
+  (cairo:move-to 70 60)
+  (set-rgba "black")
+  (cairo:show-text (format nil "~A" (getf *model* :counted)))
+  (warn "zzzzzzzzzzzz~S" (type-of node)))
+
+(defmethod render ((node node))
+  (warn "zzzzzzzzzzzz~S" (type-of node)))
+
+;;; this is beginning of resizing
+(defmethod resize :after ((node node))
+  (loop for i in (children-ids node)
+        for w = (gethash i *model-ids*)
+        do (resize w)))
+
+(defmethod resize ((node node))
+  (warn "resizing node ~S" (id node)))
 
 
 (defun render-mouse (app)
@@ -209,13 +293,10 @@
     (:focus-leave)
     (:pressed
      (destructuring-bind ((button x y)) args
-
-       (update-mouse-press *model* x y button)
-
-       ))
+       (declare (ignore button x y))))
     (:released
      (destructuring-bind ((button x y)) args
-       (update-mouse-release *model* x y button)
+       (declare (ignore button x y))
        (gui-app:mouse-button-released)))
     (:scroll)
     (:resize
@@ -253,12 +334,12 @@
 (defun main ()
   (init-model)
   (progn
-    (assign gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window)
-    (assign gui-window-gtk:*client-fn-menu-bar*      nil)
-    (assign gui-events:*client-fn-process-event* 'counter-third::process-gtk-event)
-    (assign gui-window-gtk:*initial-window-width*    600)
-    (assign gui-window-gtk:*initial-window-height*   400)
-    (assign gui-window-gtk:*initial-title*           "Counter Third"))
+    (setf gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window)
+    (setf gui-window-gtk:*client-fn-menu-bar*      nil)
+    (setf gui-events:*client-fn-process-event* 'counter-third::process-gtk-event)
+    (setf gui-window-gtk:*initial-window-width*    600)
+    (setf gui-window-gtk:*initial-window-height*   400)
+    (setf gui-window-gtk:*initial-title*           "Counter Third"))
 
   (gui-window-gtk:window (make-instance 'counter-third-window)))
 
@@ -277,9 +358,9 @@
 
 ;;; === test preparation =======================================================
 (defun test-experiment-first-window ()
-  (assign gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window)
+  (setf gui-drawing:*client-fn-draw-objects*  'counter-third::draw-window)
 
-  (assign gui-app:*lisp-app* (gui-app:make-lisp-app))
+  (setf gui-app:*lisp-app* (gui-app:make-lisp-app))
   (assert (zerop (hash-table-count (gui-app:all-windows))))
 
   (let ((lisp-window (make-instance 'counter-third-window)))
@@ -297,94 +378,8 @@
 
     (process-gtk-event win :MOTION-ENTER '(1.0 1.0))
 
-    (assert (null (~> *model* button-plus mouse-over)))
-    (process-gtk-event win :MOTION '(20.0 20.0))
-    (assert (eq :mouse-over (~> *model* button-plus mouse-over)))
-
-
-    (process-gtk-event win :PRESSED '(1 20.0 20.0))
-    (assert (eq :mouse-active (~> *model* button-plus mouse-over)))
-    (assert (eq 1 (~> *model* counted)) nil "counted must be 1")
-    (process-gtk-event win :RELEASED '(1 20.0 20.0))
-    (assert (eq :mouse-over (~> *model* button-plus mouse-over)))
-
-    (process-gtk-event win :MOTION-ENTER '(1.0 1.0))
-    (assert (null (~> *model* button-plus mouse-over)))
-
-    (process-gtk-event win :MOTION '(220.0 20.0))
-    (assert (null (~> *model* button-plus mouse-over)))
-
-    (process-gtk-event win :PRESSED '(1 220.0 20.0))
-    (assert (eq 0 (~> *model* counted)) nil "counted must be 0")
-    (process-gtk-event win :RELEASED '(1 220.0 20.0))
-
-    (let ((w (~> *model* button-plus)))
-      (assert (equal "+" (label w)))
-      ;; (warn "widget ~S" w)
-      (assert (equal (cons 10 10) (top-left-abs w))))
-
-    (let ((w (~> *model* button-minus)))
-      (assert (equal "-" (label w)))
-      (assert (equal (cons 210 10) (top-left-abs w))))
-
-    (process-gtk-event win :RESIZE '(150 390))
-
-    (let ((w (~> *model* button-plus)))
-      (assert (equal "+" (label w)))
-      ;; (warn "widget ~S" w)
-      (assert (equal (cons 10 10) (top-left-abs w))))
-
-    (let ((w (~> *model* button-minus)))
-      (assert (equal "-" (label w)))
-      (assert (equal (cons 10 210) (top-left-abs w))))
-
-    (process-gtk-event win :RESIZE '(600 400))
-
-    (let ((w (~> *model* button-plus)))
-      (assert (equal "+" (label w)))
-      ;; (warn "widget ~S" w)
-      (assert (equal (cons 10 10) (top-left-abs w))))
-
-    (let ((w (~> *model* button-minus)))
-      (assert (equal "-" (label w)))
-      (assert (equal (cons 210 10) (top-left-abs w))))
-
     (warn "finished test-experiment")))
 
-;;; my assign macro is better than all those defsetfs
-(defun test-node ()
-  (warn "starting test-node")
-  (let ((n nil))
-    (warn "having n nil assign new instance ~s" n)
-    (assign n (make-instance 'node) )
-    (warn "we have n ~s" n)
-
-    (warn "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZz")
-    (assign n 123)
-    (warn "we have n ~s" n)
-
-    (assign n (make-instance 'node) )
-    (warn "we have n ~s" n)
-
-    (assign n (make-instance 'node) )
-
-    (assign (@ (ids n) 2) nil)
-    (assign (@ (ids n) 1) nil)
-
-    (warn "finally we have ~S" n)
-
-    ;; was that simpler?
-    (progn
-      (let ((nid (id n)))
-        (remhash nid (ids n))
-        (setf n nil)))
-
-    ;; or just
-    ;; (destroy-object n)
-    ;; (setf n nil)
-
-    ;; (reset-everything n)
-    n))
 
 
 #| running tests
