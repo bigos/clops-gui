@@ -265,18 +265,21 @@
   (let ((label (getf (attrs node) :label)))
     (cond ((equal label "+")
            (setf (top-left-abs node) (top-left node)))
+
           ((typep node 'text)
            (setf (top-left node)
                  (if  (>= (car (getf *model* :size)) 300)
                       (cons 70 40)
                       (cons 10 90)))
            (setf (top-left-abs node) (top-left node)))
+
           ((equal label "-")
            (setf (top-left node)
                  (if  (>= (car (getf *model* :size)) 300)
                       (cons 210 40)
                       (cons 10 140)))
            (setf (top-left-abs node) (top-left node)))
+
           (T (warn "not resizing ~s" node))))
 
   (warn "resizing node ~S" (id node)))
@@ -459,6 +462,20 @@
     (process-gtk-event win :TIMEOUT NIL)
 
     (process-gtk-event win :MOTION-ENTER '(1.0 1.0))
+
+    (process-gtk-event win :motion-LEAVE)
+
+    (process-gtk-event win :RESIZE '(200 500))
+
+    (process-gtk-event win :MOTION-ENTER '(1.0 1.0))
+
+    (process-gtk-event win :MOTION '(51.0 100.0))
+
+    (process-gtk-event win :MOTION '(42.0 150.0))
+    (process-gtk-event win :pressed '(1 42.0 150.0))
+    (process-gtk-event win :released '(1 42.0 150.0))
+
+
     (let ((debugged (list :model *model*
                      :model-ids *model-ids*
                      :model-id *model-id* )))
