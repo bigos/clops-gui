@@ -152,6 +152,14 @@
         (and (<= tx mx bx )
              (<= ty my by))))))
 
+(defun widget-under-mouse ()
+  (loop for w being the hash-value of *model-ids*
+        for wum = (and
+                   (not (eq (type-of w) 'root))
+                   (mouse-overp w))
+        until wum
+        finally (return w)))
+
 ;;; this is the beginning of rendering
 (defmethod render :after ((node node))
   (loop for i in (children-ids node)
@@ -185,8 +193,10 @@
 (defmethod render-plus ((node button))
                                         ; http://davidbau.com/colors/
   (if (mouse-overp node)
-      (set-rgba "yellow")
-      (set-rgba "orange"))
+      (if (getf *model* :mouse-pressed)
+          (set-rgba "red")
+          (set-rgba "orange"))
+      (set-rgba "yellow"))
 
   (cairo:rectangle (car (top-left-abs node))
                    (cdr (top-left-abs node))
@@ -202,16 +212,23 @@
   (cairo:show-text (format nil "~A" (getf (attrs node) :label))))
 
 (defmethod render-minus ((node button))
-  (set-rgba "turquoise")
-  (cairo:rectangle 210
-                   40
-                   50
-                   30)
+                                        ; http://davidbau.com/colors/
+  (if (mouse-overp node)
+      (if (getf *model* :mouse-pressed)
+          (set-rgba "red")
+          (set-rgba "orange"))
+      (set-rgba "yellow"))
+
+  (cairo:rectangle (car (top-left-abs node))
+                   (cdr (top-left-abs node))
+                   (width node)
+                   (height node))
   (cairo:fill-path)
 
   (cairo:select-font-face "Ubuntu Mono" :italic :bold)
   (cairo:set-font-size 20)
-  (cairo:move-to 210 60)
+  (cairo:move-to (+  0 (car (top-left-abs node)))
+                 (+ 20 (cdr (top-left-abs node))))
   (set-rgba "black")
   (cairo:show-text (format nil "~A" (getf (attrs node) :label))))
 
@@ -242,8 +259,9 @@
 (defmethod resize ((node node))
   (let ((label (getf (attrs node) :label)))
     (cond ((equal label "+")
-           (setf (top-left-abs node) (top-left node))
-           )
+           (setf (top-left-abs node) (top-left node)))
+          ((equal label "-")
+           (setf (top-left-abs node) (top-left node)))
           (T (warn "not resizing ~s" node))))
 
   (warn "resizing node ~S" (id node)))
@@ -319,11 +337,22 @@
     (:focus-leave)
     (:pressed
      (destructuring-bind ((button x y)) args
-       (declare (ignore button x y))))
+       (declare (ignore button x y))
+       (setf (getf *model* :mouse-pressed) T)
+       (let ((wum (widget-under-mouse)))
+         (when wum
+           (let ((l (getf (attrs wum) :label))
+                 (c (getf *model* :counted)))
+             ;; (cond ((equal "+" l)
+             ;;        (setf (getf *model* :counted) (1+ c)))
+             ;;       ((equal "-" l)
+             ;;        (setf (getf *model* :counted) (1- c)))
+             ;;       (t (warn "do nothing")))
+             )))))
     (:released
      (destructuring-bind ((button x y)) args
        (declare (ignore button x y))
-       (gui-app:mouse-button-released)))
+       (setf (getf *model* :mouse-pressed) nil)))
     (:scroll)
     (:resize
      (destructuring-bind ((w h)) args
@@ -361,7 +390,10 @@
                                  height 30)
                          (:label "+"))
                         (text nil nil)
-                        (button nil (:label "-"))))))))))
+                        (button (top-left (210 . 40)
+                                 width 40
+                                 height 30)
+                         (:label "-"))))))))))
 
 ;;; ============================================================================
 (defun main ()
