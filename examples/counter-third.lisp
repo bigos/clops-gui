@@ -61,7 +61,6 @@
 
 (defparameter *model-id* nil)
 
-
 ;;; -------------------------------- code --------------------------------------
 (cffi:defcstruct gdk-rgba
     (red   :float)
@@ -77,7 +76,11 @@
     ((id)
      (attrs)
      (parent-id)
-     (children-ids)))
+     (children-ids)
+     (top-left)
+     (top-left-abs)
+     (width)
+     (height)))
 
   (defclass/std root   (node) (()))
   (defclass/std box    (node) (()))
@@ -110,11 +113,13 @@
                                         (format nil "~S" (slot-value obj slot-name))))))))
 
   (defun build-nodes (parent tree)
-    (destructuring-bind  (tag attrs &optional children) tree
+    (destructuring-bind  (tag slots attrs &optional children) tree
       (let ((nt (make-instance tag
                                :id (incf *model-id*)
                                :parent-id parent
                                :attrs attrs)))
+        (loop for (key value) on slots by #'cddr
+              do (setf (slot-value nt key) value))
         (mapcar (lambda (e)
                   (build-nodes (id nt) e))
                 children))))
@@ -131,10 +136,21 @@
       (let ((parsed-color (color-to-rgba color)))
         (if (first parsed-color)
             (apply 'cairo:set-source-rgba (rest parsed-color))
-            (error "~S is not a valid color" color)))))
+            (error "~S is not a valid color" color))))))
 
-  )
-
+(defmethod mouse-overp ((node node))
+  (let ((mouse-position (getf *model* :mouse-position)))
+    (warn "mouse-overp ~s" mouse-position)
+    (when mouse-position
+      (let* ((mx (car mouse-position))
+             (my (cdr mouse-position))
+             (tx (car (top-left-abs node)))
+             (ty (cdr (top-left-abs node)))
+             (bx (+ (width node)  (car (top-left-abs node))))
+             (by (+ (height node) (cdr (top-left-abs node)))))
+        (warn "positions ~S" (list mx my :t tx ty :b bx by))
+        (and (<= tx mx bx )
+             (<= ty my by))))))
 
 ;;; this is the beginning of rendering
 (defmethod render :after ((node node))
@@ -167,16 +183,21 @@
       (t (error "unexpected label ~S" label)))))
 
 (defmethod render-plus ((node button))
-  (set-rgba "orange")  ; http://davidbau.com/colors/
-  (cairo:rectangle 10
-                   40
-                   50
-                   30)
+                                        ; http://davidbau.com/colors/
+  (if (mouse-overp node)
+      (set-rgba "yellow")
+      (set-rgba "orange"))
+
+  (cairo:rectangle (car (top-left-abs node))
+                   (cdr (top-left-abs node))
+                   (width node)
+                   (height node))
   (cairo:fill-path)
 
   (cairo:select-font-face "Ubuntu Mono" :italic :bold)
   (cairo:set-font-size 20)
-  (cairo:move-to 20 60)
+  (cairo:move-to (+  0 (car (top-left-abs node)))
+                 (+ 20 (cdr (top-left-abs node))))
   (set-rgba "black")
   (cairo:show-text (format nil "~A" (getf (attrs node) :label))))
 
@@ -219,8 +240,13 @@
         do (resize w)))
 
 (defmethod resize ((node node))
-  (warn "resizing node ~S" (id node)))
+  (let ((label (getf (attrs node) :label)))
+    (cond ((equal label "+")
+           (setf (top-left-abs node) (top-left node))
+           )
+          (T (warn "not resizing ~s" node))))
 
+  (warn "resizing node ~S" (id node)))
 
 (defun render-mouse (app)
   (let* ((mouse-position (gui-app:mouse-coordinates app))
@@ -302,7 +328,11 @@
     (:resize
      (destructuring-bind ((w h)) args
        (gui-window:window-resize w h lisp-window)
-       (setf (getf *model* :size) (cons w h))))
+       (setf (getf *model* :size) (cons w h))
+       ;; resize root
+       (loop for w being the hash-value of *model-ids*
+             when (null (parent-id w))
+               do (resize w))))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
@@ -324,11 +354,14 @@
       (clrhash *model-ids*)
       (setf *model-id* 10)
       (build-nodes nil
-                   '(root nil
-                     ((box nil
-                       ((button (:label "+"))
-                        (text nil)
-                        (button (:label "-"))))))))))
+                   '(root nil nil
+                     ((box nil nil
+                       ((button (top-left (10 . 40)
+                                 width 40
+                                 height 30)
+                         (:label "+"))
+                        (text nil nil)
+                        (button nil (:label "-"))))))))))
 
 ;;; ============================================================================
 (defun main ()
