@@ -237,15 +237,17 @@
 
 (defmethod render ((node text))
   (set-rgba "mistyrose")
-  (cairo:rectangle 70
-                   40
-                   110
-                   30)
+
+  (cairo:rectangle (car (top-left-abs node))
+                   (cdr (top-left-abs node))
+                   (width node)
+                   (height node))
   (cairo:fill-path)
 
   (cairo:select-font-face "Ubuntu Mono" :italic :bold)
   (cairo:set-font-size 20)
-  (cairo:move-to 70 60)
+  (cairo:move-to (+  0 (car (top-left-abs node)))
+                 (+ 20 (cdr (top-left-abs node))))
   (set-rgba "black")
   (cairo:show-text (format nil "~A" (getf *model* :counted)))
   (warn "zzzzzzzzzzzz~S" (type-of node)))
@@ -263,7 +265,17 @@
   (let ((label (getf (attrs node) :label)))
     (cond ((equal label "+")
            (setf (top-left-abs node) (top-left node)))
+          ((typep node 'text)
+           (setf (top-left node)
+                 (if  (>= (car (getf *model* :size)) 300)
+                      (cons 70 40)
+                      (cons 10 90)))
+           (setf (top-left-abs node) (top-left node)))
           ((equal label "-")
+           (setf (top-left node)
+                 (if  (>= (car (getf *model* :size)) 300)
+                      (cons 210 40)
+                      (cons 10 140)))
            (setf (top-left-abs node) (top-left node)))
           (T (warn "not resizing ~s" node))))
 
@@ -391,7 +403,10 @@
                                  width 40
                                  height 30)
                          (:label "+"))
-                        (text nil nil)
+                        (text (top-left (70 . 40)
+                               width 110
+                               height 30)
+                         nil)
                         (button (top-left (210 . 40)
                                  width 40
                                  height 30)
