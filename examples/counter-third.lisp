@@ -144,10 +144,10 @@
     (when mouse-position
       (let* ((mx (car mouse-position))
              (my (cdr mouse-position))
-             (tx (car (top-left-abs node)))
-             (ty (cdr (top-left-abs node)))
-             (bx (+ (width node)  (car (top-left-abs node))))
-             (by (+ (height node) (cdr (top-left-abs node)))))
+             (tx (or (car (top-left-abs node)) 0))
+             (ty (or (cdr (top-left-abs node)) 0))
+             (bx (+ (or (width node) 0) (or (car (top-left-abs node)) 0)))
+             (by (+ (or (height node)0) (or (cdr (top-left-abs node)) 0))))
         (warn "positions ~S" (list mx my :t tx ty :b bx by))
         (and (<= tx mx bx )
              (<= ty my by))))))
@@ -343,12 +343,11 @@
          (when wum
            (let ((l (getf (attrs wum) :label))
                  (c (getf *model* :counted)))
-             ;; (cond ((equal "+" l)
-             ;;        (setf (getf *model* :counted) (1+ c)))
-             ;;       ((equal "-" l)
-             ;;        (setf (getf *model* :counted) (1- c)))
-             ;;       (t (warn "do nothing")))
-             )))))
+             (cond ((equal "+" l)
+                    (setf (getf *model* :counted) (1+ c)))
+                   ((equal "-" l)
+                    (setf (getf *model* :counted) (1- c)))
+                   (t (warn "do nothing"))))))))
     (:released
      (destructuring-bind ((button x y)) args
        (declare (ignore button x y))
