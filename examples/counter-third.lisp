@@ -141,7 +141,10 @@
 (defmethod mouse-overp ((node node))
   (let ((mouse-position (getf *model* :mouse-position)))
     (warn "mouse-overp ~s" mouse-position)
-    (when mouse-position
+    (when (and mouse-position
+               (top-left-abs node)
+               (width node)
+               (height node))
       (let* ((mx (car mouse-position))
              (my (cdr mouse-position))
              (tx (car (top-left-abs node)))
@@ -234,15 +237,17 @@
 
 (defmethod render ((node text))
   (set-rgba "mistyrose")
-  (cairo:rectangle 70
-                   40
-                   110
-                   30)
+
+  (cairo:rectangle (car (top-left-abs node))
+                   (cdr (top-left-abs node))
+                   (width node)
+                   (height node))
   (cairo:fill-path)
 
   (cairo:select-font-face "Ubuntu Mono" :italic :bold)
   (cairo:set-font-size 20)
-  (cairo:move-to 70 60)
+  (cairo:move-to (+  0 (car (top-left-abs node)))
+                 (+ 20 (cdr (top-left-abs node))))
   (set-rgba "black")
   (cairo:show-text (format nil "~A" (getf *model* :counted)))
   (warn "zzzzzzzzzzzz~S" (type-of node)))
@@ -260,8 +265,21 @@
   (let ((label (getf (attrs node) :label)))
     (cond ((equal label "+")
            (setf (top-left-abs node) (top-left node)))
-          ((equal label "-")
+
+          ((typep node 'text)
+           (setf (top-left node)
+                 (if  (>= (car (getf *model* :size)) 300)
+                      (cons 70 40)
+                      (cons 10 90)))
            (setf (top-left-abs node) (top-left node)))
+
+          ((equal label "-")
+           (setf (top-left node)
+                 (if  (>= (car (getf *model* :size)) 300)
+                      (cons 210 40)
+                      (cons 10 140)))
+           (setf (top-left-abs node) (top-left node)))
+
           (T (warn "not resizing ~s" node))))
 
   (warn "resizing node ~S" (id node)))
@@ -343,12 +361,11 @@
          (when wum
            (let ((l (getf (attrs wum) :label))
                  (c (getf *model* :counted)))
-             ;; (cond ((equal "+" l)
-             ;;        (setf (getf *model* :counted) (1+ c)))
-             ;;       ((equal "-" l)
-             ;;        (setf (getf *model* :counted) (1- c)))
-             ;;       (t (warn "do nothing")))
-             )))))
+             (cond ((equal "+" l)
+                    (setf (getf *model* :counted) (1+ c)))
+                   ((equal "-" l)
+                    (setf (getf *model* :counted) (1- c)))
+                   (t (warn "do nothing"))))))))
     (:released
      (destructuring-bind ((button x y)) args
        (declare (ignore button x y))
@@ -389,7 +406,10 @@
                                  width 40
                                  height 30)
                          (:label "+"))
-                        (text nil nil)
+                        (text (top-left (70 . 40)
+                               width 110
+                               height 30)
+                         nil)
                         (button (top-left (210 . 40)
                                  width 40
                                  height 30)
@@ -442,6 +462,20 @@
     (process-gtk-event win :TIMEOUT NIL)
 
     (process-gtk-event win :MOTION-ENTER '(1.0 1.0))
+
+    (process-gtk-event win :motion-LEAVE)
+
+    (process-gtk-event win :RESIZE '(200 500))
+
+    (process-gtk-event win :MOTION-ENTER '(1.0 1.0))
+
+    (process-gtk-event win :MOTION '(51.0 100.0))
+
+    (process-gtk-event win :MOTION '(42.0 150.0))
+    (process-gtk-event win :pressed '(1 42.0 150.0))
+    (process-gtk-event win :released '(1 42.0 150.0))
+
+
     (let ((debugged (list :model *model*
                      :model-ids *model-ids*
                      :model-id *model-id* )))
