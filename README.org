@@ -69,6 +69,9 @@ file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
 [[file:src/gui-window.lisp::(defmethod add-child]] and the method below need to be
 somehow moved to gui-box
 
+*** inspiration
+file:~/Programming/Lisp/lispy-experiments/window-canvas-boxes/notes.org::1
+
 ** Interesting Gtk doc
 
 *** Drawing model
