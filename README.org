@@ -60,18 +60,6 @@ CL-USER> (sblint:run-lint-directory "~/Programming/Lisp/clops-gui/")
 #+end_example
 
 
-** notes
-
-*** moving to app
-file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
-
-*** remove gui-box from gui-window
-[[file:src/gui-window.lisp::(defmethod add-child]] and the method below need to be
-somehow moved to gui-box
-
-*** inspiration
-file:~/Programming/Lisp/lispy-experiments/window-canvas-boxes/notes.org::1
-
 ** Interesting Gtk doc
 
 *** Drawing model
@@ -99,3 +87,15 @@ https://en.wikipedia.org/wiki/Archy_(software)
 Archy has been compared as similar to the Emacs text editor, although its design
 begins from a clean slate.
 #+end_quote
+
+** notes
+
+*** moving to app
+file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
+
+*** remove gui-box from gui-window
+[[file:src/gui-window.lisp::(defmethod add-child]] and the method below need to be
+somehow moved to gui-box
+
+*** inspiration
+file:~/Programming/Lisp/lispy-experiments/window-canvas-boxes/notes.org::1
