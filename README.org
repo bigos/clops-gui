@@ -59,7 +59,6 @@ CL-USER> (ql:quickload :sblint)
 CL-USER> (sblint:run-lint-directory "~/Programming/Lisp/clops-gui/")
 #+end_example
 
-
 ** Interesting Gtk doc
 
 *** Drawing model
@@ -99,3 +98,7 @@ somehow moved to gui-box
 
 *** inspiration
 file:~/Programming/Lisp/lispy-experiments/window-canvas-boxes/notes.org::1
+
+*** testing example
+file:~/Programming/Lisp/clos-sweeper/tests/
+[[file:~/Programming/Lisp/clos-sweeper/clos-sweeper.asd::(asdf:defsystem #:clos-sweeper/tests]]

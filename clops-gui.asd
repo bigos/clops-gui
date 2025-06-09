@@ -19,3 +19,18 @@
                  (:file "gui-window-gtk")
                  )))
   :description "GUI for clops in separate system")
+
+;;; ----------------- test --------------------------
+(asdf:defsystem "clops-gui/tests"
+  :depends-on (#:clops-gui #:fiveam)
+  :pathname "tests/"
+  :components ((:file "package")
+               (:file "clops-gui-tests"))
+  :perform (test-op (op c)
+                    (uiop:symbol-call :fiveam :run!
+                                      (uiop:find-symbol*
+                                       :clops-gui-suite
+                                       :clops-gui-tests))))
+
+;; (ql:quickload :clops-gui/tests)
+;; (clops-gui-tests::run!)
