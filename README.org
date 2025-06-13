@@ -87,6 +87,13 @@ Archy has been compared as similar to the Emacs text editor, although its design
 begins from a clean slate.
 #+end_quote
 
+** source registry config
+file:~/.config/common-lisp/source-registry.conf.d/
+
+#+begin_src lisp
+(:tree #P"/home/jacek/Programming/Lisp/")
+#+end_src
+
 ** notes
 
 *** moving to app
