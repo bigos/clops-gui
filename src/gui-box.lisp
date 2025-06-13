@@ -1,5 +1,7 @@
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
 
+;;; TODO rewrite this or at least stop using it outside the examples
+
 (in-package #:gui-box)
 
 ;;; === classes ================================================================
