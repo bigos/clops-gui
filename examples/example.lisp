@@ -307,4 +307,6 @@
 
   (gui-window-gtk:window (make-instance 'app-window)))
 
-(main)
+(if nil
+    (main)
+    (warn "not running main, are we testing?"))
