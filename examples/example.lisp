@@ -289,6 +289,18 @@
              (gui-window:redraw-canvas lwin))
            (gui-app:all-windows)))
 
+;;; ============================================================================
+(defun run-tests ()
+  (progn
+    (setf
+     *model* (make-instance 'model)
+     gui-app:*lisp-app* (gui-app:make-lisp-app))
+    (assert (zerop (hash-table-count (gui-app:all-windows)))))
+  (progn
+    (experiment))
+  (warn "end of tests"))
+
+;;; ============================================================================
 (defun init ()
   ;; define external functions
   (setf
@@ -307,6 +319,8 @@
 
   (gui-window-gtk:window (make-instance 'app-window)))
 
-(if nil
-    (main)
-    (warn "not running main, are we testing?"))
+;;; ============================================================================
+(let ((option :test))
+  (ecase option
+    (:test (run-tests))
+    (:main (main))))
