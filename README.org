@@ -109,3 +109,9 @@ file:~/Programming/Lisp/lispy-experiments/window-canvas-boxes/notes.org::1
 *** testing example
 file:~/Programming/Lisp/clos-sweeper/tests/
 [[file:~/Programming/Lisp/clos-sweeper/clos-sweeper.asd::(asdf:defsystem #:clos-sweeper/tests]]
+
+*** testing
+#+begin_src lisp
+(ql:quickload :clops-gui/tests)
+(asdf:test-system :clops-gui/tests)
+#+end_src
