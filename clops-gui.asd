@@ -25,12 +25,11 @@
   :depends-on (#:clops-gui #:fiveam)
   :pathname "tests/"
   :components ((:file "package")
-               (:file "clops-gui-tests"))
+               (:file "clops-gui-tests")
+               (:file "examples-counter-tests")
+               )
   :perform (test-op (op c)
-                    (uiop:symbol-call :fiveam :run!
-                                      (uiop:find-symbol*
-                                       :clops-gui-suite
-                                       :clops-gui-tests))))
+                    (uiop:symbol-call :fiveam :run-all-tests)))
 
 ;; (ql:quickload :clops-gui/tests)
-;; (clops-gui-tests::run!)
+;; (asdf:test-system :clops-gui/tests)

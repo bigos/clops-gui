@@ -111,6 +111,8 @@ file:~/Programming/Lisp/clos-sweeper/tests/
 [[file:~/Programming/Lisp/clos-sweeper/clos-sweeper.asd::(asdf:defsystem #:clos-sweeper/tests]]
 
 *** testing
+file:~/Programming/Lisp/clops-gui/tests/terminal-test-loader.lisp::1
+
 #+begin_src lisp
 (ql:quickload :clops-gui/tests)
 (asdf:test-system :clops-gui/tests)
