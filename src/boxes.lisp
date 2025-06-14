@@ -28,7 +28,7 @@ adding more features
   coordinates-relative)
 
 
-(defclass/std boxes-window (gui-window:lisp-window)
+(defclass/std boxes-window (window-canvas:lisp-window)
   ((width)
    (height)))
 ;;; and more classes in a separate file
