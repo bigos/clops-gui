@@ -3,14 +3,21 @@
 (in-package #:window-canvas)
 
 ;;; ================ common module =====================================================
+;;; @@@
 (defparameter *gtk-client-fn-draw-objects* nil)
 (defparameter *gtk-app* nil)
 (defparameter *gtk-timeout-period* 1000)
+;;; @@@
 (defparameter *gtk-initial-window-width* 400)
+;;; @@@
 (defparameter *gtk-initial-window-height* 200)
+;;; @@@
 (defparameter *gtk-client-fn-menu-bar* nil)
+;;; @@@
 (defparameter *gtk-client-fn-process-event* nil)
+;;; @@@
 (defparameter *window-size-cons-code* nil)
+;;; @@@
 (defparameter *gtk-initial-title* "change me")
 (defparameter *all-windows* (make-hash-table))
 
@@ -30,6 +37,7 @@
         (cffi:with-foreign-slots ((red green blue alpha) rgba (:struct gdk-rgba))
           (list valid-color red green blue alpha))))))
 
+;;; @@@
 (defun set-rgba (color)
   (let ((parsed-color (color-to-rgba color)))
     (if (first parsed-color)
@@ -37,6 +45,7 @@
         (error "~S is not a valid color" color))))
 
 ;;; ================= classes ==================================================
+;;; @@@
 (defclass/std lisp-window ()
   ((gir-window  :type (or gir::object-instance keyword)
                 :documentation "Either gir window object or keyword used in test drawing")))
@@ -97,6 +106,7 @@
   ;; (funcall *gtk-client-fn-draw-objects*)
   )
 
+;;; @@@
 (defun simulate-draw-func (window &optional log)
   (assert (typep window 'lisp-window))
   (assert (typep (gir-window window) 'keyword))
@@ -133,6 +143,7 @@
                                           :simulated-window
                                           log)))))
 
+;;; @@@
 (defmethod redraw-canvas ((window lisp-window) &optional log)
   (etypecase (gir-window window)
     (keyword
@@ -175,6 +186,7 @@
         until (null aw)
         do (gtk4:window-close aw)))
 
+;;; @@@
 (defun get-window    (window-id)
   (gethash window-id *all-windows*))
 
@@ -186,6 +198,7 @@
       (warn "window removed ~S" window-id)
       (warn "strange, could not remove window ~S" window-id)))
 
+;;; @@@
 (defun remove-all-windows ()
   (clrhash *all-windows*))
 
@@ -361,6 +374,7 @@
         (add-window window-title
                     lisp-window))))
 
+;;; @@@
 (defun window-creation-from-simulation (window-title lisp-window)
   (assert (symbolp window-title))
   (let ((new-window (window-activation-and-connection
@@ -404,5 +418,6 @@
       (setf *gtk-app*  nil)
       status)))
 
+;;; @@@
 (defun window-main (lisp-window)
   (window lisp-window))
