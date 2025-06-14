@@ -1,12 +1,66 @@
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
 
-;; (load "~/Programming/Lisp/clops-gui/src/boxes.lisp")
+;; (load "~/Programming/Lisp/clops-gui/examples/boxes.lisp")
 
 (ql:quickload :clops-gui)
 
 (in-package #:common-lisp)
 
 (in-package #:boxes)
+
+;;; --- classes ----------------------------------------------------------------
+(with-base-defclass coordinates () ((x :type integer) (y :type integer))
+  coordinates-absolute
+  coordinates-relative)
+
+
+(defclass/std boxes-window (window-canvas:lisp-window)
+  ((width)
+   (height)))
+;;; and more classes in a separate file
+
+(defclass/std box       ()
+  ((parent)
+   (coordinates-relative :type coordinates-relative)
+   (coordinates-absolute :type coordinates-absolute)
+   (width)
+   (height)
+   (color)
+   (children)))
+
+(defclass/std node (box)
+  ())
+
+(defclass/std node-text (box)
+  ((text)
+   (wrap :std 'truncate :type symbol)))
+
+(defclass/std node-character (box)
+  ((bchar)
+   (font-size :std 15)
+   (font-color :std "black")
+   (font-face :std "Ubuntu Mono")
+   (font-slant :std :normal)
+   (font-weight :std :normal)))
+
+(defclass/std node-horizontal (node)
+  ())
+
+(defclass/std node-vertical (node)
+  ())
+
+(defclass/std node-right (node-horizontal)
+  ())
+
+(defclass/std node-left (node-horizontal)
+  ())
+
+(defclass/std node-down (node-vertical)
+  ())
+
+(defclass/std node-up (node-vertical)
+  ())
+
 
 ;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ;;; ========================== classes =========================================
@@ -387,58 +441,6 @@
 
 ;;; --- defgenerics (grouped by protocol) --------------------------------------
 
-;;; --- classes ----------------------------------------------------------------
-(with-base-defclass coordinates () ((x :type integer) (y :type integer))
-  coordinates-absolute
-  coordinates-relative)
-
-
-(defclass/std boxes-window (window-canvas:lisp-window)
-  ((width)
-   (height)))
-;;; and more classes in a separate file
-
-(defclass/std box       ()
-  ((parent)
-   (coordinates-relative :type coordinates-relative)
-   (coordinates-absolute :type coordinates-absolute)
-   (width)
-   (height)
-   (color)
-   (children)))
-
-(defclass/std node (box)
-  ())
-
-(defclass/std node-text (box)
-  ((text)
-   (wrap :std 'truncate :type symbol)))
-
-(defclass/std node-character (box)
-  ((bchar)
-   (font-size :std 15)
-   (font-color :std "black")
-   (font-face :std "Ubuntu Mono")
-   (font-slant :std :normal)
-   (font-weight :std :normal)))
-
-(defclass/std node-horizontal (node)
-  ())
-
-(defclass/std node-vertical (node)
-  ())
-
-(defclass/std node-right (node-horizontal)
-  ())
-
-(defclass/std node-left (node-horizontal)
-  ())
-
-(defclass/std node-down (node-vertical)
-  ())
-
-(defclass/std node-up (node-vertical)
-  ())
 
 ;;; --- inspectors -------------------------------------------------------------
 (defun print-object-inner (obj  stream)
