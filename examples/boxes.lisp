@@ -61,10 +61,7 @@
 (defclass/std node-up (node-vertical)
   ())
 
-
 ;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-;;; ========================== classes =========================================
-(defclass/std base       ()           ())
 
 (defclass/std model       ()
   ((bbx)
@@ -130,6 +127,7 @@
                  :width width
                  :height height
                  :color color))
+
 ;;; ========================== methods =========================================
 (defmethod under-mouse-p ((node box))
   (let ((acx (x (coordinates-absolute node)))
@@ -285,7 +283,6 @@
   (when (mouse-over-p node)
     (render-frame node)))
 
-
 (defmethod render-frame ((node box))
   (cairo:set-line-width 2.5)
 
@@ -354,6 +351,7 @@
                    (make-coordinates-relative 0
                                               (- sh
                                                  (height c)))))))
+
 ;;; ============================================================================
 (defun %sum-children-dimension (parent dimension)
   (loop for c in (children parent)
@@ -429,18 +427,11 @@
         (T
          (warn "un-handled key"))))
 
-
-;;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-;;; ============================================================================
-;;; --- macros -----------------------------------------------------------------
-
 ;;; --- defparameter et al -----------------------------------------------------
 
 (defparameter *model* nil)
 
 ;;; --- defgenerics (grouped by protocol) --------------------------------------
-
 
 ;;; --- inspectors -------------------------------------------------------------
 (defun print-object-inner (obj  stream)
@@ -473,10 +464,6 @@
 
 (defmethod print-object ((obj coordinates) stream)
   (print-object-inner obj stream))
-
-;;; --- constructors -----------------------------------------------------------
-
-;;; --- methods ----------------------------------------------------------------
 
 ;;; === draw window ============================================================
 (defun window-snap-shot (changeme)
