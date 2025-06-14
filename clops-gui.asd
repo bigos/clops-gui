@@ -11,8 +11,6 @@
                 :components
                 ((:file "packages")
                  (:file "bigos-macros")
-                 (:file "boxes")
-                 (:file "boxes-ui")
                  (:file "gui-color")
                  (:file "gui-events")
                  (:file "gui-drawing")
