@@ -5,19 +5,23 @@
   :depends-on (#:cl-gtk4
                #:cl-gdk4 #:cl-glib #:cl-cairo2
                #:serapeum
-               #:defclass-std)
+               #:defclass-std
+               #:bigos-macros
+               )
   :components ((:module "src"
                 :components
-                ((:file "packages")
-                 (:file "gui-color")
-                 (:file "gui-events")
-                 (:file "gui-drawing")
-                 (:file "gui-menu")
-                 (:file "gui-box")
-                 (:file "gui-window")
-                 (:file "gui-app")
-                 (:file "gui-window-gtk")
-                 )))
+                        ((:file "packages")
+                         (:file "boxes")
+                         (:file "boxes-ui")
+                         (:file "gui-color")
+                         (:file "gui-events")
+                         (:file "gui-drawing")
+                         (:file "gui-menu")
+                         (:file "gui-box")
+                         (:file "gui-window")
+                         (:file "gui-app")
+                         (:file "gui-window-gtk")
+                         )))
   :description "GUI for clops in separate system")
 
 ;;; ----------------- test --------------------------

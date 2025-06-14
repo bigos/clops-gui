@@ -147,3 +147,20 @@
   (:export
    set-rgba
    ))
+
+(defpackage #:boxes
+  (:use #:cl)
+  ;; imports
+  (:import-from
+   :serapeum
+   :~>
+   :@)
+  (:import-from
+   :bigos-macros
+   :decft
+   :with-base-defclass)
+  (:import-from
+   :defclass-std
+   :defclass/std)
+  ;; exports
+  (:export #:main))
