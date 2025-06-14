@@ -1,8 +1,5 @@
 ;;; type related macros
 
-(defpackage :bigos-macros
-  (:use :cl)
-  (:import-from :defclass-std :defclass/std))
 
 (in-package :bigos-macros)
 

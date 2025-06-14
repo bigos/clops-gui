@@ -6,7 +6,7 @@ and layout changes, possibly for listing files and preparing infrastructure for
 adding more features
 |#
 
-;; (ql:quickload :window-canvas-boxes)
+;; (ql:quickload :clops-gui)
 ;; (boxes:main)
 
 (in-package #:common-lisp)
