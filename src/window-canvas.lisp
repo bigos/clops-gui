@@ -37,7 +37,7 @@
         (cffi:with-foreign-slots ((red green blue alpha) rgba (:struct gdk-rgba))
           (list valid-color red green blue alpha))))))
 
-;;; @@@
+;;; @@@ file:~/Programming/Lisp/clops-gui/src/gui-window.lisp::5
 (defun set-rgba (color)
   (let ((parsed-color (color-to-rgba color)))
     (if (first parsed-color)
@@ -45,7 +45,7 @@
         (error "~S is not a valid color" color))))
 
 ;;; ================= classes ==================================================
-;;; @@@
+;;; @@@ file:~/Programming/Lisp/clops-gui/src/gui-window.lisp::8
 (defclass/std lisp-window ()
   ((gir-window  :type (or gir::object-instance keyword)
                 :documentation "Either gir window object or keyword used in test drawing")))
@@ -78,6 +78,7 @@
 ;;; the dimensions change or moving the window
 
 ;;; drawing callback ===========================================================
+;; file:~/Programming/Lisp/clops-gui/src/gui-drawing.lisp::12
 (cffi:defcallback %draw-func :void ((area :pointer)
                                     (cr :pointer)
                                     (width :int)
@@ -106,7 +107,7 @@
   ;; (funcall *gtk-client-fn-draw-objects*)
   )
 
-;;; @@@
+;;; @@@ file:~/Programming/Lisp/clops-gui/src/gui-drawing.lisp::31
 (defun simulate-draw-func (window &optional log)
   (assert (typep window 'lisp-window))
   (assert (typep (gir-window window) 'keyword))
@@ -143,7 +144,7 @@
                                           :simulated-window
                                           log)))))
 
-;;; @@@
+;;; @@@ file:~/Programming/Lisp/clops-gui/src/gui-window.lisp::17
 (defmethod redraw-canvas ((window lisp-window) &optional log)
   (etypecase (gir-window window)
     (keyword
@@ -153,6 +154,7 @@
       (serapeum:~> window gir-window gtk4:widget-first-child gtk4:widget-first-child)))))
 
 ;; =========================== dialogs =========================================
+;; file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::14
 (defun present-about-dialog (data)
   (let ((dialog (about-dialog data)))
     (setf (gtk4:window-modal-p dialog) t)
@@ -175,12 +177,14 @@
     (values dialog)))
 
 ;; ============================== app windows ==================================
+;; file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::40
 (defun app-windows ()
   (when *gtk-app*
     (let ((app-windows (gtk4:application-windows *gtk-app*)))
       (loop for pos from 0 below (glib:glist-length app-windows)
             collect (glib:glist-nth app-windows pos)))))
 
+;; file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::33
 (defun close-all-windows-and-quit ()
   (loop for aw = (gtk4:application-active-window  *gtk-app*)
         until (null aw)
@@ -203,6 +207,7 @@
   (clrhash *all-windows*))
 
 ;; ============================= key event translation =========================
+;; file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::47
 (defun translate-key-args (args)
   (destructuring-bind (keyval keycode keymods) args
     (list
@@ -227,6 +232,7 @@
                       collect modname)))))
 
 ;; ============================ events =========================================
+;;; file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::71
 (defun window-events (window lisp-window)
   (let ((key-controller   (gtk4:make-event-controller-key))
         (focus-controller (gtk4:make-event-controller-focus)))
@@ -271,7 +277,7 @@
                                          (declare (ignore widget args))
                                          ;; (gui-app:window-remove *gtk-app* window)
                                          (gtk4:window-close window))))
-
+;; file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::116
 (defun canvas-events (canvas lisp-window)
   (let ((motion-controller (gtk4:make-event-controller-motion)))
     (gtk4:widget-add-controller canvas motion-controller)
@@ -323,7 +329,7 @@
                                   (de-resize lisp-window (first args) (second args)))))
 
 ;; =============================================================================
-
+;; file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::170
 (defun new-window-for-app (app window-title window-menu-fn lisp-window)
   (let ((window (gtk4:make-application-window :application app)))
     (gtk4:application-add-window app window)
@@ -374,7 +380,7 @@
         (add-window window-title
                     lisp-window))))
 
-;;; @@@
+;;; @@@ file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::212
 (defun window-creation-from-simulation (window-title lisp-window)
   (assert (symbolp window-title))
   (let ((new-window (window-activation-and-connection
