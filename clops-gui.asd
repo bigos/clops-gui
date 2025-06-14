@@ -6,6 +6,7 @@
                #:cl-gdk4 #:cl-glib #:cl-cairo2
                #:serapeum
                #:defclass-std
+               #:window-canvas
                #:bigos-macros
                )
   :components ((:module "src"
