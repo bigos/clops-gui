@@ -1,5 +1,9 @@
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
 
+#|
+I need to replace the relavant window-canvas calls to gui-* calls
+|#
+
 ;; (load "~/Programming/Lisp/clops-gui/examples/boxes.lisp")
 
 (ql:quickload :clops-gui)
