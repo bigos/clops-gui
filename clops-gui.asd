@@ -6,8 +6,6 @@
                #:cl-gdk4 #:cl-glib #:cl-cairo2
                #:serapeum
                #:defclass-std
-               #:window-canvas
-               #:bigos-macros
                )
   :components ((:module "src"
                 :components
@@ -22,6 +20,7 @@
                          (:file "gui-window")
                          (:file "gui-app")
                          (:file "gui-window-gtk")
+                         (:file "window-canvas")
                          )))
   :description "GUI for clops in separate system")
 

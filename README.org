@@ -99,6 +99,7 @@ file:~/.config/common-lisp/source-registry.conf.d/
 *** moving to app
 file:~/Programming/Lisp/lispy-experiments/window-canvas/src/window-canvas.lisp::1
 
+
 file:~/Programming/Lisp/clops-gui/examples/example.lisp::1
 
 *** remove gui-box from gui-window
