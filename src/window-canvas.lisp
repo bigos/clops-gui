@@ -27,12 +27,14 @@ it seems the best way is to move the functionality of this file to other gui-* f
 (defparameter *all-windows* (make-hash-table))
 
 ;;; ============================ colours ===============================================
+;; file:~/Programming/Lisp/clops-gui/src/gui-color.lisp::5
 (cffi:defcstruct gdk-rgba
   (red   :float)
   (green :float)
   (blue  :float)
   (alpha :float))
 
+;; file:~/Programming/Lisp/clops-gui/src/gui-color.lisp::11
 (defun color-to-rgba (color)
   (cffi:with-foreign-object (rgba '(:struct gdk-rgba))
     (let ((pointer (make-instance 'gir::struct-instance
