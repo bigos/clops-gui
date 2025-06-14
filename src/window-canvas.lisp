@@ -1,23 +1,28 @@
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
+#|
+it seems the best way is to move the functionality of this file to other gui-* files
+|#
 
 (in-package #:window-canvas)
 
 ;;; ================ common module =====================================================
-;;; @@@
+;;; @@@  file:~/Programming/Lisp/clops-gui/src/gui-drawing.lisp::5
 (defparameter *gtk-client-fn-draw-objects* nil)
+;; file:~/Programming/Lisp/clops-gui/src/gui-app.lisp::5
 (defparameter *gtk-app* nil)
+;; file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::6
 (defparameter *gtk-timeout-period* 1000)
-;;; @@@
+;;; @@@ file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::7
 (defparameter *gtk-initial-window-width* 400)
-;;; @@@
+;;; @@@ file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::8
 (defparameter *gtk-initial-window-height* 200)
-;;; @@@
+;;; @@@ file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::9
 (defparameter *gtk-client-fn-menu-bar* nil)
-;;; @@@
+;;; @@@ file:~/Programming/Lisp/clops-gui/src/gui-events.lisp::5
 (defparameter *gtk-client-fn-process-event* nil)
 ;;; @@@
 (defparameter *window-size-cons-code* nil)
-;;; @@@
+;;; @@@ file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp::10
 (defparameter *gtk-initial-title* "change me")
 (defparameter *all-windows* (make-hash-table))
 
