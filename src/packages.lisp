@@ -148,6 +148,11 @@
    set-rgba
    ))
 
+(defpackage :bigos-macros
+  (:use :cl)
+  (:import-from :defclass-std :defclass/std)
+  (:export #:decft #:with-base-defclass))
+
 (defpackage #:boxes
   (:use #:cl)
   ;; imports
