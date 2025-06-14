@@ -115,7 +115,7 @@ adding more features
 (defun window-snap-shot (changeme)
   (warn "== screen shot")
   ;; TODO change it
-  (setf window-canvas:*window-size-cons-code* (lambda () (cons 430 490)))
+  (setf gui-window:*window-size-cons-code* (lambda () (cons 430 490)))
   (window-canvas::simulate-draw-func))
 
 (defun show-my-text (x y font-size str &optional (color "black"))
