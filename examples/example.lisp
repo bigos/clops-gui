@@ -320,7 +320,7 @@
   (gui-window-gtk:window (make-instance 'app-window)))
 
 ;;; ============================================================================
-(let ((option :test))
+(let ((option :main))
   (ecase option
     (:test (run-tests))
     (:main (main))))
