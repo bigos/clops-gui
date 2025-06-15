@@ -472,7 +472,8 @@ I need to replace the relavant window canvas calls to gui-* calls
 ;;; === draw window ============================================================
 (defun window-snap-shot (changeme)
   (warn "== screen shot")
-  (setf window-canvas:*window-size-cons-code* (lambda () (cons 430 490)))
+  ;; TODO thin of removing
+  ;;(setf window-canvas:*window-size-cons-code* (lambda () (cons 430 490)))
   (gui-drawing::simulate-draw-func))
 
 (defun show-my-text (x y font-size str &optional (color "black"))
