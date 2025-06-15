@@ -681,6 +681,27 @@ I need to replace the relavant window canvas calls to gui-* calls
   (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
 
 ;;; === main ===================================================================
+
+(defun menu-bar (app lisp-window)
+    (let ((menu (gio:make-menu)))
+      (gui-menu:build-menu
+       menu
+       (gui-menu:prepare-submenu
+        "File"
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple lisp-window app menu "Quit" "quit"))))
+       (gui-menu:prepare-submenu
+        "Help"
+        ;; for now I plan to have only the About menu item
+        (gui-menu:prepare-section
+         nil
+         (gui-menu:build-items
+          (gui-menu:prepare-item-simple lisp-window app menu "About" "about")))))
+
+      (values menu)))
+
 (defun init ()
   (progn
     (setf gui-drawing:*client-fn-draw-objects*  'boxes::draw-window)
@@ -689,6 +710,7 @@ I need to replace the relavant window canvas calls to gui-* calls
     (setf gui-window-gtk:*initial-window-width*    790)
     (setf gui-window-gtk:*initial-window-height*   750)
     (setf gui-window-gtk:*initial-title*           "Boxes")
+    (setf gui-window-gtk:*client-fn-menu-bar* 'boxes::menu-bar)
     (setf *model* (make-model))
 
     ))
