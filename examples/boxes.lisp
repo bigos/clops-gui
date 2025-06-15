@@ -685,9 +685,9 @@ I need to replace the relavant window canvas calls to gui-* calls
 ;;; === main ===================================================================
 (defun init ()
   (progn
-    (setf gui-drawing:*client-fn-draw-objects*  'draw-window)
+    (setf gui-drawing:*client-fn-draw-objects*  'boxes::draw-window)
     (setf gui-window-gtk:*client-fn-menu-bar*      nil)
-    (setf gui-events:*client-fn-process-event* 'process-gtk-event)
+    (setf gui-events:*client-fn-process-event* 'boxes::process-gtk-event)
     (setf gui-window-gtk:*initial-window-width*    790)
     (setf gui-window-gtk:*initial-window-height*   750)
     (setf gui-window-gtk:*initial-title*           "Boxes")
@@ -698,7 +698,8 @@ I need to replace the relavant window canvas calls to gui-* calls
 (defun main ()
   (format T "boxes main~%")
   (init)
-  (loop for w in (gui-app:all-windows) do (gui-appwindow-remove gui-app:*lisp-app* w))
+  (when gui-app:*lisp-app*
+    (loop for w in (gui-app::all-windows) do (gui-appwindow-remove gui-app:*lisp-app* w)))
   (gui-window-gtk:window
    (make-instance 'boxes-window
                   :width  gui-window-gtk:*initial-window-width*
