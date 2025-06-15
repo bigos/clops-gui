@@ -472,7 +472,7 @@ I need to replace the relavant window canvas calls to gui-* calls
 ;;; === draw window ============================================================
 (defun window-snap-shot (changeme)
   (warn "== screen shot")
-  ;; TODO  fix it later   (setf window-canvas:*window-size-cons-code* (lambda () (cons 430 490)))
+  (setf window-canvas:*window-size-cons-code* (lambda () (cons 430 490)))
   (gui-drawing::simulate-draw-func))
 
 (defun show-my-text (x y font-size str &optional (color "black"))
@@ -543,8 +543,7 @@ I need to replace the relavant window canvas calls to gui-* calls
 (defun draw-window (window-id)
   (assert (or (typep window-id 'integer)
               (typep window-id 'keyword)))
-  ;; TODO fix later
-  (let ((window (window-canvas:get-window window-id)))
+  (let ((window (gui-app:window-get gui-app:*lisp-app* window-id)))
     (assert (typep window 'gui-window:lisp-window))
 
     ;; paint background
@@ -665,9 +664,9 @@ I need to replace the relavant window canvas calls to gui-* calls
           (destructuring-bind ((width height)) args
             (warn "resized with ~s ~s" width height)
             ;; TODO fix later
-            (setf window-canvas:*window-size-cons-code* (lambda () (cons
-                                                                    width
-                                                                    height)))
+            ;; (setf window-canvas:*window-size-cons-code* (lambda () (cons
+            ;;                                                         width
+            ;;                                                         height)))
             (setf (width  lisp-window) width
                   (height lisp-window) height)))
     (:key-pressed
@@ -699,8 +698,7 @@ I need to replace the relavant window canvas calls to gui-* calls
 (defun main ()
   (format T "boxes main~%")
   (init)
-  ;; TODO fix later
-  ;; (window-canvas:remove-all-windows)
+  (loop for w in (gui-app:all-windows) do (gui-appwindow-remove gui-app:*lisp-app* w))
   (gui-window-gtk:window
    (make-instance 'boxes-window
                   :width  gui-window-gtk:*initial-window-width*
@@ -718,8 +716,7 @@ I need to replace the relavant window canvas calls to gui-* calls
 ;; (experimental-run)
 (defun experimental-run ()
   (experiment-init)
-  ;; TODO fix later
-  (let ((window (window-canvas:get-window :testing)))
+  (let ((window (gui-app:window-get gui-app:*lisp-app* :testing)))
     (process-gtk-event window :resize '(400 500))
     (process-gtk-event window :timeout)
     (process-gtk-event window :resize '(500 600))
