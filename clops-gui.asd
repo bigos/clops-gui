@@ -18,9 +18,7 @@
                  (:file "gui-box")
                  (:file "gui-window")
                  (:file "gui-app")
-                 (:file "gui-window-gtk")
-                 (:file "window-canvas")
-                 )))
+                 (:file "gui-window-gtk"))))
   :description "GUI for clops in separate system")
 
 ;;; ----------------- test --------------------------
