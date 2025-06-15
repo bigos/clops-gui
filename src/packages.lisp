@@ -169,26 +169,3 @@
    :defclass/std)
   ;; exports
   (:export #:main))
-
-(defpackage #:window-canvas
-  (:use #:cl)
-  (:import-from :defclass-std
-   :defclass/std)
-  (:export
-   *gtk-client-fn-draw-objects*
-   *gtk-client-fn-menu-bar*
-   *gtk-client-fn-process-event*
-   *gtk-initial-window-width*
-   *gtk-initial-window-height*
-   *window-size-cons-code*
-   *gtk-initial-title*
-   lisp-window
-   redraw-canvas
-   set-rgba
-   gir-window
-   get-window
-   add-window
-   remove-window
-   remove-all-windows
-   window
-   window-main))
