@@ -1,7 +1,7 @@
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
 
 #|
-I need to replace the relavant window-canvas calls to gui-* calls
+I need to replace the relavant window canvas calls to gui-* calls
 |#
 
 ;; (load "~/Programming/Lisp/clops-gui/examples/boxes.lisp")
@@ -18,7 +18,7 @@ I need to replace the relavant window-canvas calls to gui-* calls
   coordinates-relative)
 
 
-(defclass/std boxes-window (window-canvas:lisp-window)
+(defclass/std boxes-window (gui-window:lisp-window)
   ((width)
    (height)))
 ;;; and more classes in a separate file
@@ -167,7 +167,7 @@ I need to replace the relavant window-canvas calls to gui-* calls
 
 (defmethod render ((node box))
   ; (warn "parent type ~S widht ~S height ~S" (type-of (parent node)) (width node) (height node))
-  (window-canvas:set-rgba (color node))
+  (gui-color:set-rgba (color node))
   (cairo:rectangle   (x (coordinates-absolute node))
                      (y (coordinates-absolute node))
                      (width node)
@@ -205,7 +205,7 @@ I need to replace the relavant window-canvas calls to gui-* calls
             finally (return (values str (car nwh) (cdr nwh)))))))
 
 (defun render-node-text-truncate (node)
-  (window-canvas:set-rgba (color node))
+  (gui-color:set-rgba (color node))
   (cairo:rectangle   (x (coordinates-absolute node))
                      (y (coordinates-absolute node))
                      (width node)
@@ -220,7 +220,7 @@ I need to replace the relavant window-canvas calls to gui-* calls
     (progn
       (cairo:move-to (x (coordinates-absolute node))
                      (+ height (y (coordinates-absolute node))))
-      (window-canvas:set-rgba "black")
+      (gui-color:set-rgba "black")
       (cairo:show-text str))))
 
 (defun render-node-text-wrap (node)
@@ -238,7 +238,7 @@ I need to replace the relavant window-canvas calls to gui-* calls
 
          (setf (height node) (* (+ height 2) (length text-fragments)))
 
-         (window-canvas:set-rgba (color node))
+         (gui-color:set-rgba (color node))
          (cairo:rectangle   (x (coordinates-absolute node))
                             (y (coordinates-absolute node))
                             (width node)
@@ -249,7 +249,7 @@ I need to replace the relavant window-canvas calls to gui-* calls
                do
                   (cairo:move-to (x (coordinates-absolute node))
                                  (+ (* line height)  (y (coordinates-absolute node))))
-                  (window-canvas:set-rgba "black")
+                  (gui-color:set-rgba "black")
                   (cairo:show-text tf)))))
 
 (defmethod render ((node node-text))
@@ -269,7 +269,7 @@ I need to replace the relavant window-canvas calls to gui-* calls
     (render-frame node)))
 
 (defmethod render ((node node-character))
-  (window-canvas:set-rgba (color node))
+  (gui-color:set-rgba (color node))
   (cairo:rectangle   (x (coordinates-absolute node))
                      (y (coordinates-absolute node))
                      (width node)
@@ -281,7 +281,7 @@ I need to replace the relavant window-canvas calls to gui-* calls
   (cairo:move-to (x (coordinates-absolute node))
                  (+ (y (coordinates-absolute node))
                     (1+ (floor (* (/ 3 4)  (font-size node))))))
-  (window-canvas:set-rgba (font-color node))
+  (gui-color:set-rgba (font-color node))
   (cairo:show-text (format nil "~A" (bchar node) ))
   ;; frame
   (when (mouse-over-p node)
@@ -290,7 +290,7 @@ I need to replace the relavant window-canvas calls to gui-* calls
 (defmethod render-frame ((node box))
   (cairo:set-line-width 2.5)
 
-  (window-canvas:set-rgba "blue")
+  (gui-color:set-rgba "blue")
   (cairo:move-to
    (x (coordinates-absolute node))
    (y (coordinates-absolute node)))
@@ -302,7 +302,7 @@ I need to replace the relavant window-canvas calls to gui-* calls
    (+ (height node) (y (coordinates-absolute node))))
   (cairo:stroke)
 
-  (window-canvas:set-rgba "red")
+  (gui-color:set-rgba "red")
   (cairo:move-to
    (+ (width node)  (x (coordinates-absolute node)))
    (+ (height node) (y (coordinates-absolute node))))
@@ -472,11 +472,11 @@ I need to replace the relavant window-canvas calls to gui-* calls
 ;;; === draw window ============================================================
 (defun window-snap-shot (changeme)
   (warn "== screen shot")
-  (setf window-canvas:*window-size-cons-code* (lambda () (cons 430 490)))
-  (window-canvas::simulate-draw-func))
+  ;; TODO  fix it later   (setf window-canvas:*window-size-cons-code* (lambda () (cons 430 490)))
+  (gui-drawing::simulate-draw-func))
 
 (defun show-my-text (x y font-size str &optional (color "black"))
-  (window-canvas:set-rgba color)
+  (gui-color:set-rgba color)
   (cairo:select-font-face "Ubuntu Mono" :normal :normal)
   (cairo:set-font-size font-size)
   (cairo:move-to x y)
@@ -543,8 +543,9 @@ I need to replace the relavant window-canvas calls to gui-* calls
 (defun draw-window (window-id)
   (assert (or (typep window-id 'integer)
               (typep window-id 'keyword)))
+  ;; TODO fix later
   (let ((window (window-canvas:get-window window-id)))
-    (assert (typep window 'window-canvas:lisp-window))
+    (assert (typep window 'gui-window:lisp-window))
 
     ;; paint background
     (let ((cv 0.9))
@@ -663,6 +664,7 @@ I need to replace the relavant window-canvas calls to gui-* calls
     (:resize
           (destructuring-bind ((width height)) args
             (warn "resized with ~s ~s" width height)
+            ;; TODO fix later
             (setf window-canvas:*window-size-cons-code* (lambda () (cons
                                                                     width
                                                                     height)))
@@ -679,17 +681,17 @@ I need to replace the relavant window-canvas calls to gui-* calls
     (otherwise
      (warn "not handled event ~S ~S" event args)))
 
-  (window-canvas:redraw-canvas lisp-window (format  nil "~A" event)))
+  (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
 
 ;;; === main ===================================================================
 (defun init ()
   (progn
-    (setf window-canvas:*gtk-client-fn-draw-objects*  'boxes::draw-window)
-    (setf window-canvas:*gtk-client-fn-menu-bar*      nil)
-    (setf window-canvas:*gtk-client-fn-process-event* 'boxes::process-gtk-event)
-    (setf window-canvas:*gtk-initial-window-width*    790)
-    (setf window-canvas:*gtk-initial-window-height*   750)
-    (setf window-canvas:*gtk-initial-title*           "Boxes")
+    (setf gui-drawing:*client-fn-draw-objects*  'draw-window)
+    (setf gui-window-gtk:*client-fn-menu-bar*      nil)
+    (setf gui-events:*client-fn-process-event* 'process-gtk-event)
+    (setf gui-window-gtk:*initial-window-width*    790)
+    (setf gui-window-gtk:*initial-window-height*   750)
+    (setf gui-window-gtk:*initial-title*           "Boxes")
     (setf *model* (make-model))
 
     ))
@@ -697,23 +699,26 @@ I need to replace the relavant window-canvas calls to gui-* calls
 (defun main ()
   (format T "boxes main~%")
   (init)
-  (window-canvas:remove-all-windows)
-  (window-canvas:window-main (make-instance 'boxes-window
-                                            :width  window-canvas:*gtk-initial-window-width*
-                                            :height window-canvas:*gtk-initial-window-height*)))
+  ;; TODO fix later
+  ;; (window-canvas:remove-all-windows)
+  (gui-window-gtk:window
+   (make-instance 'boxes-window
+                  :width  gui-window-gtk:*initial-window-width*
+                  :height gui-window-gtk:*initial-window-height*)))
 
 ;;; testing ====================================================================
 (defun experiment-init ()
   (format T "boxes main~%")
   (init)
-  (window-canvas::window-creation-from-simulation :testing
-                                                  (make-instance 'boxes-window
-                                                                 :width  window-canvas:*gtk-initial-window-width*
-                                                                 :height window-canvas:*gtk-initial-window-height*)))
+  (gui-window-gtk::window-creation-from-simulation :testing
+                                                   (make-instance 'boxes-window
+                                                                  :width  gui-window-gtk:*initial-window-width*
+                                                                  :height gui-window-gtk:*initial-window-height*)))
 
 ;; (experimental-run)
 (defun experimental-run ()
   (experiment-init)
+  ;; TODO fix later
   (let ((window (window-canvas:get-window :testing)))
     (process-gtk-event window :resize '(400 500))
     (process-gtk-event window :timeout)
