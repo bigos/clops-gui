@@ -541,8 +541,6 @@ I need to replace the relavant window canvas calls to gui-* calls
                                                    :color "pink"))))))
 
 (defun draw-window (window-id)
-  (assert (or (typep window-id 'integer)
-              (typep window-id 'keyword)))
   (let ((window (gui-app:window-get gui-app:*lisp-app* window-id)))
     (assert (typep window 'gui-window:lisp-window))
 
