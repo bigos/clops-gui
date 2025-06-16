@@ -77,7 +77,18 @@ geometry changes, sizes and positions
 redrawing what needs redrawing
 
 *** file requestor
+documentation
 https://docs.gtk.org/gtk4/class.FileDialog.html
+
+place for the code
+[[file:src/gui-window-gtk.lisp::(defun present-about-dialog]]
+
+examples
+https://www.google.com/search?q=FileDialog+gtk4
+https://gtk-rs.org/gtk4-rs/stable/0.5/docs/gtk4/struct.FileDialog.html
+https://stackoverflow.com/questions/78278238/how-to-add-filefilter-to-filedialog-gtk4
+https://docs.gtk.org/gtk4/method.FileDialog.open_multiple_text_files.html
+https://gitlab.com/inkscape/inkscape/-/merge_requests/6807
 
 ** Great ideas
 https://lisp-journey.gitlab.io/resources/
