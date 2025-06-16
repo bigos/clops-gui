@@ -76,6 +76,9 @@ geometry changes, sizes and positions
 **** paint
 redrawing what needs redrawing
 
+*** file requestor
+https://docs.gtk.org/gtk4/class.FileDialog.html
+
 ** Great ideas
 https://lisp-journey.gitlab.io/resources/
 
