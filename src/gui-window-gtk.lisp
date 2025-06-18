@@ -9,20 +9,11 @@
 (defparameter *client-fn-menu-bar* nil)
 (defparameter *initial-title* "change me")
 
-
 ;; =========================== dialogs =========================================
-(cffi:defcallback %file-dialog-callback :void ())
-
-(defun present-file-dialog-open ()
-  (let* ((file-dialog (gtk4:make-file-dialog)))
-    (gtk4:file-dialog-open file-dialog nil nil nil nil)
-    (gtk4:file-dialog-open-finish file-dialog )))
-
 (defun present-file-dialog-save ()
   (let* ((file-dialog (gtk4:make-file-dialog)))
     (gtk4:file-dialog-save file-dialog nil nil nil nil)
     (gtk4:file-dialog-open-finish file-dialog )))
-
 
 (defun present-about-dialog (data)
   (let ((dialog (about-dialog data)))
