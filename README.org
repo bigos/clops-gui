@@ -76,7 +76,11 @@ geometry changes, sizes and positions
 **** paint
 redrawing what needs redrawing
 
-*** file requestor
+*** file requester
+
+https://docs.gtk.org/gtk4/class.FileChooserDialog.html
+
+
 documentation
 https://docs.gtk.org/gtk4/class.FileDialog.html
 
