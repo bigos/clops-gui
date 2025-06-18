@@ -78,6 +78,7 @@ redrawing what needs redrawing
 
 *** file requester
 
+deprecated but with example
 https://docs.gtk.org/gtk4/class.FileChooserDialog.html
 
 
