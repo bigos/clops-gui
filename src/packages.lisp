@@ -109,39 +109,6 @@
    simulate-draw-func
    ))
 
-(defpackage #:gui-box
-  (:use #:cl)
-  (:import-from :serapeum
-                ~>)
-  (:import-from :defclass-std
-                defclass/std)
-  (:export
-   absolute-x
-   absolute-y
-   add-child
-   box
-   box-color
-   central-point
-   children
-   coordinates
-   height
-   mouse-over-score
-   mouse-overp
-   move-to
-   parent
-   recalculate-absolute
-   remove-child
-   resize
-   root-window
-   text
-   text-box
-   top-left
-   width
-   x
-   y
-   ;; add more
-   ))
-
 (defpackage #:gui-color
   (:use #:cl)
   (:export
