@@ -15,7 +15,6 @@
                  (:file "gui-events")
                  (:file "gui-drawing")
                  (:file "gui-menu")
-                 (:file "gui-box")
                  (:file "gui-window")
                  (:file "gui-app")
                  (:file "gui-window-gtk"))))
