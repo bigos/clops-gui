@@ -35,25 +35,3 @@
    (gir-window window)))
 
 ;;; ============================ window child widgets ==========================
-(defmethod add-child ((lisp-window lisp-window) (box gui-box:box))
-  (setf (gui-box:parent box) lisp-window)
-  (setf (gethash (sxhash box) (all-widgets lisp-window)) box)
-  (pushnew box (children lisp-window))
-  (gui-box:recalculate-absolute box))
-
-(defmethod most-current-widget ((lisp-window lisp-window))
-  (loop
-    for w being the hash-value in (gui-window:all-widgets lisp-window)
-    for mos = (gui-box:mouse-over-score w)
-    for current-widget = (cond ((and mos (null minmos))
-                                w)
-                               ((and mos minmos (< mos minmos))
-                                w)
-                               (T current-widget))
-    for minmos =  (cond ((and mos (null minmos))
-                         mos)
-                        ((and mos minmos (< mos minmos))
-                         mos)
-                        (t minmos))
-    finally ;; (warn "minmos is ~S ~S" minmos current-widget)
-            (return current-widget)))
