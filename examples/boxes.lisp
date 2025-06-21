@@ -17,7 +17,6 @@ I need to replace the relavant window canvas calls to gui-* calls
   coordinates-absolute
   coordinates-relative)
 
-
 (defclass/std boxes-window (gui-window:lisp-window)
   ((width)
    (height)))
