@@ -71,7 +71,7 @@
    *timeout-period*
    close-all-windows-and-quit
    present-about-dialog
-   window
+   window-main
    window-creation-from-menu
    window-creation-from-simulation
    ))
@@ -109,39 +109,6 @@
    simulate-draw-func
    ))
 
-(defpackage #:gui-box
-  (:use #:cl)
-  (:import-from :serapeum
-                ~>)
-  (:import-from :defclass-std
-                defclass/std)
-  (:export
-   absolute-x
-   absolute-y
-   add-child
-   box
-   box-color
-   central-point
-   children
-   coordinates
-   height
-   mouse-over-score
-   mouse-overp
-   move-to
-   parent
-   recalculate-absolute
-   remove-child
-   resize
-   root-window
-   text
-   text-box
-   top-left
-   width
-   x
-   y
-   ;; add more
-   ))
-
 (defpackage #:gui-color
   (:use #:cl)
   (:export
@@ -168,4 +135,6 @@
    :defclass-std
    :defclass/std)
   ;; exports
-  (:export #:main))
+  (:export
+   #:main
+   #:absolute-coordinates))

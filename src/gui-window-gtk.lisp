@@ -246,7 +246,7 @@
                     (setf (gui-app:current-focus gui-app:*lisp-app*) (gui-window:gir-window new-window))
                     new-window))))
 
-(defun window (lisp-window)
+(defun window-main (lisp-window)
       (let ((app (gtk:make-application :application-id "org.bigos.gtk4-example.better-menu"
                                        :flags gio:+application-flags-flags-none+)))
         (setf gui-app:*lisp-app* (gui-app:make-lisp-app app))

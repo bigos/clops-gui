@@ -13,14 +13,73 @@
   (:import-from :serapeum
    :~>)
   (:import-from :defclass-std
-   :defclass/std))
+   :defclass/std)
+  (:import-from
+   :boxes
+   ;; ---
+   :*model*
+   :make-coordinates-relative
+   :make-coordinates-absolute
+   :make-model
+   :make-node
+   :make-node-left
+   :make-node-right
+   :make-node-up
+   :make-node-down
+   :make-node-auto
+   :add-children
+   :node-text
+   :node-character
+   :bbx
+   :bby
+   :grw
+   :grh
+   :tbw
+   :mouse-position
+   :mouse-over-p
+   :text
+   :wrap
+   :width
+   :height
+   :render
+   :move-b1
+   :boxes-window))
 
 (in-package #:boxes-new)
 
 ;;; minimal window -------------------------------------------------------------
 
 
-(defclass/std boxes-new-window (gui-window:lisp-window) (()))
+(defclass/std boxes-new-window (boxes::boxes-window) (()))
+
+(defparameter b-plu (make-instance
+                     'node-text
+                     :coordinates-relative (make-coordinates-relative 50 200)
+                     :width 50
+                     :height 50
+                     :color "red"
+                     :wrap 'truncate
+                     :text "Plus"))
+
+(defparameter b-eq (make-instance
+                    'node-text
+                    :coordinates-relative (make-coordinates-relative 150 200)
+                    :width 50
+                    :height 50
+                    :color "orange"
+                    :wrap 'truncate
+                    :text "0"))
+
+(defparameter b-min (make-instance
+                     'node-text
+                     :coordinates-relative (make-coordinates-relative 250 200)
+                     :width 50
+                     :height 50
+                     :color "yellow"
+                     :wrap 'truncate
+                     :text "Minus"))
+
+(defparameter counter 0)
 
 ;;; drawing ====================================================================
 (defmethod draw-window ((window boxes-new-window))
@@ -55,7 +114,30 @@
        (cdr (gui-app:mouse-coordinates app))
        25
        25)
-      (cairo:fill-path))))
+      (cairo:fill-path)))
+  ;; ==================================================================
+
+  (let ((world (make-node 0 0 (width window) (height window) "#cccccc88")))
+
+    (boxes:absolute-coordinates world)
+    (setf (text b-eq) (format nil "~S" counter))
+
+    (add-children world
+                  (list
+                   (add-children (make-node 10
+                                            10
+                                            50 50 "purple")
+                                 (list
+                                  (make-node 10 10 25 25 "violet")))
+                   (add-children b-plu  nil)
+                   (add-children b-eq   nil)
+                   (add-children b-min  nil)))
+
+    ;; (warn "adding absolute coordinates -----------------------------------")
+    (boxes:absolute-coordinates world)
+
+    ;; (warn "rendering -----------------------------------------------")
+    (render world)))
 
 ;;; events =====================================================================
 (defmethod process-event ((lisp-window boxes-new-window) event &rest args)
@@ -69,6 +151,7 @@
     ((:motion :motion-enter)
      ;; we use simple case with one window so we ignore the window argument
      (destructuring-bind ((x y)) args
+       (setf (mouse-position *model*) (cons x y))
        (gui-app:mouse-motion-enter lisp-window x y)))
     (:motion-leave
      (gui-app:mouse-motion-leave))
@@ -77,13 +160,27 @@
     (:pressed
      (destructuring-bind ((button x y)) args
        (declare (ignore button))
+
+       (cond
+         ((mouse-over-p b-plu)
+          (incf counter)
+          (warn "b-plu ~S" counter))
+         ((mouse-over-p b-eq)
+          (warn "b-eq"))
+         ((mouse-over-p b-min)
+          (decf counter)
+          (warn "b-min ~s" counter))
+         (T (warn "no button")))
+
        ))
     (:released
      (gui-app:mouse-button-released))
     (:scroll)
     (:resize
      (destructuring-bind ((w h)) args
-       (gui-window:window-resize w h lisp-window)))
+       (gui-window:window-resize w h lisp-window)
+       (setf (width lisp-window) w
+             (height lisp-window) h)))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (format t "~&>>> key pressed ~S~%" (list entered key-name key-code mods))
@@ -104,8 +201,10 @@
    gui-events:*client-fn-process-event* 'boxes-new::process-event
    gui-window-gtk:*initial-window-width*    600
    gui-window-gtk:*initial-window-height*   400
-   gui-window-gtk:*initial-title*           "Boxes-New")
+   gui-window-gtk:*initial-title*           "Boxes-New"
+   *model* (make-model)
+   )
 
-  (gui-window-gtk:window (make-instance 'boxes-new-window)))
+  (gui-window-gtk:window-main (make-instance 'boxes-new-window)))
 
 (main)
