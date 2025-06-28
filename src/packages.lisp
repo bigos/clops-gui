@@ -137,4 +137,6 @@
   ;; exports
   (:export
    #:main
+   #:model
+   #:boxes-window
    #:absolute-coordinates))
