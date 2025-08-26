@@ -27,9 +27,10 @@
     (eq m w)))
 
 (defmethod (setf current-focus) :before ((window T) (lisp-app lisp-app))
-  (warn "~&??????????????????? setting current focus to ~s ~s~%~%"
-        (gui-window:window-hkey window)
-        (type-of window)))
+  (if nil
+      (warn "~&??????????????????? setting current focus to ~s ~s~%~%"
+            (gui-window:window-hkey window)
+            (type-of window))))
 
 (defmethod current-focus-window  ((lisp-app lisp-app) (window t))
   (let ((h (gui-window:window-hkey (current-focus lisp-app)))
