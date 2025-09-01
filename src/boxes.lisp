@@ -458,7 +458,8 @@
             )))
 
 (defmethod print-object ((obj node-character) stream)
-  (print-object-inner obj stream))
+  (print-unreadable-object (obj stream :type t :identity t)
+    (format stream "~S" (bchar obj))))
 
 (defmethod print-object ((obj coordinates) stream)
   (print-object-inner obj stream))
