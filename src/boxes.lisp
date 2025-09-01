@@ -457,5 +457,8 @@
                 :unbount-relative)
             )))
 
+(defmethod print-object ((obj node-character) stream)
+  (print-object-inner obj stream))
+
 (defmethod print-object ((obj coordinates) stream)
   (print-object-inner obj stream))
