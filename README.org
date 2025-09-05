@@ -58,6 +58,8 @@ To run a simple counter evaluate:
   (load "~/Programming/Lisp/clops-gui/examples/boxes-new.lisp")
 #+end_src
 
+The counter responds to mouse clicks.
+
 ** Installation
 
 You need SBCL, quicklisp and ultralisp. Please follow the relevant instructions.
