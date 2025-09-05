@@ -17,7 +17,7 @@ but that is not my priority.
 
 ** Usage
 
-*** bozes-2
+*** boxes-2
 
 To run a simple button operated resizing evaluate:
 #+begin_src lisp
