@@ -139,4 +139,6 @@
    #:main
    #:model
    #:boxes-window
+   #:children
+   #:node-character
    #:absolute-coordinates))
