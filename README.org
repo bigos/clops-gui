@@ -17,8 +17,9 @@ but that is not my priority.
 
 ** Usage
 
+To run a simple counter evaluate:
 #+begin_src lisp
-  (load "~/Programming/Lisp/clops-gui/examples/example.lisp")
+  (load "~/Programming/Lisp/clops-gui/examples/boxes-new.lisp")
 #+end_src
 
 ** Installation
