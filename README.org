@@ -17,6 +17,42 @@ but that is not my priority.
 
 ** Usage
 
+*** bozes-2
+
+To run a simple button operated resizing evaluate:
+#+begin_src lisp
+  (load "~/Programming/Lisp/clops-gui/examples/boxes2.lisp")
+#+end_src
+
+button operations can be found in:
+file:~/Programming/Lisp/clops-gui/src/boxes.lisp::401
+#+begin_src lisp
+(defmethod move-b1 ((model model) direction)
+  (cond ((equal direction "Left")
+         (setf (bbx model) (- (bbx model) 5)))
+        ((equal direction "Right")
+         (setf (bbx model) (+ (bbx model) 5)))
+
+        ((equal direction "q")
+         (setf (grw model) (- (grw model) 5)))
+        ((equal direction "w")
+         (setf (grw model) (+ (grw model) 5)))
+
+        ((equal direction "b")
+         (setf (grh model) (- (grh model) 5)))
+        ((equal direction "h")
+         (setf (grh model) (+ (grh model) 5)))
+
+        ((equal direction "a")
+         (setf (tbw model) (- (tbw model) 5)))
+        ((equal direction "s")
+         (setf (tbw model) (+ (tbw model) 5)))
+
+        (T
+         (warn "un-handled key"))))
+#+end_src
+
+*** boxes-new
 To run a simple counter evaluate:
 #+begin_src lisp
   (load "~/Programming/Lisp/clops-gui/examples/boxes-new.lisp")
