@@ -42,7 +42,6 @@
    :width
    :height
    :render
-   :move-b1
    :boxes-window))
 
 (in-package #:boxes-new)

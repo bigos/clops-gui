@@ -40,7 +40,6 @@ I need to replace the relavant window canvas calls to gui-* calls
    :width
    :height
    :render
-   :move-b1
    :boxes-window)
   ;; exports
   (:export #:main))
