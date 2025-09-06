@@ -257,6 +257,15 @@ I need to replace the relavant window canvas calls to gui-* calls
        ;; (game-key-pressed *game* entered key-name)
        (move-b1 *model* key-name)
        ))
+    (:menu-simple
+     (destructuring-bind ((menu-item)) args
+       (warn "pressed menu item ~a" menu-item)
+       (cond
+         ((equal menu-item "quit")
+          (gui-window-gtk:close-all-windows-and-quit))
+         (T
+          (warn "not handled menu-item ~S" menu-item)))
+       ))
     (otherwise
      (warn "not handled event ~S ~S" event args)))
 
