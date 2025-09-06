@@ -211,7 +211,7 @@ I need to replace the relavant window canvas calls to gui-* calls
 
 ;;; === events =================================================================
 
-(defmethod move-b1 ((model model) direction)
+(defmethod move-b1 ((model boxes::model) direction)
   (cond ((equal direction "Left")
          (setf (bbx model) (- (bbx model) 5)))
         ((equal direction "Right")
