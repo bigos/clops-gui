@@ -398,30 +398,6 @@
   (grow parent)
   parent)
 
-(defmethod move-b1 ((model model) direction)
-  (cond ((equal direction "Left")
-         (setf (bbx model) (- (bbx model) 5)))
-        ((equal direction "Right")
-         (setf (bbx model) (+ (bbx model) 5)))
-
-        ((equal direction "q")
-         (setf (grw model) (- (grw model) 5)))
-        ((equal direction "w")
-         (setf (grw model) (+ (grw model) 5)))
-
-        ((equal direction "b")
-         (setf (grh model) (- (grh model) 5)))
-        ((equal direction "h")
-         (setf (grh model) (+ (grh model) 5)))
-
-        ((equal direction "a")
-         (setf (tbw model) (- (tbw model) 5)))
-        ((equal direction "s")
-         (setf (tbw model) (+ (tbw model) 5)))
-
-        (T
-         (warn "un-handled key"))))
-
 ;;; --- defparameter et al -----------------------------------------------------
 
 (defparameter *model* nil)
