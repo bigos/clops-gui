@@ -273,7 +273,7 @@ I need to replace the relavant window canvas calls to gui-* calls
             ;;                                                         height)))
             (setf (width  lisp-window) width
                   (height lisp-window) height
-                  (gui-window:dimensions lisp-window) (cons width height))))
+                  (gui-window::dimensions lisp-window) (cons width height))))
     (:key-pressed
      (destructuring-bind ((entered key-name key-code mods)) args
        (warn "key pressed ~S~%" (list entered key-name key-code mods))
@@ -342,18 +342,21 @@ I need to replace the relavant window canvas calls to gui-* calls
 
 ;;; testing ====================================================================
 (defun experiment-init ()
-  (format T "boxes main~%")
   (init)
-  (gui-window-gtk::window-creation-from-simulation :testing
-                                                   (make-instance 'boxes-window
-                                                                  :width  gui-window-gtk:*initial-window-width*
-                                                                  :height gui-window-gtk:*initial-window-height*)))
+  (let ((experimental-window
+          (make-instance 'boxes-window
+                         :width  gui-window-gtk:*initial-window-width*
+                         :height gui-window-gtk:*initial-window-height*)))
+    (setf (gui-window::gir-window experimental-window) :testing)
+    (setf gui-app:*lisp-app* (gui-app:make-lisp-app nil))
+    (gui-window-gtk:window-creation-from-simulation :testing experimental-window)
+    experimental-window))
 
-;; (experimental-run)
+;;    (experimental-run)
 (defun experimental-run ()
-  (experiment-init)
-  (let ((window (gui-app:window-get gui-app:*lisp-app* :testing)))
+  (let ((window (experiment-init)))
     (process-gtk-event window :resize '(400 500))
+    (break "what the window ~s" window)
     (process-gtk-event window :timeout)
     (process-gtk-event window :resize '(500 600))
     (process-gtk-event window :key-pressed '("" "Right" 114 NIL))
