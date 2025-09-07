@@ -1,6 +1,6 @@
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
 
-;;;; Example of boxes new
+;;;; Example counter
 
 ;;; load ===================================================================
 ;; (load "~/Programming/Lisp/clops-gui/examples/counter.lisp")
@@ -63,7 +63,7 @@
 (defparameter b-eq (make-instance
                     'node-text
                     :coordinates-relative (make-coordinates-relative 150 200)
-                    :width 50
+                    :width 150
                     :height 50
                     :color "orange"
                     :wrap 'truncate
@@ -71,7 +71,7 @@
 
 (defparameter b-min (make-instance
                      'node-text
-                     :coordinates-relative (make-coordinates-relative 250 200)
+                     :coordinates-relative (make-coordinates-relative 350 200)
                      :width 50
                      :height 50
                      :color "yellow"
@@ -86,11 +86,12 @@
   (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
 
-  (cairo:select-font-face "Ubuntu Mono" :italic :bold)
-  (cairo:set-font-size 10)
-  (cairo:move-to 10 10)
-  (gui-window:set-rgba "black")
-  (cairo:show-text (format nil "try moving the mouse over the window and outside of it"))
+  (progn
+    (cairo:select-font-face "Ubuntu Mono" :italic :bold)
+    (cairo:set-font-size 10)
+    (cairo:move-to 10 10)
+    (gui-window:set-rgba "black")
+    (cairo:show-text (format nil "try moving the mouse over the window and outside of it")))
 
 
   (cairo:select-font-face "Ubuntu Mono" :italic :bold)
@@ -123,11 +124,12 @@
 
     (add-children world
                   (list
-                   (add-children (make-node 10
-                                            10
-                                            50 50 "purple")
-                                 (list
-                                  (make-node 10 10 25 25 "violet")))
+                   ;; for the counter we do not need those examples
+                   ;; (add-children (make-node 10
+                   ;;                          10
+                   ;;                          50 50 "purple")
+                   ;;               (list
+                   ;;                (make-node 10 10 25 25 "violet")))
                    (add-children b-plu  nil)
                    (add-children b-eq   nil)
                    (add-children b-min  nil)))
