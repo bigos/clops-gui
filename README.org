@@ -24,8 +24,8 @@ To run a simple button operated resizing evaluate:
   (load "~/Programming/Lisp/clops-gui/examples/boxes2.lisp")
 #+end_src
 
-button operations can be found in:
-file:~/Programming/Lisp/clops-gui/src/boxes.lisp::401
+Key press operations can be found at:
+file:~/Programming/Lisp/clops-gui/examples/moving-boxes.lisp::214
 #+begin_src lisp
 (defmethod move-b1 ((model model) direction)
   (cond ((equal direction "Left")
