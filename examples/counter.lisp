@@ -3,12 +3,12 @@
 ;;;; Example of boxes new
 
 ;;; load ===================================================================
-;; (load "~/Programming/Lisp/clops-gui/examples/boxes-new.lisp")
+;; (load "~/Programming/Lisp/clops-gui/examples/counter.lisp")
 
 (ql:quickload '(:clops-gui) :silent nil)
 
 ;;; package ================================================================
-(defpackage #:boxes-new
+(defpackage #:counter
   (:use #:cl)
   (:import-from :serapeum
    :~>)
@@ -44,12 +44,12 @@
    :render
    :boxes-window))
 
-(in-package #:boxes-new)
+(in-package #:counter)
 
 ;;; minimal window -------------------------------------------------------------
 
 
-(defclass/std boxes-new-window (boxes::boxes-window) (()))
+(defclass/std counter-window (boxes::boxes-window) (()))
 
 (defparameter b-plu (make-instance
                      'node-text
@@ -81,7 +81,7 @@
 (defparameter counter 0)
 
 ;;; drawing ====================================================================
-(defmethod draw-window ((window boxes-new-window))
+(defmethod draw-window ((window counter-window))
   ;; paint background
   (let ((cv 0.95)) (cairo:set-source-rgb  cv cv cv))
   (cairo:paint)
@@ -139,7 +139,7 @@
     (render world)))
 
 ;;; events =====================================================================
-(defmethod process-event ((lisp-window boxes-new-window) event &rest args)
+(defmethod process-event ((lisp-window counter-window) event &rest args)
   (unless (eq event :timeout)
     (warn "event ~S ~S" event args))
 
@@ -192,24 +192,24 @@
 ;;; main =======================================================================
 (defun init ()
   (setf
-   gui-drawing:*client-fn-draw-objects*  'boxes-new::draw-window
+   gui-drawing:*client-fn-draw-objects*  'counter::draw-window
    gui-window-gtk:*client-fn-menu-bar*      nil
-   gui-events:*client-fn-process-event* 'boxes-new::process-event
+   gui-events:*client-fn-process-event* 'counter::process-event
    gui-window-gtk:*initial-window-width*    600
    gui-window-gtk:*initial-window-height*   400
-   gui-window-gtk:*initial-title*           "Boxes-New"
+   gui-window-gtk:*initial-title*           "Counter"
    *model* (make-model)))
 
 (defun main ()
   (init)
-  (gui-window-gtk:window-main (make-instance 'boxes-new-window)))
+  (gui-window-gtk:window-main (make-instance 'counter-window)))
 
 (main)
 
 ;;; testing ====================================================================
 (defun experiment-init ()
   (init)
-  (let ((experimental-window (make-instance 'boxes-new-window
+  (let ((experimental-window (make-instance 'counter-window
                                             :width  gui-window-gtk:*initial-window-width*
                                             :height gui-window-gtk:*initial-window-height*)))
     (setf gui-app:*lisp-app* (gui-app:make-lisp-app nil))

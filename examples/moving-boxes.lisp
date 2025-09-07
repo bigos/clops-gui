@@ -4,13 +4,13 @@
 I need to replace the relavant window canvas calls to gui-* calls
 |#
 
-;; (load "~/Programming/Lisp/clops-gui/examples/boxes2.lisp")
+;; (load "~/Programming/Lisp/clops-gui/examples/moving-boxes.lisp")
 
 (ql:quickload :clops-gui)
 
 (in-package #:common-lisp)
 
-(defpackage #:boxes2
+(defpackage #:moving-boxes
   (:use #:cl)
   ;; imports
   (:import-from
@@ -44,7 +44,7 @@ I need to replace the relavant window canvas calls to gui-* calls
   ;; exports
   (:export #:main))
 
-(in-package #:boxes2)
+(in-package #:moving-boxes)
 
 
 ;;; === draw window ============================================================
@@ -320,13 +320,13 @@ I need to replace the relavant window canvas calls to gui-* calls
 
 (defun init ()
   (progn
-    (setf gui-drawing:*client-fn-draw-objects*  'boxes2::draw-window)
+    (setf gui-drawing:*client-fn-draw-objects*  'moving-boxes::draw-window)
     (setf gui-window-gtk:*client-fn-menu-bar*      nil)
-    (setf gui-events:*client-fn-process-event* 'boxes2::process-gtk-event)
+    (setf gui-events:*client-fn-process-event* 'moving-boxes::process-gtk-event)
     (setf gui-window-gtk:*initial-window-width*    790)
     (setf gui-window-gtk:*initial-window-height*   750)
     (setf gui-window-gtk:*initial-title*           "Boxes")
-    (setf gui-window-gtk:*client-fn-menu-bar* 'boxes2::menu-bar)
+    (setf gui-window-gtk:*client-fn-menu-bar* 'moving-boxes::menu-bar)
     (setf *model* (make-model))
 
     ))
