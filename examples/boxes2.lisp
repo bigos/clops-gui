@@ -347,8 +347,8 @@ I need to replace the relavant window canvas calls to gui-* calls
           (make-instance 'boxes-window
                          :width  gui-window-gtk:*initial-window-width*
                          :height gui-window-gtk:*initial-window-height*)))
-    (setf (gui-window::gir-window experimental-window) :testing)
     (setf gui-app:*lisp-app* (gui-app:make-lisp-app nil))
+    (setf (gui-window::gir-window experimental-window) :testing)
     (gui-window-gtk:window-creation-from-simulation :testing experimental-window)
     experimental-window))
 
@@ -356,7 +356,6 @@ I need to replace the relavant window canvas calls to gui-* calls
 (defun experimental-run ()
   (let ((window (experiment-init)))
     (process-gtk-event window :resize '(400 500))
-    (break "what the window ~s" window)
     (process-gtk-event window :timeout)
     (process-gtk-event window :resize '(500 600))
     (process-gtk-event window :key-pressed '("" "Right" 114 NIL))
