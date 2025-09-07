@@ -17,11 +17,11 @@ but that is not my priority.
 
 ** Usage
 
-*** boxes-2
+*** moving-boxes
 
-To run a simple button operated resizing evaluate:
+To run a simple key operated resizing evaluate:
 #+begin_src lisp
-  (load "~/Programming/Lisp/clops-gui/examples/boxes2.lisp")
+  (load "~/Programming/Lisp/clops-gui/examples/moving-boxes.lisp")
 #+end_src
 
 Key press operations can be found at:
@@ -52,10 +52,10 @@ file:~/Programming/Lisp/clops-gui/examples/moving-boxes.lisp::214
          (warn "un-handled key"))))
 #+end_src
 
-*** boxes-new
+*** counter
 To run a simple counter evaluate:
 #+begin_src lisp
-  (load "~/Programming/Lisp/clops-gui/examples/boxes-new.lisp")
+  (load "~/Programming/Lisp/clops-gui/examples/counter.lisp")
 #+end_src
 
 The counter responds to mouse clicks.
