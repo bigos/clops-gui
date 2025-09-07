@@ -193,7 +193,7 @@
   (gui-window:redraw-canvas lisp-window (format  nil "~A" event)))
 
 ;;; main =======================================================================
-(defun main ()
+(defun init ()
   (setf
    gui-drawing:*client-fn-draw-objects*  'boxes-new::draw-window
    gui-window-gtk:*client-fn-menu-bar*      nil
@@ -201,9 +201,30 @@
    gui-window-gtk:*initial-window-width*    600
    gui-window-gtk:*initial-window-height*   400
    gui-window-gtk:*initial-title*           "Boxes-New"
-   *model* (make-model)
-   )
+   *model* (make-model)))
 
+(defun main ()
+  (init)
   (gui-window-gtk:window-main (make-instance 'boxes-new-window)))
 
 (main)
+
+;;; testing ====================================================================
+(defun experiment-init ()
+  (init)
+  (let ((experimental-window (make-instance 'boxes-new-window
+                                            :width  gui-window-gtk:*initial-window-width*
+                                            :height gui-window-gtk:*initial-window-height*)))
+    (setf gui-app:*lisp-app* (gui-app:make-lisp-app nil))
+    (setf (gui-window::gir-window experimental-window) :testing)
+
+    (gui-window-gtk:window-creation-from-simulation :testing experimental-window)
+    experimental-window))
+
+;;    (experimental-run)
+(defun experimental-run ()
+  (let ((window (experiment-init)))
+    (process-event window :resize '(600 500))
+    (process-event window :timeout)
+    (process-event window :resize '(500 600))
+    ))
