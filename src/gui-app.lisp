@@ -65,8 +65,9 @@
   (setf (gui-app:current-motion   gui-app:*lisp-app*) nil))
 
 (defmethod mouse-button-pressed (button)
-  (incf (gui-app:mouse-button gui-app:*lisp-app*))
-  (warn "pressed mouse button"))
+  (if (= button 1)
+      (setf (gui-app:mouse-button gui-app:*lisp-app*) button)
+      (incf (gui-app:mouse-button gui-app:*lisp-app*) button)))
 
-(defmethod mouse-button-released ()
-  (setf (gui-app:mouse-button gui-app:*lisp-app*) 0))
+(defmethod mouse-button-released (button)
+  (decf (gui-app:mouse-button gui-app:*lisp-app*) button))
