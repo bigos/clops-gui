@@ -69,7 +69,10 @@
       ;; then = we have stuck mouse buttons
       (setf (gui-app:mouse-button gui-app:*lisp-app*) button)
       ;; else
-      (incf (gui-app:mouse-button gui-app:*lisp-app*) button)))
+      (progn
+        (incf (gui-app:mouse-button gui-app:*lisp-app*) button)
+        (when (> (gui-app:mouse-button gui-app:*lisp-app*)  7)
+          (setf (gui-app:mouse-button gui-app:*lisp-app*) button)))))
 
 (defmethod mouse-button-released (button)
   (decf (gui-app:mouse-button gui-app:*lisp-app*) button))
