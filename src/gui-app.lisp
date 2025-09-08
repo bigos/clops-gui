@@ -65,8 +65,10 @@
   (setf (gui-app:current-motion   gui-app:*lisp-app*) nil))
 
 (defmethod mouse-button-pressed (button)
-  (if (= button 1)
+  (if (> (gui-app:mouse-button gui-app:*lisp-app*) 7)
+      ;; then = we have stuck mouse buttons
       (setf (gui-app:mouse-button gui-app:*lisp-app*) button)
+      ;; else
       (incf (gui-app:mouse-button gui-app:*lisp-app*) button)))
 
 (defmethod mouse-button-released (button)
