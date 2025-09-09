@@ -140,5 +140,6 @@
    #:model
    #:boxes-window
    #:children
+   #:mouse-over-p
    #:node-character
    #:absolute-coordinates))
