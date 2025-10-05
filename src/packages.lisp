@@ -69,6 +69,7 @@
    *initial-window-height*
    *initial-window-width*
    *timeout-period*
+   *client-fn-open-file*
    close-all-windows-and-quit
    present-about-dialog
    present-file-open-dialog

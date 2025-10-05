@@ -10,6 +10,7 @@
 (defparameter *initial-window-height* 200)
 (defparameter *client-fn-menu-bar* nil)
 (defparameter *initial-title* "change me")
+(defparameter *client-fn-open-file* nil)
 
 ;; =========================== dialogs =========================================
 (cffi:defcallback %save-func :void ((source-object :pointer)
@@ -45,7 +46,8 @@
      (let* ((dialog (gobj:pointer-object source-object 'gtk4:file-dialog))
             (result (gobj:pointer-object res 'gio:async-result))
             (file (gtk4:file-dialog-open-finish dialog result)))
-       (print (gio:file-uri file))))))
+       (print (gio:file-uri file))
+       (funcall *client-fn-open-file* (gio:file-uri file))))))
 
 (defun present-file-open-dialog ()
   (let ((file-dialog (gtk4:make-file-dialog)))
