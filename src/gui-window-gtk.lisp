@@ -10,10 +10,15 @@
 (defparameter *initial-title* "change me")
 
 ;; =========================== dialogs =========================================
+(cffi:defcallback %save-func :void ((source_object :pointer)
+                                    (res :pointer)
+                                    (data :pointer))
+  (warn "res should have the info I need ~s" res)
+  (gtk4:file-dialog-save-finish source_object res (cffi:null-pointer)))
+
 (defun present-file-dialog-save ()
-  (let* ((file-dialog (gtk4:make-file-dialog)))
-    (gtk4:file-dialog-save file-dialog nil nil nil nil)
-    (gtk4:file-dialog-open-finish file-dialog )))
+  (let ((file-dialog (gtk4:make-file-dialog)))
+    (gtk4:file-dialog-save file-dialog (cffi:null-pointer) (cffi:null-pointer) (cffi:callback %save-func) (cffi:null-pointer))))
 
 (defun present-about-dialog (data)
   (let ((dialog (about-dialog data)))
