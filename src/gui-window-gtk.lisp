@@ -1,5 +1,7 @@
 (declaim (optimize (speed 0) (safety 3) (debug 3)))
 
+;; (ql:quickload :clops-gui)
+
 (in-package #:gui-window-gtk)
 
 
@@ -10,25 +12,48 @@
 (defparameter *initial-title* "change me")
 
 ;; =========================== dialogs =========================================
-(cffi:defcallback %save-func :void ((source_object :pointer)
+(cffi:defcallback %save-func :void ((source-object :pointer)
                                     (res :pointer)
                                     (data :pointer))
-  (warn "running callback")
+  (declare (ignore data))
+
   (funcall
    (lambda ()
-     (let* ((dialog (gobj:pointer-object source_object 'file-dialog))
+     (let* ((dialog (gobj:pointer-object source-object 'file-dialog))
             (result (gobj:pointer-object res 'gio:async-result))
             (file (gtk4:file-dialog-save-finish dialog result)))
+       (print (gio:file-uri file))))))
 
-       (warn "selected file ~S" (gio:file-uri file))))))
-
-(defun present-file-dialog-save ()
+(defun present-file-save-dialog ()
   (let ((file-dialog (gtk4:make-file-dialog)))
+    (warn "running file dialog save")
     (gtk4:file-dialog-save file-dialog
                            (cffi:null-pointer)
                            (cffi:null-pointer)
                            (cffi:callback %save-func)
                            (cffi:null-pointer))))
+
+(cffi:defcallback %open-func :void ((source-object :pointer)
+                                    (res :pointer)
+                                    (data :pointer))
+                  (declare (ignore data))
+
+                  (funcall
+                   (lambda ()
+                     (let* ((dialog (gobj:pointer-object source-object 'file-dialog))
+                            (result (gobj:pointer-object res 'gio:async-result))
+                            (file (gtk4:file-dialog-open-finish dialog result)))
+                       (print (gio:file-uri file))))))
+
+(defun present-file-open-dialog ()
+  (let ((file-dialog (gtk4:make-file-dialog)))
+    (warn "running file dialog open")
+    (gtk4:file-dialog-open file-dialog
+                           (cffi:null-pointer)
+                           (cffi:null-pointer)
+                           (cffi:callback %open-func)
+                           (cffi:null-pointer))))
+
 
 (defun present-about-dialog (data)
   (let ((dialog (about-dialog data)))

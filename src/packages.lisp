@@ -71,6 +71,8 @@
    *timeout-period*
    close-all-windows-and-quit
    present-about-dialog
+   present-file-open-dialog
+   present-file-save-dialog
    window-main
    window-creation-from-menu
    window-creation-from-simulation
