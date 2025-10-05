@@ -20,12 +20,15 @@
             (result (gobj:pointer-object res 'gio:async-result))
             (file (gtk4:file-dialog-save-finish dialog result)))
 
-       (warn "selected file ~S" (gio:file-uri file))
-       ))))
+       (warn "selected file ~S" (gio:file-uri file))))))
 
 (defun present-file-dialog-save ()
   (let ((file-dialog (gtk4:make-file-dialog)))
-    (gtk4:file-dialog-save file-dialog (cffi:null-pointer) (cffi:null-pointer) (cffi:callback %save-func) (cffi:null-pointer))))
+    (gtk4:file-dialog-save file-dialog
+                           (cffi:null-pointer)
+                           (cffi:null-pointer)
+                           (cffi:callback %save-func)
+                           (cffi:null-pointer))))
 
 (defun present-about-dialog (data)
   (let ((dialog (about-dialog data)))
