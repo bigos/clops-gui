@@ -16,6 +16,7 @@
                                     (res :pointer)
                                     (data :pointer))
   (declare (ignore data))
+  (warn "running file dialog save callback")
 
   (funcall
    (lambda ()
@@ -36,14 +37,15 @@
 (cffi:defcallback %open-func :void ((source-object :pointer)
                                     (res :pointer)
                                     (data :pointer))
-                  (declare (ignore data))
+  (declare (ignore data))
+  (warn "running file dialog open callback")
 
-                  (funcall
-                   (lambda ()
-                     (let* ((dialog (gobj:pointer-object source-object 'file-dialog))
-                            (result (gobj:pointer-object res 'gio:async-result))
-                            (file (gtk4:file-dialog-open-finish dialog result)))
-                       (print (gio:file-uri file))))))
+  (funcall
+   (lambda ()
+     (let* ((dialog (gobj:pointer-object source-object 'file-dialog))
+            (result (gobj:pointer-object res 'gio:async-result))
+            (file (gtk4:file-dialog-open-finish dialog result)))
+       (print (gio:file-uri file))))))
 
 (defun present-file-open-dialog ()
   (let ((file-dialog (gtk4:make-file-dialog)))
