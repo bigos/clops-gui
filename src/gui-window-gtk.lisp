@@ -20,7 +20,7 @@
 
   (funcall
    (lambda ()
-     (let* ((dialog (gobj:pointer-object source-object 'file-dialog))
+     (let* ((dialog (gobj:pointer-object source-object 'gtk4:file-dialog))
             (result (gobj:pointer-object res 'gio:async-result))
             (file (gtk4:file-dialog-save-finish dialog result)))
        (print (gio:file-uri file))))))
@@ -42,7 +42,7 @@
 
   (funcall
    (lambda ()
-     (let* ((dialog (gobj:pointer-object source-object 'file-dialog))
+     (let* ((dialog (gobj:pointer-object source-object 'gtk4:file-dialog))
             (result (gobj:pointer-object res 'gio:async-result))
             (file (gtk4:file-dialog-open-finish dialog result)))
        (print (gio:file-uri file))))))
