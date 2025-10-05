@@ -13,8 +13,13 @@
 (cffi:defcallback %save-func :void ((source_object :pointer)
                                     (res :pointer)
                                     (data :pointer))
-  (warn "res should have the info I need ~s" res)
-  (gtk4:file-dialog-save-finish source_object res (cffi:null-pointer)))
+  (funcall
+   (gtk::attach-restarts
+    (lambda ()
+      (let* ((dialog (gobj:pointer-object source_object 'file-dialog))
+             (result (gobj:pointer-object res 'gio:async-result))
+             (file (gtk4:file-dialog-save-finish dialog result)))
+        (warn "selected file ~S" (gio:file-uri file)))))))
 
 (defun present-file-dialog-save ()
   (let ((file-dialog (gtk4:make-file-dialog)))
