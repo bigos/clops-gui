@@ -63,6 +63,8 @@
   (let ((dialog (about-dialog data)))
     (setf (gtk4:window-modal-p dialog) t)
     (setf (gtk4:window-transient-for dialog) (gtk4:application-active-window (gui-app:gtk4-app gui-app:*lisp-app*)))
+    ;; for some reason I can not have this function, so I can not select the default tab, and the firsh showing is ugly
+    ;; https://docs.gtk.org/gtk4/func.show_about_dialog.html
     (gtk4:window-present dialog)))
 
 (defun about-dialog (data)
