@@ -18,10 +18,8 @@ but that is not my priority.
 ** What to do if some Gtk4 bindings are missing
 Occasionally, I run into problems where some binding are missing.
 
-For example in file:
-file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp
-in function: present-file-save-dialog, I did not have the ability to set the
-needed properties.
+For example in file: ./src/gui-window-gtk.lisp, in function: present-file-save-
+dialog, I did not have the ability to set the needed properties.
 
 I had to fall back to cl-gobject-introspection (gir). The documentation for
 it is on those pages:
