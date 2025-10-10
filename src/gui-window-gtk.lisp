@@ -65,7 +65,15 @@
     (setf (gtk4:window-transient-for dialog) (gtk4:application-active-window (gui-app:gtk4-app gui-app:*lisp-app*)))
     ;; for some reason I can not have this function, so I can not select the default tab, and the first showing is ugly
     ;; https://docs.gtk.org/gtk4/func.show_about_dialog.html
-    (gtk4:window-present dialog)))
+    (gtk4:window-present dialog)
+    ;; (let* ((nsgtk (gir:require-namespace "Gtk" "4.0")))
+    ;;   https://github.com/andy128k/cl-gobject-introspection
+    ;;   (gir:invoke (nsgtk "Gtk" 'show_about_dialog)
+    ;;               nil
+    ;;               "program-name"
+    ;;               "Basic Editor")
+    ;;   )
+    ))
 
 (defun about-dialog (data)
   (warn "called about dialog")
