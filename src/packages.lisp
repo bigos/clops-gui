@@ -70,6 +70,7 @@
    *initial-window-width*
    *timeout-period*
    *client-fn-open-file*
+   *client-fn-save-file*
    close-all-windows-and-quit
    present-about-dialog
    present-file-open-dialog
