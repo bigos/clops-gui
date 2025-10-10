@@ -54,9 +54,9 @@
 (defun present-file-open-dialog ()
   (let ((file-dialog (gtk4:make-file-dialog))
         (gtk (gir:ffi "Gtk" "4.0")))
+    ;; it works if I select a file
     (setf
      (gir:property file-dialog 'initial-folder) (gio:file-new-for-path "/"))
-    ;;(setf (gtk4:file-dialog-set-initial-file))
     (warn "running file dialog open")
     (gtk4:file-dialog-open file-dialog
                            (cffi:null-pointer)
