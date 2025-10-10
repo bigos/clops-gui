@@ -15,7 +15,7 @@ Perhaps it would be possible to have a declarative way to define other widgets
 than DrawingArea, in similar manner to function ~menu-bar-menu~ is used for menu,
 but that is not my priority.
 
-** What to do if some Gtk4 binding are missing
+** What to do if some Gtk4 bindings are missing
 Occasionally, I run into problems where some binding are missing.
 
 For example in file:
