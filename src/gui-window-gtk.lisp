@@ -11,6 +11,7 @@
 (defparameter *client-fn-menu-bar* nil)
 (defparameter *initial-title* "change me")
 (defparameter *client-fn-open-file* nil)
+(defparameter *client-fn-save-file* nil)
 
 ;; =========================== dialogs =========================================
 (cffi:defcallback %save-func :void ((source-object :pointer)
@@ -25,8 +26,7 @@
             (result (gobj:pointer-object res 'gio:async-result))
             (file (gtk4:file-dialog-save-finish dialog result)))
        (print (gio:file-uri file))
-       ;; TODO add handler for saving file as in (cffi:defcallback %open-func
-       ))))
+       (funcall *client-fn-save-file* (gio:file-uri file))))))
 
 (defun present-file-save-dialog ()
   (let ((file-dialog (gtk4:make-file-dialog)))
