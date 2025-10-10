@@ -28,11 +28,20 @@
        ;; (print (gio:file-uri file))
        (funcall *client-fn-save-file* (gio:file-uri file))))))
 
-(defun present-file-save-dialog (&optional initial-folder)
+;;; TODO add filters
+(defun present-file-save-dialog (&key title initial-folder initial-file)
   (let ((file-dialog (gtk4:make-file-dialog)))
-    (when initial-folder
+    (when title
       (setf
-       (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))
+       (gir:property file-dialog 'title) title))
+    (if initial-file
+        (progn
+          (setf
+           (gir:property file-dialog 'initial-file) (gio:file-new-for-path initial-file)))
+        (progn
+          (when initial-folder
+            (setf
+             (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))))
     (warn "running file dialog save")
     (gtk4:file-dialog-save file-dialog
                            (cffi:null-pointer)
@@ -54,8 +63,11 @@
        ;; (print (gio:file-uri file))
        (funcall *client-fn-open-file* (gio:file-uri file))))))
 
-(defun present-file-open-dialog (&optional initial-folder)
+(defun present-file-open-dialog (&key title initial-folder)
   (let ((file-dialog (gtk4:make-file-dialog)))
+    (when title
+      (setf
+       (gir:property file-dialog 'title) title))
     (when initial-folder
       (setf
        (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))
