@@ -28,8 +28,11 @@
        ;; (print (gio:file-uri file))
        (funcall *client-fn-save-file* (gio:file-uri file))))))
 
-(defun present-file-save-dialog ()
+(defun present-file-save-dialog (&optional initial-folder)
   (let ((file-dialog (gtk4:make-file-dialog)))
+    (when initial-folder
+      (setf
+       (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))
     (warn "running file dialog save")
     (gtk4:file-dialog-save file-dialog
                            (cffi:null-pointer)
@@ -51,12 +54,11 @@
        ;; (print (gio:file-uri file))
        (funcall *client-fn-open-file* (gio:file-uri file))))))
 
-(defun present-file-open-dialog ()
-  (let ((file-dialog (gtk4:make-file-dialog))
-        (gtk (gir:ffi "Gtk" "4.0")))
-    ;; it works if I select a file
-    (setf
-     (gir:property file-dialog 'initial-folder) (gio:file-new-for-path "/"))
+(defun present-file-open-dialog (&optional initial-folder)
+  (let ((file-dialog (gtk4:make-file-dialog)))
+    (when initial-folder
+      (setf
+       (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))
     (warn "running file dialog open")
     (gtk4:file-dialog-open file-dialog
                            (cffi:null-pointer)
