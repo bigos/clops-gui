@@ -15,6 +15,21 @@ Perhaps it would be possible to have a declarative way to define other widgets
 than DrawingArea, in similar manner to function ~menu-bar-menu~ is used for menu,
 but that is not my priority.
 
+** What to do if some Gtk4 binding are missing
+Occasionally, I run into problems where some binding are missing.
+
+For example in file:
+file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp
+in function: present-file-save-dialog, I did not have the ability to set the
+needed properties.
+
+I had to fall back to cl-gobject-introspection (gir). The documentation for
+it is on those pages:
+
+https://github.com/andy128k/cl-gobject-introspection
+
+https://github.com/bohonghuang/cl-gobject-introspection-wrapper
+
 ** Usage
 
 *** moving-boxes
