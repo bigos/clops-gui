@@ -32,16 +32,11 @@
 (defun present-file-save-dialog (&key title initial-folder initial-file)
   (let ((file-dialog (gtk4:make-file-dialog)))
     (when title
-      (setf
-       (gir:property file-dialog 'title) title))
+      (setf (gir:property file-dialog 'title) title))
     (if initial-file
-        (progn
-          (setf
-           (gir:property file-dialog 'initial-file) (gio:file-new-for-path initial-file)))
-        (progn
-          (when initial-folder
-            (setf
-             (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))))
+        (setf (gir:property file-dialog 'initial-file) (gio:file-new-for-path initial-file))
+        (when initial-folder
+          (setf (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder))))
     (warn "running file dialog save")
     (gtk4:file-dialog-save file-dialog
                            (cffi:null-pointer)
@@ -66,11 +61,9 @@
 (defun present-file-open-dialog (&key title initial-folder)
   (let ((file-dialog (gtk4:make-file-dialog)))
     (when title
-      (setf
-       (gir:property file-dialog 'title) title))
+      (setf (gir:property file-dialog 'title) title))
     (when initial-folder
-      (setf
-       (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))
+      (setf (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))
     (warn "running file dialog open")
     (gtk4:file-dialog-open file-dialog
                            (cffi:null-pointer)
