@@ -24,6 +24,8 @@ dialog, I did not have the ability to set the needed properties.
 I had to fall back to cl-gobject-introspection (gir). The documentation for
 it is on those pages:
 
+https://gnome.pages.gitlab.gnome.org/gobject-introspection/girepository/
+
 https://github.com/andy128k/cl-gobject-introspection
 
 https://github.com/andy128k/cl-gobject-introspection/tree/master/examples
