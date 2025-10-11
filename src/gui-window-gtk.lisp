@@ -30,13 +30,14 @@
 
 ;;; TODO add filters
 (defun present-file-save-dialog (&key title initial-folder initial-file)
+  (format t "runnig save dialog tile ~S, folder ~S, file ~S" title initial-folder initial-file)
   (let ((file-dialog (gtk4:make-file-dialog)))
     (when title
       (setf (gir:property file-dialog 'title) title))
-    (if initial-file
-        (setf (gir:property file-dialog 'initial-file) (gio:file-new-for-path initial-file))
-        (when initial-folder
-          (setf (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder))))
+    (when initial-file
+        (setf (gir:property file-dialog 'initial-file) (gio:file-new-for-path initial-file)))
+    (when initial-folder
+      (setf (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))
     (warn "running file dialog save")
     (gtk4:file-dialog-save file-dialog
                            (cffi:null-pointer)
