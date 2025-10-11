@@ -19,7 +19,7 @@ but that is not my priority.
 Occasionally, I run into problems where some binding are missing.
 
 For example in file:
-file:~/Programming/Lisp/clops-gui/src/gui-window-gtk.lisp
+./src/gui-window-gtk.lisp
 in function: present-file-save-dialog, I did not have the ability to set the
 needed properties.
 
