@@ -31,19 +31,29 @@
 ;;; TODO add filters
 ;;; TODO add Cancellable
 ;; https://docs.gtk.org/gtk4/method.FileDialog.save.html
-(defun present-file-save-dialog (&key title initial-folder initial-file)
+(defun present-file-save-dialog (&key title initial-folder initial-file cancellable filters)
   (format t "runnig save dialog tile ~S, folder ~S, file ~S" title initial-folder initial-file)
-  (let ((file-dialog (gtk4:make-file-dialog)))
+  (let ((file-dialog (gtk4:make-file-dialog))
+        (file-filter (gtk4:make-file-filter))
+        (cancellable (gio:make-cancellable)))
+    (when filters
+      (setf (gir:property file-filter 'patterns) filters
+            (gir:property file-filter 'name) "All Files"
+            (gir:property file-dialog 'default-filter file-filter)))
     (when title
       (setf (gir:property file-dialog 'title) title))
     (when initial-file
         (setf (gir:property file-dialog 'initial-file) (gio:file-new-for-path initial-file)))
     (when initial-folder
       (setf (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))
+    (gio:cancellable-connect cancellable
+                             (cffi:callback %cancel-save-func)
+                             (cffi:null-pointer)
+                             (cffi:null-pointer))
     (warn "running file dialog save")
     (gtk4:file-dialog-save file-dialog
                            (cffi:null-pointer)
-                           (cffi:null-pointer)
+                           cancellable
                            (cffi:callback %save-func)
                            (cffi:null-pointer))))
 
