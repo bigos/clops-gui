@@ -29,6 +29,8 @@
        (funcall *client-fn-save-file* (gio:file-uri file))))))
 
 ;;; TODO add filters
+;;; TODO add Cancellable
+;; https://docs.gtk.org/gtk4/method.FileDialog.save.html
 (defun present-file-save-dialog (&key title initial-folder initial-file)
   (format t "runnig save dialog tile ~S, folder ~S, file ~S" title initial-folder initial-file)
   (let ((file-dialog (gtk4:make-file-dialog)))
