@@ -11,7 +11,9 @@
 (defparameter *client-fn-menu-bar* nil)
 (defparameter *initial-title* "change me")
 (defparameter *client-fn-open-file* nil)
+(defparameter *client-fn-cancel-open-file* nil)
 (defparameter *client-fn-save-file* nil)
+(defparameter *client-fn-cancel-save-file* nil)
 
 ;; =========================== dialogs =========================================
 (cffi:defcallback %save-func :void ((source-object :pointer)
@@ -28,10 +30,20 @@
        (format t "selected ~S~%" (gio:file-uri file))
        (funcall *client-fn-save-file* (gio:file-uri file))))))
 
+(cffi:defcallback %cancel-save-func :void ((source-object :pointer)
+                                    (data :pointer))
+  (declare (ignore data))
+  (warn "running file dialog save callback")
+
+  (funcall
+   (lambda ()
+     (format t "cancelled saving~%" )
+     (funcall *client-fn-cancel-save-file*))))
+
 ;;; TODO add filters
 ;;; TODO add Cancellable
 ;; https://docs.gtk.org/gtk4/method.FileDialog.save.html
-(defun present-file-save-dialog (&key title initial-folder initial-file cancellable filters)
+(defun present-file-save-dialog (&key title initial-folder initial-file filters)
   (format t "runnig save dialog tile ~S, folder ~S, file ~S" title initial-folder initial-file)
   (let ((file-dialog (gtk4:make-file-dialog))
         (file-filter (gtk4:make-file-filter))
@@ -39,7 +51,7 @@
     (when filters
       (setf (gir:property file-filter 'patterns) filters
             (gir:property file-filter 'name) "All Files"
-            (gir:property file-dialog 'default-filter file-filter)))
+            (gir:property file-dialog 'default-filter) file-filter))
     (when title
       (setf (gir:property file-dialog 'title) title))
     (when initial-file
@@ -71,12 +83,27 @@
        ;; (print (gio:file-uri file))
        (funcall *client-fn-open-file* (gio:file-uri file))))))
 
+(cffi:defcallback %cancel-open-func :void ((source-object :pointer)
+                                           (data :pointer))
+  (declare (ignore data))
+  (warn "running file dialog save callback")
+
+  (funcall
+   (lambda ()
+     (format t "cancelled saving~%" )
+     (funcall *client-fn-cancel-open-file*))))
+
 (defun present-file-open-dialog (&key title initial-folder)
-  (let ((file-dialog (gtk4:make-file-dialog)))
+  (let ((file-dialog (gtk4:make-file-dialog))
+        (cancellable (gio:make-cancellable)))
     (when title
       (setf (gir:property file-dialog 'title) title))
     (when initial-folder
       (setf (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))
+    (gio:cancellable-connect cancellable
+                             (cffi:callback %cancel-open-func)
+                             (cffi:null-pointer)
+                             (cffi:null-pointer))
     (warn "running file dialog open")
     (gtk4:file-dialog-open file-dialog
                            (cffi:null-pointer)
