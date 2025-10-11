@@ -25,7 +25,7 @@
      (let* ((dialog (gobj:pointer-object source-object 'gtk4:file-dialog))
             (result (gobj:pointer-object res 'gio:async-result))
             (file (gtk4:file-dialog-save-finish dialog result)))
-       ;; (print (gio:file-uri file))
+       (format t "selected ~S~%" (gio:file-uri file))
        (funcall *client-fn-save-file* (gio:file-uri file))))))
 
 ;;; TODO add filters
