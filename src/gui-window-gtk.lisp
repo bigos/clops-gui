@@ -16,7 +16,8 @@
 (defparameter *client-fn-cancel-save-file* nil)
 
 ;; =========================== dialogs =========================================
-(defun cancelled-value () "cancelled or error/*/")
+(defun selected-value (selected-file-path) (cons :selected selected-file-path))
+(defun cancelled-value ()                  (cons :cancelled nil))
 
 (cffi:defcallback %save-func :void ((source-object :pointer)
                                     (res :pointer)
@@ -32,7 +33,7 @@
        (handler-case
            (let ((file (gtk4:file-dialog-save-finish dialog result)))
              (format t "selected ~S~%" (gio:file-uri file))
-             (funcall *client-fn-save-file* (gio:file-uri file)))
+             (funcall *client-fn-save-file* (selected-value (gio:file-uri file))))
          (error (se)
            (format t "we had error ~S~%" se)
            (funcall *client-fn-save-file* (cancelled-value))))))))
@@ -71,7 +72,7 @@
        (handler-case
            (let ((file (gtk4:file-dialog-open-finish dialog result)))
              (warn "result of file ~S" (gio:file-uri file))
-             (funcall *client-fn-open-file* (gio:file-uri file)))
+             (funcall *client-fn-open-file* (selected-value (gio:file-uri file))))
          (error (se)
            (format t "we had error ~S~%" se)
            (funcall *client-fn-open-file* (cancelled-value))))))))
