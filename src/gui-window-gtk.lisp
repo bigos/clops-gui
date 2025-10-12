@@ -87,8 +87,7 @@
              (funcall *client-fn-open-file* (gio:file-uri file)))
          (error (se)
            (format t "we had error ~S~%" se)
-           (funcall *client-fn-open-file* :cancelled)
-           ))))))
+           (funcall *client-fn-open-file* "cancelled or error/*/")))))))
 
 
 ;; (cffi:defcallback %cancel-open-func :void ((source-object :pointer)
