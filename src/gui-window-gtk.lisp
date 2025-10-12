@@ -78,32 +78,41 @@
   (funcall
    (lambda ()
      (let* ((dialog (gobj:pointer-object source-object 'gtk4:file-dialog))
-            (result (gobj:pointer-object res 'gio:async-result))
-            (file (gtk4:file-dialog-open-finish dialog result)))
-       ;; (print (gio:file-uri file))
-       (funcall *client-fn-open-file* (gio:file-uri file))))))
+            (result (gobj:pointer-object res 'gio:async-result)))
+       (warn "result of result ~S ~S" result (gio:async-result-source-object result))
 
-(cffi:defcallback %cancel-open-func :void ((source-object :pointer)
-                                           (data :pointer))
-  (declare (ignore data))
-  (warn "running file dialog cancel open callback")
+       (handler-case
+           (let ((file (gtk4:file-dialog-open-finish dialog result)))
+             (warn "result of file ~S" (gio:file-uri file))
+             (funcall *client-fn-open-file* (gio:file-uri file)))
+         (error (se)
+           (format t "we had error ~S~%" se)
+           (funcall *client-fn-open-file* :cancelled)
+           ))))))
 
-  (funcall
-   (lambda ()
-     (format t "cancelled saving~%" )
-     (funcall *client-fn-cancel-open-file*))))
+
+;; (cffi:defcallback %cancel-open-func :void ((source-object :pointer)
+;;                                            (data :pointer))
+;;   (declare (ignore data))
+;;   (warn "running file dialog cancel open callback")
+
+;;   (funcall
+;;    (lambda ()
+;;      (format t "cancelled saving~%" )
+;;      (funcall *client-fn-cancel-open-file*))))
 
 (defun present-file-open-dialog (&key title initial-folder)
   (let ((file-dialog (gtk4:make-file-dialog))
-        (cancellable (gio:make-cancellable)))
+        ;; (cancellable (gio:make-cancellable))
+        )
     (when title
       (setf (gir:property file-dialog 'title) title))
     (when initial-folder
       (setf (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))
-    (gio:cancellable-connect cancellable
-                             (cffi:callback %cancel-open-func)
-                             (cffi:null-pointer)
-                             (cffi:null-pointer))
+    ;; (gio:cancellable-connect cancellable
+    ;;                          (cffi:callback %cancel-open-func)
+    ;;                          (cffi:null-pointer)
+    ;;                          (cffi:null-pointer))
     (warn "running file dialog open")
     (gtk4:file-dialog-open file-dialog
                            (cffi:null-pointer)
