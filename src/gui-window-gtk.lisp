@@ -38,8 +38,6 @@
            (format t "we had error ~S~%" se)
            (funcall *client-fn-save-file* (cancelled-value))))))))
 
-
-
 ;;; TODO add filters
 ;; https://docs.gtk.org/gtk4/method.FileDialog.save.html
 (defun present-file-save-dialog (&key title initial-folder initial-file)
