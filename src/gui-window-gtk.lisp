@@ -41,29 +41,19 @@
 
 ;;; TODO add filters
 ;; https://docs.gtk.org/gtk4/method.FileDialog.save.html
-(defun present-file-save-dialog (&key title initial-folder initial-file filters)
+(defun present-file-save-dialog (&key title initial-folder initial-file)
   (format t "runnig save dialog tile ~S, folder ~S, file ~S" title initial-folder initial-file)
-  (let ((file-dialog (gtk4:make-file-dialog))
-        (file-filter (gtk4:make-file-filter))
-        (cancellable (gio:make-cancellable)))
-    (when filters
-      (setf (gir:property file-filter 'patterns) filters
-            (gir:property file-filter 'name) "All Files"
-            (gir:property file-dialog 'default-filter) file-filter))
+  (let ((file-dialog (gtk4:make-file-dialog)))
     (when title
       (setf (gir:property file-dialog 'title) title))
     (when initial-file
         (setf (gir:property file-dialog 'initial-file) (gio:file-new-for-path initial-file)))
     (when initial-folder
       (setf (gir:property file-dialog 'initial-folder) (gio:file-new-for-path initial-folder)))
-    (gio:cancellable-connect cancellable
-                             (cffi:callback %cancel-save-func)
-                             (cffi:null-pointer)
-                             (cffi:null-pointer))
     (warn "running file dialog save")
     (gtk4:file-dialog-save file-dialog
                            (cffi:null-pointer)
-                           cancellable
+                           (cffi:null-pointer)
                            (cffi:callback %save-func)
                            (cffi:null-pointer))))
 
@@ -85,8 +75,6 @@
          (error (se)
            (format t "we had error ~S~%" se)
            (funcall *client-fn-open-file* (cancelled-value))))))))
-
-
 
 (defun present-file-open-dialog (&key title initial-folder)
   (let ((file-dialog (gtk4:make-file-dialog))
