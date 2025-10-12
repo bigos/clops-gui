@@ -33,7 +33,7 @@
 (cffi:defcallback %cancel-save-func :void ((source-object :pointer)
                                     (data :pointer))
   (declare (ignore data))
-  (warn "running file dialog save callback")
+  (warn "running file dialog cancel save callback")
 
   (funcall
    (lambda ()
@@ -86,7 +86,7 @@
 (cffi:defcallback %cancel-open-func :void ((source-object :pointer)
                                            (data :pointer))
   (declare (ignore data))
-  (warn "running file dialog save callback")
+  (warn "running file dialog cancel open callback")
 
   (funcall
    (lambda ()
