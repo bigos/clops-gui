@@ -330,6 +330,7 @@
         (window-creation-from-main app *initial-title* *client-fn-menu-bar* lisp-window)
 
         (let ((status (gtk:application-run app nil)))
+          ;; cleanup on quitting
           (gobj:object-unref app)
           (setf gui-app:*lisp-app*  nil)
           status)))
