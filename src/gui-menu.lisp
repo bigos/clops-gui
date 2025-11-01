@@ -90,8 +90,6 @@
 
 (defun build-items (&rest items)
   (let ((submenu (gio:make-menu)))
-    (setf (gtk4:widget-can-focus-p submenu) nil)
-
     (apply 'build-menu submenu items)
     submenu))
 
