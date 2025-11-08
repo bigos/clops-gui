@@ -50,6 +50,7 @@
    dimensions
    gir-window
    gir-menu-bar
+   gir-canvas
    lisp-window
    most-current-widget
    redraw-canvas

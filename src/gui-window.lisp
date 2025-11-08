@@ -10,6 +10,8 @@
                 :documentation "Either gir window or symbol used in test drawing")
    (gir-menu-bar :type (or gir::object-instance null)
                  :documentation "Either gir menu or null")
+   (gir-canvas :type (or gir::object-instance null)
+               :documentation "Either gir canvas or null")
    (dimensions  :documentation "Cons with width and height or resized window")
    (children   :documentation "List of widgets whose parent is the window")
    (all-widgets :std (make-hash-table):documentation "All generations of widgets that eventually lead to the window. May be useful in finding current widget")))

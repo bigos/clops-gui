@@ -254,6 +254,7 @@
 
     (when window-menu-fn
       (let ((menu  (funcall window-menu-fn app lisp-window)))
+        (setf (gtk4:window-handle-menubar-accel-p window) T)
         (setf (gtk4:application-menubar app) menu)
         (setf (gtk4:application-window-show-menubar-p window) T)
         (setf (gui-window:gir-menu-bar lisp-window) (gtk4:application-menubar app))))
@@ -271,7 +272,8 @@
                                                          (cffi:null-pointer)
                                                          (cffi:null-pointer)))
         (canvas-events canvas lisp-window)
-        (gtk4:box-append box canvas))
+        (gtk4:box-append box canvas)
+        (setf (gui-window:gir-canvas lisp-window) canvas))
       (setf (gtk4:window-child window) box))
 
     (window-events window lisp-window)
