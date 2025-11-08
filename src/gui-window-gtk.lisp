@@ -256,7 +256,7 @@
       (let ((menu  (funcall window-menu-fn app lisp-window)))
         (setf (gtk4:application-menubar app) menu)
         (setf (gtk4:application-window-show-menubar-p window) T)
-        (setf (gir-window:gir-menu-bar lisp-window) (gtk4:application-menubar app))))
+        (setf (gui-window:gir-menu-bar lisp-window) (gtk4:application-menubar app))))
 
     (setf (gtk4:window-title window) window-title)
     (setf (gtk4:window-default-size window) (list *initial-window-width*
