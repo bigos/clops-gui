@@ -253,8 +253,10 @@
     (gtk4:application-add-window app window)
 
     (when window-menu-fn
-      (setf (gtk4:application-menubar app) (funcall window-menu-fn app lisp-window))
-      (setf (gtk4:application-window-show-menubar-p window) T))
+      (let ((menu  (funcall window-menu-fn app lisp-window)))
+        (setf (gtk4:application-menubar app) menu)
+        (setf (gtk4:application-window-show-menubar-p window) T)
+        (setf (gir-window:gir-menu-bar lisp-window) (gtk4:application-menubar app))))
 
     (setf (gtk4:window-title window) window-title)
     (setf (gtk4:window-default-size window) (list *initial-window-width*

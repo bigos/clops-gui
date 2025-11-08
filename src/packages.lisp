@@ -49,6 +49,7 @@
    children
    dimensions
    gir-window
+   gir-menu-bar
    lisp-window
    most-current-widget
    redraw-canvas
