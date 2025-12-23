@@ -142,8 +142,6 @@ requester, possibly being inspired by Emacs
 ** Great ideas
 https://lisp-journey.gitlab.io/resources/
 
-https://github.com/lisp-maintainers/defstar
-
 *** Archy
 https://en.wikipedia.org/wiki/Archy_(software)
 
