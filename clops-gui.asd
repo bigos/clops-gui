@@ -5,6 +5,7 @@
   :depends-on (#:cl-gtk4
                #:cl-gdk4 #:cl-glib #:cl-cairo2
                #:serapeum
+               #:defstar
                #:defclass-std
                )
   :components ((:module "src"
