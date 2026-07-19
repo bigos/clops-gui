@@ -35,8 +35,8 @@
              (format t "selected ~S~%" (gio:file-uri file))
              (funcall *client-fn-save-file* (selected-value (gio:file-uri file))))
          (error (se)
-           (format t "we had error ~S~%" se)
-           (funcall *client-fn-save-file* (cancelled-value))))))))
+           ;; (format t "we had error ~S~%" se)
+           (funcall *client-fn-cancel-save-file* (cancelled-value))))))))
 
 ;;; TODO add filters
 ;; https://docs.gtk.org/gtk4/method.FileDialog.save.html
@@ -72,8 +72,8 @@
              (warn "result of file ~S" (gio:file-uri file))
              (funcall *client-fn-open-file* (selected-value (gio:file-uri file))))
          (error (se)
-           (format t "we had error ~S~%" se)
-           (funcall *client-fn-open-file* (cancelled-value))))))))
+           ;; (format t "we had error ~S~%" se)
+           (funcall *client-fn-cancel-open-file* (cancelled-value))))))))
 
 (defun present-file-open-dialog (&key title initial-folder)
   (let ((file-dialog (gtk4:make-file-dialog))
