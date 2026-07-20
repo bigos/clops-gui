@@ -18,6 +18,8 @@
 ;; =========================== dialogs =========================================
 (defun selected-value (selected-file-path) (cons :selected selected-file-path))
 (defun cancelled-value ()                  (cons :cancelled nil))
+(defun closed-value ()                     (cons :closed nil))
+
 
 (cffi:defcallback %save-func :void ((source-object :pointer)
                                     (res :pointer)
@@ -35,8 +37,8 @@
              (format t "selected ~S~%" (gio:file-uri file))
              (funcall *client-fn-save-file* (selected-value (gio:file-uri file))))
          (error (se)
-           ;; (format t "we had error ~S~%" se)
-           (funcall *client-fn-cancel-save-file* (cancelled-value))))))))
+           (format t "we had error ~S~%" se)
+           (funcall *client-fn-cancel-save-file* (closed-value))))))))
 
 ;;; TODO add filters
 ;; https://docs.gtk.org/gtk4/method.FileDialog.save.html
@@ -73,7 +75,7 @@
              (funcall *client-fn-open-file* (selected-value (gio:file-uri file))))
          (error (se)
            ;; (format t "we had error ~S~%" se)
-           (funcall *client-fn-cancel-open-file* (cancelled-value))))))))
+           (funcall *client-fn-cancel-open-file* (closed-value))))))))
 
 (defun present-file-open-dialog (&key title initial-folder)
   (let ((file-dialog (gtk4:make-file-dialog))
@@ -254,7 +256,7 @@
 
     (when window-menu-fn
       (let ((menu  (funcall window-menu-fn app lisp-window)))
-        (setf (gtk4:window-handle-menubar-accel-p window) T)
+        (setf (gtk4:window-handle-menubar-accel-p window) nil)
         (setf (gtk4:application-menubar app) menu)
         (setf (gtk4:application-window-show-menubar-p window) T)
         (setf (gui-window:gir-menu-bar lisp-window) (gtk4:application-menubar app))))
