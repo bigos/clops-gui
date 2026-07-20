@@ -256,6 +256,7 @@
 
     (when window-menu-fn
       (let ((menu  (funcall window-menu-fn app lisp-window)))
+        ;; nil stopped the annoying keystrokes interfering with menu
         (setf (gtk4:window-handle-menubar-accel-p window) nil)
         (setf (gtk4:application-menubar app) menu)
         (setf (gtk4:application-window-show-menubar-p window) T)
