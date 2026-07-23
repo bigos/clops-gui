@@ -249,7 +249,6 @@
                                     (gui-events:de-resize lisp-window (first args) (second args))))))
 
 ;; =============================================================================
-
 (defun new-window-for-app (app window-title window-menu-fn lisp-window)
   (let ((window (gtk4:make-application-window :application app)))
     (gtk4:application-add-window app window)
