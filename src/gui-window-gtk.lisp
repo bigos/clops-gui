@@ -249,20 +249,6 @@
                                     (gui-events:de-resize lisp-window (first args) (second args))))))
 
 ;; =============================================================================
-(defun refresh-menu (app lisp-window)
-  (let ((window-menu-fn *client-fn-menu-bar*)
-        (window (gui-window:gir-window  lisp-window)))
-    (warn "refreshing menu")
-    (when window-menu-fn
-      (let ((menu  (funcall window-menu-fn app lisp-window)))
-        (warn "with menu ~S" menu)
-        (setf (gtk4:application-window-show-menubar-p window) nil)
-        (setf (gtk4:application-menubar app) nil)
-        ;; nil stopped the annoying keystrokes interfering with menu
-        (setf (gtk4:window-handle-menubar-accel-p window) nil)
-        (setf (gtk4:application-menubar app) menu)
-        (setf (gtk4:application-window-show-menubar-p window) T)
-        (setf (gui-window:gir-menu-bar lisp-window) (gtk4:application-menubar app))))))
 
 (defun new-window-for-app (app window-title window-menu-fn lisp-window)
   (let ((window (gtk4:make-application-window :application app)))

@@ -21,12 +21,6 @@
 (defun all-windows ()
     (windows *lisp-app*))
 
-(defun refresh-menu-all-windows ()
-  (loop for w being the hash-value of (all-windows) do
-    (assert (typep w 'gui-window:lisp-window))
-    (assert (typep *lisp-app* 'gui-app::lisp-app))
-    (gui-window-gtk::refresh-menu (gui-app:gtk4-app *lisp-app*) w)))
-
 (defmethod current-motion-window-p ((lisp-app lisp-app) (window t))
   (let ((m (gui-window:window-hkey (current-motion lisp-app)))
         (w (gui-window:window-hkey window)))
