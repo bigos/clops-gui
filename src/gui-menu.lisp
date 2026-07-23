@@ -11,7 +11,7 @@
                                                             :type-string "s")
                                            :state (glib:make-string-variant
                                                    :string default))))
-    (gio:action-map-add-action app action)
+    (gio:action-map-add-action (gui-app:gtk4-app app) action)
     (gtk4:connect action "activate"
                   (lambda (event parameter)
                     (declare (ignore event))
@@ -43,7 +43,7 @@
                                                  :state (glib:make-boolean-variant
                                                          :value default))))
     (when disabled (setf (gio:simple-action-enabled-p action) nil))
-    (gio:action-map-add-action app action)
+    (gio:action-map-add-action (gui-app:gtk4-app app) action)
 
     (gtk:connect action "activate"
                  (lambda (event parameter)
@@ -66,7 +66,7 @@
   (let ((action (gio:make-simple-action :name action-name
                                         :parameter-type nil)))
     (when disabled (setf (gio:simple-action-enabled-p action) nil))
-    (gio:action-map-add-action app action)
+    (gio:action-map-add-action (gui-app:gtk4-app app) action)
 
     (gtk4:connect action "activate"
                   (lambda (event parameter)
