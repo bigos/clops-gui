@@ -389,6 +389,7 @@
 
 ;;; ============================================================================
 (defmethod add-children ((parent box) children)
+  "Adds children. Returns parent."
   (loop for cx in children
         do
            (if (and (atom cx) cx) ; leaf node
