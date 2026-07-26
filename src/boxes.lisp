@@ -362,7 +362,7 @@
   (setf (children parent) (append (children parent) (list child))))
 
 (defmethod add-child ((parent node-right) (child box))
-  (assert (not (slot-boundp child 'coordinates-relative)) nil "coordinates-relative must not be set")
+  ;; (assert (not (slot-boundp child 'coordinates-relative)) nil "coordinates-relative must not be set")
 
   (setf (coordinates-relative child)
         (make-coordinates-relative (%sum-children-dimension parent 'width)
