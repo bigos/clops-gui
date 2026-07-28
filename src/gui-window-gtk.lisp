@@ -17,7 +17,6 @@
 
 ;; =========================== dialogs =========================================
 (defun selected-value (selected-file-path) (cons :selected selected-file-path))
-(defun cancelled-value ()                  (cons :cancelled nil))
 (defun closed-value ()                     (cons :closed nil))
 
 
