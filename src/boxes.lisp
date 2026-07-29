@@ -152,7 +152,7 @@
                                          (+ (y (coordinates-relative node))
                                             (y (coordinates-absolute (parent node))))))))
 
-(defmethod render :before ((node node))
+(defmethod render :before ((node box))
   (absolute-coordinates node))
 
 (defmethod render ((node box))
