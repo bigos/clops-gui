@@ -124,6 +124,9 @@
                  :color color))
 
 ;;; ========================== methods =========================================
+(defmethod under-mouse-p :before ((node box))
+  (absolute-coordinates node))
+
 (defmethod under-mouse-p ((node box))
   (let ((acx (x (coordinates-absolute node)))
         (acy (y (coordinates-absolute node)))
