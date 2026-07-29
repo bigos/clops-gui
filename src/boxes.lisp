@@ -152,9 +152,8 @@
                                          (+ (y (coordinates-relative node))
                                             (y (coordinates-absolute (parent node))))))))
 
-(defmethod absolute-coordinates :after ((node box))
-  (loop for c in (children node)
-        do (absolute-coordinates c)))
+(defmethod render :before ((node node))
+  (absolute-coordinates node))
 
 (defmethod render ((node box))
   ; (warn "parent type ~S widht ~S height ~S" (type-of (parent node)) (width node) (height node))
