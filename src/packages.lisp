@@ -149,5 +149,6 @@
    #:boxes-window
    #:children
    #:mouse-over-p
+   #:make-node-down
    #:node-character
    #:absolute-coordinates))
