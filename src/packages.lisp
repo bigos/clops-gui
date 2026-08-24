@@ -146,9 +146,16 @@
   (:export
    #:main
    #:model
+   #:*model*
    #:boxes-window
    #:children
    #:mouse-over-p
    #:make-node-down
+   #:make-node-right
+   #:y
+   #:x
+   #:height
+   #:width
    #:node-character
+   #:coordinates-relative
    #:absolute-coordinates))
