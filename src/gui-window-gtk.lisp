@@ -275,6 +275,7 @@
                                                          (cffi:null-pointer)
                                                          (cffi:null-pointer)))
         (canvas-events canvas lisp-window)
+        ;; looks like using menu make menu steal the focus
         (gtk4:widget-grab-focus canvas)
         (gtk4:box-append box canvas)
         (setf (gui-window:gir-canvas lisp-window) canvas))
