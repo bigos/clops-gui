@@ -67,6 +67,7 @@
                 defclass/std)
   (:export
    *client-fn-menu-bar*
+   *canvas-widget*
    *initial-title*
    *initial-window-height*
    *initial-window-width*

@@ -8,6 +8,7 @@
 (defparameter *timeout-period* 1000)
 (defparameter *initial-window-width* 400)
 (defparameter *initial-window-height* 200)
+(defparameter *canvas-widget* nil)
 (defparameter *client-fn-menu-bar* nil)
 (defparameter *initial-title* "change me")
 (defparameter *client-fn-open-file* nil)
@@ -277,6 +278,7 @@
         (canvas-events canvas lisp-window)
         ;; looks like using menu make menu steal the focus
         (gtk4:widget-grab-focus canvas)
+        (setf *canvas-widget* canvas)
         (gtk4:box-append box canvas)
         (setf (gui-window:gir-canvas lisp-window) canvas))
       (setf (gtk4:window-child window) box))
