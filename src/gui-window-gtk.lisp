@@ -255,6 +255,8 @@
     (when window-menu-fn
       (let ((menu  (funcall window-menu-fn app lisp-window)))
         ;; this is only for F10 menu
+        ;; aaargh!!! looks like the menu problem is an accessibility feature
+        ;; https://discourse.gnome.org/t/is-it-possible-to-disable-menu-focus/17928/6
         (setf (gtk4:window-handle-menubar-accel-p window) nil)
         (setf (gtk4:application-menubar app) menu)
         (setf (gtk4:application-window-show-menubar-p window) T)
@@ -273,6 +275,7 @@
                                                          (cffi:null-pointer)
                                                          (cffi:null-pointer)))
         (canvas-events canvas lisp-window)
+        (gtk4:widget-grab-focus canvas)
         (gtk4:box-append box canvas)
         (setf (gui-window:gir-canvas lisp-window) canvas))
       (setf (gtk4:window-child window) box))
