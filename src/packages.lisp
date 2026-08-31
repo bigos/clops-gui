@@ -77,14 +77,12 @@
    *client-fn-save-file*
    *client-fn-cancel-save-file*
    close-all-windows-and-quit
-   is-menu-sensitive
    present-about-dialog
    present-file-open-dialog
    present-file-save-dialog
    window-main
    window-creation-from-menu
    window-creation-from-simulation
-   toggle-menubar-sensitive
    ))
 
 (defpackage #:gui-events
