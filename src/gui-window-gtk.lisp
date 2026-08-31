@@ -9,6 +9,7 @@
 (defparameter *initial-window-width* 400)
 (defparameter *initial-window-height* 200)
 (defparameter *canvas-widget* nil)
+(defparameter *menubar-widget* nil)
 (defparameter *client-fn-menu-bar* nil)
 (defparameter *initial-title* "change me")
 (defparameter *client-fn-open-file* nil)
@@ -258,6 +259,7 @@
         ;; this is only for F10 menu
         ;; aaargh!!! looks like the menu problem is an accessibility feature
         ;; https://discourse.gnome.org/t/is-it-possible-to-disable-menu-focus/17928/6
+        (setf *menubar-widget* menu)
         (setf (gtk4:window-handle-menubar-accel-p window) nil)
         (setf (gtk4:application-menubar app) menu)
         (setf (gtk4:application-window-show-menubar-p window) T)
