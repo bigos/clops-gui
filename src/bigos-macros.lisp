@@ -3,6 +3,19 @@
 
 (in-package :bigos-macros)
 
+(defmacro once-only ((&rest names) &body body)
+  (let ((gensyms (loop for n in names collect (gensym (string-upcase (symbol-name n))))))
+    `(let (,@(loop for g in gensyms collect `(,g (gensym (string-upcase ,(symbol-name g))))))
+       `(let (,,@(loop for g in gensyms for n in names collect ``(,,g ,,n)))
+          ,(let (,@(loop for n in names for g in gensyms collect `(,n ,g)))
+             ,@body)))))
+
+(defmacro with-gensyms (syms &body body)
+  `(let ,(mapcar #'(lambda (s)
+                     `(,s (gensym ,(string-upcase (symbol-name s)))))
+                 syms)
+     ,@body))
+
 (defmacro decft (fn-name argument-types return-type)
   `(declaim (ftype (function ,argument-types ,return-type) ,fn-name)))
 

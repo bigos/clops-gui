@@ -255,12 +255,15 @@
 
     (when window-menu-fn
       (let ((menu  (funcall window-menu-fn app lisp-window)))
+
         ;; this is only for F10 menu
         ;; aaargh!!! looks like the menu problem is an accessibility feature
         ;; https://discourse.gnome.org/t/is-it-possible-to-disable-menu-focus/17928/6
         ;; is_sensitive was promising, but I did not find the way to use it with gir
-        (setf (gtk4:window-handle-menubar-accel-p window) nil)
+        (setf (gtk4:window-handle-menubar-accel-p window) T)
         (setf (gtk4:application-menubar app) menu)
+        ;; (setf (gtk4:widget-can-focus-p (gtk4:application-menubar app)) nil)
+
         (setf (gtk4:application-window-show-menubar-p window) T)
         (setf (gui-window:gir-menu-bar lisp-window) (gtk4:application-menubar app))))
 
