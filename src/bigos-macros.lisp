@@ -10,6 +10,12 @@
           ,(let (,@(loop for n in names for g in gensyms collect `(,n ,g)))
              ,@body)))))
 
+(defmacro with-gensyms (syms &body body)
+  `(let ,(mapcar #'(lambda (s)
+                     `(,s (gensym ,(string-upcase (symbol-name s)))))
+                 syms)
+     ,@body))
+
 (defmacro decft (fn-name argument-types return-type)
   `(declaim (ftype (function ,argument-types ,return-type) ,fn-name)))
 
