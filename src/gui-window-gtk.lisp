@@ -262,6 +262,8 @@
         ;; is_sensitive was promising, but I did not find the way to use it with gir
         (setf (gtk4:window-handle-menubar-accel-p window) T)
         (setf (gtk4:application-menubar app) menu)
+        ;; (setf (gtk4:widget-can-focus-p (gtk4:application-menubar app)) nil)
+
         (setf (gtk4:application-window-show-menubar-p window) T)
         (setf (gui-window:gir-menu-bar lisp-window) (gtk4:application-menubar app))))
 
