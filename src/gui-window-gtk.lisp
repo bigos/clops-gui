@@ -254,9 +254,8 @@
     (gtk4:application-add-window app window)
 
     (when window-menu-fn
-      (let* ((menu-model  (funcall window-menu-fn app lisp-window))
-             (menu (gtk4:make-popover-menu-bar menu-model)))
-        (setf (gtk4:widget-can-focus-p menu) nil)
+      (let ((menu  (funcall window-menu-fn app lisp-window)))
+
         ;; this is only for F10 menu
         ;; aaargh!!! looks like the menu problem is an accessibility feature
         ;; https://discourse.gnome.org/t/is-it-possible-to-disable-menu-focus/17928/6
