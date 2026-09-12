@@ -157,6 +157,7 @@
    #:x
    #:height
    #:width
+   #:node
    #:node-character
    #:coordinates-relative
    #:absolute-coordinates))
