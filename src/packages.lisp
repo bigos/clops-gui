@@ -55,6 +55,7 @@
    most-current-widget
    redraw-canvas
    set-rgba
+   steal-focus
    window-hkey
    window-resize
    ))
@@ -67,7 +68,6 @@
                 defclass/std)
   (:export
    *client-fn-menu-bar*
-   *canvas-widget*
    *initial-title*
    *initial-window-height*
    *initial-window-width*

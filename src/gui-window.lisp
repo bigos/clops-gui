@@ -38,4 +38,9 @@
   (window-hkey
    (gir-window window)))
 
+;;; after handling menu action we need to steal focus if we do not want the menu to keep the annoying focus
+(defmethod steal-focus ((lisp-window lisp-window))
+  (setf (gtk4:root-focus (gir-window lisp-window)) nil)
+  (setf (gtk4:root-focus (gir-window lisp-window)) (gir-window lisp-window)))
+
 ;;; ============================ window child widgets ==========================
